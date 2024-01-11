@@ -5,7 +5,7 @@ import { FaBeer } from "react-icons/fa";
 
 function Sidebar() {
   return (
-    <div className="flex flex-wrap md:flex-col flex-1 items-center md h-full">
+    <div className="flex flex-wrap md:flex-col flex-1 items-center h-full">
       <img
         src={ULogo}
         alt="University Logo"

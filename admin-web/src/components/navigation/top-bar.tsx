@@ -17,7 +17,7 @@ function AccountMenu() {
       <DropdownMenuTrigger asChild>
         <Button variant="ghost" className="relative h-8 w-8 rounded-full">
           <Avatar className="h-8 w-8">
-            <AvatarImage src="https://github.com/cooperj.png1" alt="picture of josh" />
+            <AvatarImage src="https://github.com/cooperj.png" alt="picture of josh" />
             <AvatarFallback>JC</AvatarFallback>
           </Avatar>
         </Button>
@@ -58,7 +58,7 @@ function AccountMenu() {
 
 function TopBar() {
   return (
-    <div className="text-right mb-5">
+    <div className="mb-5 flex items-center justify-end">
       <span className="pr-4">Hey Josh</span>
       <AccountMenu />
     </div>
