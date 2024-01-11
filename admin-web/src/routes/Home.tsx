@@ -1,18 +1,15 @@
 import { useState } from 'react'
 import { Button } from "@/components/ui/button";
 
-import ULogo from './assets/logos/uol-white.svg';
-
-function App() {
+function Home() {
   const [count, setCount] = useState(0)
   const [count2, setCount2] = useState(0)
   const [count3, setCount3] = useState(0);
 
   return (
-    <>
-      <img src={ULogo} alt="Lincoln Logo" />
+    <div className="bg-apricot">
       <h1 className="text-3xl font-bold underline">Hello world!</h1>
-      <div className="card flex flex-row justify-between">
+      <div className="card flex flex-col md:flex-row justify-between">
         <Button onClick={() => setCount((count) => count + 1)}>
           count is {count}
         </Button>
@@ -35,8 +32,8 @@ function App() {
       <p className="read-the-docs">
         Click on the Vite and React logos to learn more
       </p>
-    </>
+    </div>
   );
 }
 
-export default App
+export default Home

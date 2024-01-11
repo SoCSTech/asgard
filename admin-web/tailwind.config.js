@@ -9,6 +9,27 @@ module.exports = {
   ],
   prefix: "",
   theme: {
+    colors: {
+      // SoCS Colours (edit in index.css)
+      apricot: "hsl(var(--apricot))",
+      lavender: "hsl(var(--lavender))",
+      salmon: "hsl(var(--salmon))",
+      cyan: "hsl(var(--cyan))",
+      mint: "hsl(var(--mint))",
+      sky: "hsl(var(--sky))",
+      blush: "hsl(var(--blush))",
+      turquoise: "hsl(var(--turquoise))",
+      chartreuse: "hsl(var(--chartreuse))",
+      periwinkle: "hsl(var(--periwinkle))",
+      coral: "hsl(var(--coral))",
+      lilac: "hsl(var(--lilac))",
+      frost: "hsl(var(--frost))",
+      slate: "hsl(var(--slate))",
+      tangerine: "hsl(var(--tangerine))",
+      white: "hsl(var(--white))",
+      black: "hsl(var(--black))",
+    },
+
     container: {
       center: true,
       padding: "2rem",
@@ -17,7 +38,11 @@ module.exports = {
       },
     },
     extend: {
+      fontFamily: {
+        sans: ['Inter']
+      },
       colors: {
+        // ShadCN UI
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
