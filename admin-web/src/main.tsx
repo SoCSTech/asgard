@@ -15,92 +15,15 @@ import {
   useNavigation,
   useRouteLoaderData,
 } from "react-router-dom";
-import { AuthProvider } from "./auth";
 
+import { AuthProvider } from "@/auth";
 import "@/index.css";
-import Sidebar from "@/components/navigation/sidebar";
-import TopBar from "@/components/navigation/top-bar";
 
 // Routes
-import Home from "@/routes/Home.tsx";
+import Home from "@/routes/home";
 import Booze from "@/routes/booze";
 import Login from "@/routes/login";
-
-const router = createBrowserRouter([
-  {
-    id: "root",
-    path: "/",
-    loader() {
-      // Our root route always provides the user, if logged in
-      return { user: AuthProvider.username };
-    },
-    Component: Layout,
-    children: [
-      {
-        path: "login",
-        action: loginAction,
-        loader: loginLoader,
-        Component: Login,
-      },
-      {
-        index: true,
-        Component: Home,
-        loader: protectedLoader,
-      },
-      {
-        path: "/booze",
-        loader: protectedLoader,
-        Component: Booze,
-      },
-    ],
-  },
-  {
-    path: "/logout",
-    async action() {
-      // We signout in a "resource route" that we can hit from a fetcher.Form
-      await AuthProvider.signout();
-      return redirect("/");
-    },
-  },
-]);
-
-function Layout() {
-  return (
-    <div className="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-5 gap-4">
-      <Sidebar />
-      <div className="md:col-span-3 lg:col-span-4 p-5">
-        <TopBar />
-        <Outlet />
-        {/* <Link to="/">Public Page</Link>
-        <Link to="/protected">Protected Page</Link> */}
-        <AuthStatus />
-      </div>
-    </div>
-  );
-}
-
-function AuthStatus() {
-  // Get our logged in user, if they exist, from the root route loader data
-  let { user } = useRouteLoaderData("root") as { user: string | null };
-  let fetcher = useFetcher();
-
-  if (!user) {
-    return <p>You are not logged in.</p>;
-  }
-
-  let isLoggingOut = fetcher.formData != null;
-
-  return (
-    <div className="bg-mint p-3">
-      <p>Welcome {user}!</p>
-      <fetcher.Form method="post" action="/logout">
-        <button type="submit" disabled={isLoggingOut}>
-          {isLoggingOut ? "Signing out..." : "Sign out"}
-        </button>
-      </fetcher.Form>
-    </div>
-  );
-}
+import Layout from "./layout";
 
 async function loginAction({ request }: LoaderFunctionArgs) {
   let formData = await request.formData();
@@ -148,8 +71,55 @@ function protectedLoader({ request }: LoaderFunctionArgs) {
   return null;
 }
 
-ReactDOM.createRoot(document.getElementById("root")!).render(
-  <React.StrictMode>
-    <RouterProvider router={router} fallbackElement={<p>Initial Load...</p>} />
-  </React.StrictMode>
-);
+function App() {
+  const router = createBrowserRouter([
+    {
+      id: "root",
+      path: "/",
+      loader() {
+        // Our root route always provides the user, if logged in
+        return { user: AuthProvider.username };
+      },
+      // Use DefaultLayout for authenticated routes
+      Component: Layout,
+      children: [
+        {
+          path: "login",
+          action: loginAction,
+          loader: loginLoader,
+          Component: Login,
+        },
+        {
+          index: true,
+          Component: Home,
+          loader: protectedLoader,
+        },
+        {
+          path: "/booze",
+          loader: protectedLoader,
+          Component: Booze,
+        },
+      ],
+    },
+    {
+      path: "/logout",
+      async action() {
+        // We signout in a "resource route" that we can hit from a fetcher.Form
+        await AuthProvider.signout();
+        return redirect("/");
+      },
+    },
+  ]);
+
+  return (
+    <React.StrictMode>
+      {/* Use layout dynamically based on authentication status */}
+      <RouterProvider
+        router={router}
+        fallbackElement={<p>Initial Load...</p>}
+      />
+    </React.StrictMode>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById("root")!).render(<App />);
