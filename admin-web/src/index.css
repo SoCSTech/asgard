@@ -21,6 +21,11 @@
     --tangerine: 20, 100%, 65%;
     --white: 0, 0%, 100%;
     --black: 0, 0%, 7%;
+    --azure: 200, 100%, 63%;
+    --mango: 20, 100%, 63%;
+    --violet: 284, 80%, 64%;
+    --emerald: 104, 80%, 64%;
+    --amber: 55, 92%, 52%;
 
     --background: var(--black);
     --foreground: var(--white);

@@ -1,4 +1,4 @@
-import ULogo from "@/assets/logos/uol-white.svg";
+import ULogo from "@/assets/logos/uol-white-text.svg";
 import { Button } from "@/components/ui/button";
 
 import { FaBeer } from "react-icons/fa";

@@ -28,6 +28,11 @@ module.exports = {
       tangerine: "hsl(var(--tangerine))",
       white: "hsl(var(--white))",
       black: "hsl(var(--black))",
+      azure: "hsl(var(--azure))",
+      mango: "hsl(var(--mango))",
+      violet: "hsl(var(--violet))",
+      emerald: "hsl(var(--emerald))",
+      amber: "hsl(var(--amber))",
     },
 
     container: {
