@@ -11,13 +11,18 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
+import ULogo from "@/assets/logos/uol-white-text.svg";
+
 function AccountMenu() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" className="relative h-8 w-8 rounded-full">
-          <Avatar className="h-8 w-8">
-            <AvatarImage src="https://github.com/cooperj.png" alt="picture of josh" />
+        <Button variant="ghost" className="relative h-10 w-10 rounded-full">
+          <Avatar className="h-10 w-10">
+            <AvatarImage
+              src="https://github.com/cooperj.png"
+              alt="picture of josh"
+            />
             <AvatarFallback>JC</AvatarFallback>
           </Avatar>
         </Button>
@@ -48,9 +53,7 @@ function AccountMenu() {
           <DropdownMenuItem>New Team</DropdownMenuItem>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
-        <DropdownMenuItem>
-          Log out
-        </DropdownMenuItem>
+        <DropdownMenuItem>Log out</DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   );
@@ -58,9 +61,23 @@ function AccountMenu() {
 
 function TopBar() {
   return (
-    <div className="mb-5 flex items-center justify-end">
-      <span className="pr-4">Hey Josh</span>
-      <AccountMenu />
+    <div className="sm:p-8 lg:p-12 flex items-center justify-stretch">
+      <div className="flex flex-1 items-start">
+        <img
+          src={ULogo}
+          alt="University Logo"
+          className="w-[75px] select-none mr-16"
+        />
+        <div className="flex flex-col">
+          <h2 className="text-xl">School of Computer Science</h2>
+          <h1 className="text-5xl font-bold">asgard</h1>
+        </div>
+      </div>
+
+      <div className="flex items-center">
+        <span className="pr-6 text-l">Hi, Josh Cooper</span>
+        <AccountMenu />
+      </div>
     </div>
   );
 }

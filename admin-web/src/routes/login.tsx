@@ -1,5 +1,14 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
+import {
+  CardTitle,
+  CardDescription,
+  CardHeader,
+  CardContent,
+  Card,
+} from "@/components/ui/card";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
 
 import type { LoaderFunctionArgs } from "react-router-dom";
 import {
@@ -28,23 +37,45 @@ function Login() {
 
   return (
     <div>
-      <p>You must log in to view the page at {from}</p>
-
       <Form method="post" replace>
-        <input type="hidden" name="redirectTo" value={from} />
-        <label>
-          Username: <input className="text-black" name="username" />
-        </label>{" "}
-        <button type="submit" disabled={isLoggingIn}>
-          {isLoggingIn ? "Logging in..." : "Login"}
-        </button>
-        {actionData && actionData.error ? (
-          <p style={{ color: "red" }}>{actionData.error}</p>
-        ) : null}
+        <Card className="mx-auto max-w-sm">
+          <CardHeader className="space-y-1">
+            <CardTitle className="text-2xl font-bold">Login</CardTitle>
+            <CardDescription>
+              You must log in to view the page at {from}
+              {actionData && actionData.error ? (
+                <p style={{ color: "hsl(var(--salmon)" }}>{actionData.error}</p>
+              ) : null}
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-4">
+              <div className="space-y-2">
+                <input type="hidden" name="redirectTo" value={from} />
+                <Label htmlFor="username">Username</Label>
+                <Input
+                  id="username"
+                  name="username"
+                  required
+                  type="text"
+                  placeholder="timmytech"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="password">Password</Label>
+                <Input id="password" name="password" required type="password" />
+              </div>
+              <div className="space-y-4">
+                <Button className="w-full" type="submit" disabled={isLoggingIn}>
+                  {isLoggingIn ? "Logging in..." : "Login"}
+                </Button>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
       </Form>
     </div>
   );
 }
-
 
 export default Login;
