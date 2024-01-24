@@ -1,0 +1,37 @@
+version: "3.8"
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        # Update 'VARIANT' to pick an LTS version of Node.js: 18, 16, 14.
+        # Append -bullseye or -buster to pin to an OS version.
+        # Use -bullseye variants on local arm64/Apple Silicon.
+        VARIANT: 20
+
+    volumes:
+      - ..:/workspace:cached
+
+    # Overrides default command so things don't shut down after the process ends.
+    command: sleep infinity
+
+    # Runs app on the same network as the database container, allows "forwardPorts" in devcontainer.json function.
+    network_mode: service:db
+
+  db:
+    image: mysql:8
+    command: --default-authentication-plugin=mysql_native_password --character-set-server=utf8 --collation-server=utf8_general_ci
+    restart: unless-stopped
+    # network_mode: service:db
+    volumes:
+      - mysql-data:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: computing
+      MYSQL_DATABASE: asgard
+      MYSQL_USER: asgard
+      MYSQL_PASSWORD: computing
+
+volumes:
+  mysql-data:

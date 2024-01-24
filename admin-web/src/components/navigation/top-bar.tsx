@@ -12,27 +12,35 @@ import {
 } from "@/components/ui/dropdown-menu";
 
 import ULogo from "@/assets/logos/uol-white-text.svg";
+import { AuthProvider } from "@/auth";
 
-function AccountMenu() {
+interface AccountMenuProps {
+  name: string;
+  pictureURL: string;
+  initials: string;
+  email: string;
+}
+
+function AccountMenu(props: AccountMenuProps) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button variant="ghost" className="relative h-10 w-10 rounded-full">
           <Avatar className="h-10 w-10">
             <AvatarImage
-              src="https://github.com/cooperj.png"
-              alt="picture of josh"
+              src={props.pictureURL}
+              alt={"logged in as " + props.name}
             />
-            <AvatarFallback>JC</AvatarFallback>
+            <AvatarFallback>{props.initials}</AvatarFallback>
           </Avatar>
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-56 bg-black" align="end" forceMount>
         <DropdownMenuLabel className="font-normal">
           <div className="flex flex-col space-y-1">
-            <p className="text-sm font-medium leading-none">Josh Cooper</p>
+            <p className="text-sm font-medium leading-none">{props.name}</p>
             <p className="text-xs leading-none text-muted-foreground">
-              joshcooper@lincoln.ac.uk
+              {props.email}
             </p>
           </div>
         </DropdownMenuLabel>
@@ -53,13 +61,24 @@ function AccountMenu() {
           <DropdownMenuItem>New Team</DropdownMenuItem>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
-        <DropdownMenuItem>Log out</DropdownMenuItem>
+        <DropdownMenuItem
+          onClick={async () => {
+            await AuthProvider.signout();
+            // return redirect("/");
+          }}
+        >
+          Log out
+        </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   );
 }
 
-function TopBar() {
+interface TopBarProps {
+  authStatus: JSX.Element;
+}
+
+function TopBar(props: TopBarProps) {
   return (
     <div className="sm:p-8 lg:p-12 flex items-center justify-stretch">
       <div className="flex flex-1 items-start">
@@ -75,8 +94,13 @@ function TopBar() {
       </div>
 
       <div className="flex items-center">
-        <span className="pr-6 text-l">Hi, Josh Cooper</span>
-        <AccountMenu />
+        {props.authStatus}
+        <AccountMenu
+          name={"Timmy Technician"}
+          pictureURL={"https://github.com/cooperj.png"}
+          initials={"TT"}
+          email={"timmy@lincoln.ac.uk"}
+        />
       </div>
     </div>
   );

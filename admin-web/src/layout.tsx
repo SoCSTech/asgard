@@ -8,34 +8,30 @@ import TopBar from "@/components/navigation/top-bar";
 function AuthStatus() {
   // Get our logged in user, if they exist, from the root route loader data
   let { user } = useRouteLoaderData("root") as { user: string | null };
-  let fetcher = useFetcher();
 
   if (!user) {
-    return <p>You are not logged in.</p>;
+    return <span className="pr-6 text-l">You are not logged in.</span>;
   }
 
-  let isLoggingOut = fetcher.formData != null;
+  // <fetcher.Form method="post" action="/logout">
+  //   <button type="submit" disabled={isLoggingOut}>
+  //     {isLoggingOut ? "Signing out..." : "Sign out"}
+  //   </button>
+  // </fetcher.Form>
 
-  return (
-    <div className="bg-mint p-3">
-      <p>Welcome {user}!</p>
-      <fetcher.Form method="post" action="/logout">
-        <button type="submit" disabled={isLoggingOut}>
-          {isLoggingOut ? "Signing out..." : "Sign out"}
-        </button>
-      </fetcher.Form>
-    </div>
-  );
+  return <span className="pr-6 text-l">Hi {user}!</span>;
 }
 
 function Layout() {
-    return (
-      <div className="">
-          <TopBar />
-          <Outlet />
-          <AuthStatus />
-      </div>
-    );
+    // let fetcher = useFetcher();
+    
+  return (
+    <div className="">
+      
+      <TopBar authStatus={<AuthStatus />}/>
+      <Outlet />
+    </div>
+  );
 }
 
 export default Layout;
