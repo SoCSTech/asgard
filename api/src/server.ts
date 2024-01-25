@@ -10,7 +10,7 @@
 
 
 import http from "http";
-import express, { Express } from "express";
+import express, { Express, Request, Response, NextFunction } from "express";
 import morgan from "morgan";
 import helmet from "helmet";
 import { authenticate } from '@/middleware/authenticate';
@@ -40,10 +40,9 @@ app.use((req, res, next) => {
 });
 
 /* default endpoint */
-
-// app.get('/', (req: Request, res: Response) => {
-//     res.json({ message: '👋💻👾🏎️ Hello from SoCS Tech' });
-// });
+app.get('/', (req: Request, res: Response) => {
+    res.json({ message: '👋💻👾🏎️ Hello from SoCS Tech' });
+});
 
 /* Routes */
 app.use('/v2', require('./routes/auth'));

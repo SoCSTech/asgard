@@ -2,22 +2,10 @@ import { Request, Response, NextFunction } from "express";
 import { db } from '@/db';
 import { users as userSchema } from '@/db/schema';
 import { eq, and, or } from 'drizzle-orm';
-// import { hashPassword, comparePassword } from '@/utils/passwords';
+import { hashPassword, comparePassword } from '@/utils/passwords';
 const jwt = require('jsonwebtoken');
 const dotenv = require('dotenv');
 dotenv.config();
-const bcrypt = require('bcrypt');
-const saltRounds = 10;
-
-const hashPassword = async (rawPassword: String): Promise<string> => {
-    const passwordHash = await bcrypt.hash(rawPassword, saltRounds);
-    return passwordHash;
-};
-
-const comparePassword = async (userInput: String, passwordHash: String) => {
-    const passCorrect = await bcrypt.compare(userInput, passwordHash);
-    return passCorrect;
-};
 
 const login = async (req: Request, res: Response, next: NextFunction) => {
     const { username, password } = req.body;
