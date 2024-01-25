@@ -1,0 +1,1 @@
+ALTER TABLE `users` ADD `initials` varchar(3) NOT NULL;

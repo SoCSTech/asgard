@@ -1,0 +1,27 @@
+{
+  "version": "5",
+  "dialect": "mysql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "5",
+      "when": 1706192479900,
+      "tag": "0000_reflective_lizard",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "5",
+      "when": 1706192695225,
+      "tag": "0001_tricky_hemingway",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "5",
+      "when": 1706197887891,
+      "tag": "0002_first_squadron_sinister",
+      "breakpoints": true
+    }
+  ]
+}
