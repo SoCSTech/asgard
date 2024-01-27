@@ -78,7 +78,7 @@ const forgotPassword = async (req: Request, res: Response, next: NextFunction) =
         .where(eq(userSchema.id, users[0].id));
 
     // Send Password Email
-    email.SendPasswordResetEmail(users[0].email, users[0].shortName, _resetToken)
+    await email.SendPasswordResetEmail(users[0].email, users[0].shortName, _resetToken)
 
     // Send 201
     res.status(201).json({ message: "Please check your email for the verification code" })
