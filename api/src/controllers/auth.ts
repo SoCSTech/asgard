@@ -4,7 +4,7 @@ import { users as userSchema } from '@/db/schema';
 import { eq, and, or } from 'drizzle-orm';
 import { hashPassword, comparePassword } from '@/utils/passwords';
 import * as email from '@/communication/email';
-import { generateSecureCode } from "@/utils/authCode";
+import { generateSecureCode } from "@/utils/auth";
 const jwt = require('jsonwebtoken');
 const dotenv = require('dotenv');
 dotenv.config();

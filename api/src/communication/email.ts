@@ -31,8 +31,7 @@ export async function SendPasswordResetEmail(to: string, name: string, code: str
         `Your account verification code is ${code}`, 
         `Hi ${name}, 
 
-Your Asgard password reset code is ${code}. 
-
+Your Asgard password reset code is ${code}.
 You have 1 hour to change your password at ${process.env.WEB_BASEURL}/change-password?code=${code}
 
 If this wasn't you - please ignore this email.`)

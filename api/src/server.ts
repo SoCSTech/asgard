@@ -1,14 +1,3 @@
-// import express, { Request, Response } from 'express';
-
-// const app = express();
-// const port = process.env.PORT || 3000;
-
-
-// app.listen(port, () => {
-//     console.log(`Server running at http://localhost:${port}`);
-// });
-
-
 import http from "http";
 import express, { Express, Request, Response, NextFunction } from "express";
 import morgan from "morgan";
@@ -46,14 +35,14 @@ app.get('/', (req: Request, res: Response) => {
 
 /* Routes */
 app.use('/v2', require('./routes/auth'));
-// app.use('/v2', authenticate, require('./routes/posts'));
+app.use('/v2', authenticate, require('./routes/users'));
 // app.use('/v2', authenticate, require('./routes/tests'));
 // app.use('/v2', authenticate, require('./routes/users'));
 
 
 /* Error handling */
 app.use((req, res, next) => {
-    const error = new Error("not found");
+    const error = new Error("resource not found");
     return res.status(404).json({
         message: error.message,
     });

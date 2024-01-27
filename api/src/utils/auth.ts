@@ -1,4 +1,5 @@
 import { randomBytes } from 'crypto';
+import { token } from 'morgan';
 
 export function generateSecureCode(): string {
     const chars = '0123456789ABCDEF';
@@ -20,4 +21,13 @@ export function generateSecureCode(): string {
     }
 
     return code;
+}
+
+export function getUserIdFromJWT(jwt: string): string {
+    // Split JWT with the .s
+    // Get the data from the token thats in a base64
+    // Return just the id
+    const brokenUpJwt = jwt.split(".")
+    const tokenData = JSON.parse(atob(brokenUpJwt[1]))
+    return tokenData['id']
 }
