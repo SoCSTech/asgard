@@ -2,6 +2,8 @@ import http from "http";
 import express, { Express, Request, Response, NextFunction } from "express";
 import morgan from "morgan";
 import helmet from "helmet";
+const cors = require('cors');
+
 import { authenticate } from '@/middleware/authenticate';
 
 const app: Express = express();
@@ -10,7 +12,7 @@ app.use(morgan("dev"));
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 app.use(helmet());
-
+app.use(cors());
 
 app.use((req, res, next) => {
     // set the CORS policy

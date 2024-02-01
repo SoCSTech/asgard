@@ -1,44 +1,49 @@
 interface AuthProvider {
   isAuthenticated: boolean;
-  username: null | string;
-  password: null | string;
-  shortName: null | string;
-  fullName: null | string;
-  initials: null | string;
-  role: null | string;
-  email: null | string;
-  creationDate: null | string;
-  profilePictureURL: null | string;
-  signin(username: string): Promise<void>;
+  token: string | null;
+  username: string | null;
+  signin(username: string, password: string): Promise<void>;
   signout(): Promise<void>;
 }
 
-/**
- * This represents some generic auth provider API, like Firebase.
- */
 export const AuthProvider: AuthProvider = {
   isAuthenticated: false,
+  token: null,
   username: null,
-  password: null,
-  shortName: null,
-  fullName: null,
-  initials: null,
-  role: null,
-  email: null,
-  creationDate: null,
-  profilePictureURL: null,
 
-  async signin(username: string) {
+  async signin(username: string, password: string) {
+    try {
+      const response = await fetch("http://localhost:3000/v2/auth/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ username, password }),
+      });
 
-    console.log(import.meta.env.VITE_API_BASEURL)
-    await new Promise((r) => setTimeout(r, 500)); // fake delay
-    AuthProvider.username = username;
-    AuthProvider.isAuthenticated = true;
+      if (!response.ok) {
+        throw new Error("Invalid login attempt");
+      }
+
+      const data = await response.json();
+      const token = data.TOKEN;
+
+      // Save the token as a cookie
+      document.cookie = `token=${token}; path=/`;
+
+      // Set token in the AuthProvider
+      this.token = token;
+      this.username = username;
+      this.isAuthenticated = true;
+    } catch (error) {
+      throw new Error("Invalid login attempt");
+    }
   },
+
   async signout() {
-    await new Promise((r) => setTimeout(r, 500)); // fake delay
-    AuthProvider.isAuthenticated = false;
-    AuthProvider.username = "";
-    AuthProvider.password = "";
+    // Clear token and user information
+    this.token = null;
+    this.username = null;
+    this.isAuthenticated = false;
   },
 };
