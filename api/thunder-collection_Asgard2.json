@@ -1,0 +1,94 @@
+{
+    "client": "Thunder Client",
+    "collectionName": "Asgard2",
+    "dateExported": "2024-03-05T17:17:36.313Z",
+    "version": "1.1",
+    "folders": [
+        {
+            "_id": "d9f21bbf-d49b-4f18-97e5-a94ba07c558d",
+            "name": "Auth",
+            "containerId": "",
+            "created": "2024-03-05T16:34:19.842Z",
+            "sortNum": 5000
+        },
+        {
+            "_id": "493cbb7c-07a9-417e-9b6d-22c5b8493638",
+            "name": "Users",
+            "containerId": "",
+            "created": "2024-03-05T16:34:04.611Z",
+            "sortNum": 10000
+        }
+    ],
+    "requests": [
+        {
+            "_id": "0700076e-94d7-4221-bcc8-a794af86ffb9",
+            "colId": "fc9a3243-a9d2-4b2b-a3c5-0a4ab707847c",
+            "containerId": "493cbb7c-07a9-417e-9b6d-22c5b8493638",
+            "name": "User - All",
+            "url": "/v2/user",
+            "method": "GET",
+            "sortNum": 5000,
+            "created": "2024-03-05T16:34:36.057Z",
+            "modified": "2024-03-05T16:34:45.355Z",
+            "headers": [],
+            "params": [],
+            "tests": []
+        },
+        {
+            "_id": "b1a14097-a1db-4010-a238-8146efc10bc1",
+            "colId": "fc9a3243-a9d2-4b2b-a3c5-0a4ab707847c",
+            "containerId": "d9f21bbf-d49b-4f18-97e5-a94ba07c558d",
+            "name": "Login",
+            "url": "/v2/auth/login",
+            "method": "POST",
+            "sortNum": 10000,
+            "created": "2024-03-05T16:20:26.154Z",
+            "modified": "2024-03-05T16:33:29.999Z",
+            "headers": [],
+            "params": [],
+            "body": {
+                "type": "json",
+                "raw": "{\n  \"username\": \"joshcooper\",\n  \"password\": \"computing\"\n}",
+                "form": []
+            },
+            "tests": []
+        },
+        {
+            "_id": "152f4cc6-b10e-42f6-8789-68b89696244d",
+            "colId": "fc9a3243-a9d2-4b2b-a3c5-0a4ab707847c",
+            "containerId": "493cbb7c-07a9-417e-9b6d-22c5b8493638",
+            "name": "User - Me",
+            "url": "/v2/user/me",
+            "method": "GET",
+            "sortNum": 10000,
+            "created": "2024-03-05T16:29:21.631Z",
+            "modified": "2024-03-05T16:33:19.566Z",
+            "headers": [],
+            "params": [],
+            "tests": []
+        },
+        {
+            "_id": "c5c0fff3-6fed-42ed-bce3-e3a2b3534880",
+            "colId": "fc9a3243-a9d2-4b2b-a3c5-0a4ab707847c",
+            "containerId": "493cbb7c-07a9-417e-9b6d-22c5b8493638",
+            "name": "User - ID",
+            "url": "/v2/user/1urbktLaHirwwA9LfJraXPA",
+            "method": "GET",
+            "sortNum": 20000,
+            "created": "2024-03-05T16:31:24.236Z",
+            "modified": "2024-03-05T16:33:23.125Z",
+            "headers": [],
+            "params": [],
+            "tests": []
+        }
+    ],
+    "settings": {
+        "auth": {
+            "type": "bearer",
+            "bearer": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjF1cmJrdExhSGlyd3dBOUxmSnJhWFBBIiwidXNlcm5hbWUiOiJqb3NoY29vcGVyIiwiaWF0IjoxNzA5NjU2MjUxLCJleHAiOjE3MDk3NDI2NTF9.cQdDi6jBvlLBc89SvRallkuB5vcW7PljimrHoZ3Tuco"
+        },
+        "options": {
+            "baseUrl": "http://localhost:3000"
+        }
+    }
+}

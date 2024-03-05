@@ -97,7 +97,7 @@ function TopBar(props: TopBarProps) {
         {props.authStatus}
         <AccountMenu
           name={"Timmy Technician"}
-          pictureURL={"https://github.com/cooperj.png"}
+          pictureURL={"sksks"}
           initials={"TT"}
           email={"timmy@lincoln.ac.uk"}
         />

@@ -38,10 +38,10 @@ const login = async (req: Request, res: Response, next: NextFunction) => {
         });
     }
 
-    // Create a JWT
-    const token = jwt.sign({ id: users[0].id, username: users[0].username, }, process.env.AUTH_SECRET, { expiresIn: '1800s' });
+    // Create a JWT - make it last for 24 hours
+    const token = jwt.sign({ id: users[0].id, username: users[0].username, }, process.env.AUTH_SECRET, { expiresIn: '86400s' });
 
-    res.cookie('TOKEN', token, { maxAge: 1800, httpOnly: true, sameSite: true, secure: true }).json({ TOKEN: token });
+    res.cookie('TOKEN', token, { maxAge: 86400, httpOnly: true, sameSite: true, secure: true }).json({ TOKEN: token });
 
 };
 

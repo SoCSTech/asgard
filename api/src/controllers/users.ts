@@ -49,40 +49,16 @@ const getUserById = async (req: Request, res: Response, next: NextFunction) => {
                 ),
                 eq(userSchema.isDeleted, false))
         );
-        
+
     res.json({ users: user });
-
-
-    // // Search for user by username
-    // const users = await db.select().from(userSchema)
-    //     .where(and(
-    //         eq(userSchema.isDeleted, false),
-    //         or(
-    //             eq(userSchema.username, String(username)),
-    //             eq(userSchema.email, String(username))
-    //         )
-    //     ));
-
-    // // If there isn't a user, error.
-    // if (users.length !== 1) {
-    //     return res.status(401).json({
-    //         message: "Invalid username or password",
-    //     });
-    // }
-
-    // // If the password is incorrect
-    // const isPassCorrect = await comparePassword(password, String(users[0].password));
-    // if (!isPassCorrect) {
-    //     return res.status(401).json({
-    //         message: "Invalid username or password",
-    //     });
-    // }
-
-    // // Create a JWT
-    // const token = jwt.sign({ id: users[0].id, username: users[0].username, }, process.env.AUTH_SECRET, { expiresIn: '1800s' });
-
-    // res.cookie('TOKEN', token, { maxAge: 1800, httpOnly: true, sameSite: true, secure: true }).json({ TOKEN: token });
-
 };
 
-export default { getUserById };
+const getAllUsers = async (req: Request, res: Response, next: NextFunction) => {
+    const users = await db.select(simplifiedUser)
+        .from(userSchema)
+        .where(eq(userSchema.isDeleted, false));
+
+    res.json({ users: users });
+};
+
+export default { getUserById, getAllUsers };

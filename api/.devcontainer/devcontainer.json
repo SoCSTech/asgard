@@ -14,7 +14,8 @@
         "streetsidesoftware.code-spell-checker",
         "eamodio.gitlens",
         "esbenp.prettier-vscode",
-        "aaron-bond.better-comments"
+        "aaron-bond.better-comments",
+        "rangav.vscode-thunder-client"
       ]
     }
   },

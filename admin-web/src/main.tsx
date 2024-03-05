@@ -97,6 +97,7 @@ function App() {
     {
       path: "/logout",
       async action() {
+        console.log("hi im logging out")
         // We signout in a "resource route" that we can hit from a fetcher.Form
         await AuthProvider.signout();
         return redirect("/");
