@@ -38,9 +38,7 @@ app.get('/', (req: Request, res: Response) => {
 /* Routes */
 app.use('/v2', require('./routes/auth'));
 app.use('/v2', authenticate, require('./routes/users'));
-// app.use('/v2', authenticate, require('./routes/tests'));
-// app.use('/v2', authenticate, require('./routes/users'));
-
+app.use('/v2', authenticate, require('./routes/tests'));
 
 /* Error handling */
 app.use((req, res, next) => {

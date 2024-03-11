@@ -1,49 +1,54 @@
 {
     "client": "Thunder Client",
     "collectionName": "Asgard2",
-    "dateExported": "2024-03-05T17:17:36.313Z",
+    "dateExported": "2024-03-11T17:07:36.386Z",
     "version": "1.1",
     "folders": [
         {
-            "_id": "d9f21bbf-d49b-4f18-97e5-a94ba07c558d",
+            "_id": "84d24bcb-d7de-4a5b-820c-8c7caba7c0ad",
             "name": "Auth",
             "containerId": "",
-            "created": "2024-03-05T16:34:19.842Z",
+            "created": "2024-03-11T16:27:04.859Z",
             "sortNum": 5000
         },
         {
-            "_id": "493cbb7c-07a9-417e-9b6d-22c5b8493638",
+            "_id": "3e4386a9-4600-44ee-ab67-39dcd261bda5",
             "name": "Users",
             "containerId": "",
-            "created": "2024-03-05T16:34:04.611Z",
+            "created": "2024-03-11T16:27:04.858Z",
             "sortNum": 10000
         }
     ],
     "requests": [
         {
-            "_id": "0700076e-94d7-4221-bcc8-a794af86ffb9",
-            "colId": "fc9a3243-a9d2-4b2b-a3c5-0a4ab707847c",
-            "containerId": "493cbb7c-07a9-417e-9b6d-22c5b8493638",
+            "_id": "40003b6b-0efe-4e4d-a739-ac1c67e88139",
+            "colId": "92700ffe-41cb-44b2-9402-69d56b1b926f",
+            "containerId": "3e4386a9-4600-44ee-ab67-39dcd261bda5",
             "name": "User - All",
             "url": "/v2/user",
             "method": "GET",
             "sortNum": 5000,
-            "created": "2024-03-05T16:34:36.057Z",
-            "modified": "2024-03-05T16:34:45.355Z",
+            "created": "2024-03-11T16:27:04.861Z",
+            "modified": "2024-03-11T16:29:34.418Z",
             "headers": [],
             "params": [],
+            "reqType": "get",
+            "auth": {
+                "type": "bearer",
+                "bearer": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjF1cmJrdExhSGlyd3dBOUxmSnJhWFBBIiwidXNlcm5hbWUiOiJqb3NoY29vcGVyIiwiaWF0IjoxNzEwMTc0NDQ3LCJleHAiOjE3MTAyNjA4NDd9.mCi5oRDSYSbaXXyNwhKZ459L3KgjaB34FYwLRcz3SdY"
+            },
             "tests": []
         },
         {
-            "_id": "b1a14097-a1db-4010-a238-8146efc10bc1",
-            "colId": "fc9a3243-a9d2-4b2b-a3c5-0a4ab707847c",
-            "containerId": "d9f21bbf-d49b-4f18-97e5-a94ba07c558d",
+            "_id": "f97f6dec-23db-4256-99da-3440ac05346d",
+            "colId": "92700ffe-41cb-44b2-9402-69d56b1b926f",
+            "containerId": "84d24bcb-d7de-4a5b-820c-8c7caba7c0ad",
             "name": "Login",
             "url": "/v2/auth/login",
             "method": "POST",
             "sortNum": 10000,
-            "created": "2024-03-05T16:20:26.154Z",
-            "modified": "2024-03-05T16:33:29.999Z",
+            "created": "2024-03-11T16:27:04.858Z",
+            "modified": "2024-03-11T16:27:04.858Z",
             "headers": [],
             "params": [],
             "body": {
@@ -54,31 +59,92 @@
             "tests": []
         },
         {
-            "_id": "152f4cc6-b10e-42f6-8789-68b89696244d",
-            "colId": "fc9a3243-a9d2-4b2b-a3c5-0a4ab707847c",
-            "containerId": "493cbb7c-07a9-417e-9b6d-22c5b8493638",
+            "_id": "38c49d9a-3572-4c59-bfab-e3d0c684cb89",
+            "colId": "92700ffe-41cb-44b2-9402-69d56b1b926f",
+            "containerId": "3e4386a9-4600-44ee-ab67-39dcd261bda5",
             "name": "User - Me",
             "url": "/v2/user/me",
             "method": "GET",
             "sortNum": 10000,
-            "created": "2024-03-05T16:29:21.631Z",
-            "modified": "2024-03-05T16:33:19.566Z",
+            "created": "2024-03-11T16:27:04.859Z",
+            "modified": "2024-03-11T16:27:04.859Z",
             "headers": [],
             "params": [],
             "tests": []
         },
         {
-            "_id": "c5c0fff3-6fed-42ed-bce3-e3a2b3534880",
-            "colId": "fc9a3243-a9d2-4b2b-a3c5-0a4ab707847c",
-            "containerId": "493cbb7c-07a9-417e-9b6d-22c5b8493638",
+            "_id": "8c3d66c8-f969-46bd-b279-104a915d014f",
+            "colId": "92700ffe-41cb-44b2-9402-69d56b1b926f",
+            "containerId": "3e4386a9-4600-44ee-ab67-39dcd261bda5",
             "name": "User - ID",
             "url": "/v2/user/1urbktLaHirwwA9LfJraXPA",
             "method": "GET",
             "sortNum": 20000,
-            "created": "2024-03-05T16:31:24.236Z",
-            "modified": "2024-03-05T16:33:23.125Z",
+            "created": "2024-03-11T16:27:04.860Z",
+            "modified": "2024-03-11T16:27:04.860Z",
             "headers": [],
             "params": [],
+            "tests": []
+        },
+        {
+            "_id": "c0541c1b-ccab-4666-820a-550f12322704",
+            "colId": "92700ffe-41cb-44b2-9402-69d56b1b926f",
+            "containerId": "84d24bcb-d7de-4a5b-820c-8c7caba7c0ad",
+            "name": "Forgot Password",
+            "url": "/v2/auth/forgot-password",
+            "method": "POST",
+            "sortNum": 20000,
+            "created": "2024-03-11T16:31:49.172Z",
+            "modified": "2024-03-11T17:07:28.373Z",
+            "headers": [],
+            "params": [],
+            "body": {
+                "type": "json",
+                "raw": "{\n  \"username\": \"bsmith\"\n}",
+                "form": []
+            },
+            "reqType": "post",
+            "tests": []
+        },
+        {
+            "_id": "e92af0ab-97ba-4700-9bf9-40cf65ec0e63",
+            "colId": "92700ffe-41cb-44b2-9402-69d56b1b926f",
+            "containerId": "84d24bcb-d7de-4a5b-820c-8c7caba7c0ad",
+            "name": "Test User is Authed",
+            "url": "/v2/tests/auth",
+            "method": "GET",
+            "sortNum": 40000,
+            "created": "2024-03-11T16:42:05.896Z",
+            "modified": "2024-03-11T16:42:40.549Z",
+            "headers": [],
+            "params": [],
+            "auth": {
+                "type": "bearer",
+                "bearer": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjF1cmJrdExhSGlyd3dBOUxmSnJhWFBBIiwidXNlcm5hbWUiOiJqb3NoY29vcGVyIiwiaWF0IjoxNzEwMTc0NDQ3LCJleHAiOjE3MTAyNjA4NDd9.mCi5oRDSYSbaXXyNwhKZ459L3KgjaB34FYwLRcz3SdY"
+            },
+            "tests": []
+        },
+        {
+            "_id": "9bb23c53-ebed-41d8-a5c7-62602ee50cd5",
+            "colId": "92700ffe-41cb-44b2-9402-69d56b1b926f",
+            "containerId": "3e4386a9-4600-44ee-ab67-39dcd261bda5",
+            "name": "Create User",
+            "url": "/v2/user",
+            "method": "POST",
+            "sortNum": 50000,
+            "created": "2024-03-11T17:00:18.188Z",
+            "modified": "2024-03-11T17:06:11.693Z",
+            "headers": [],
+            "params": [],
+            "body": {
+                "type": "json",
+                "raw": "{\n  \"username\": \"bsmith\",\n  \"shortName\": \"Bob\",\n  \"fullName\": \"Bob Smith\",\n  \"role\": \"TECHNICIAN\",\n  \"email\": \"joshcooper+bsmith@lincoln.ac.uk\",\n  \"canLogin\": true\n}",
+                "form": []
+            },
+            "auth": {
+                "type": "bearer",
+                "bearer": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjF1cmJrdExhSGlyd3dBOUxmSnJhWFBBIiwidXNlcm5hbWUiOiJqb3NoY29vcGVyIiwiaWF0IjoxNzEwMTc0NDQ3LCJleHAiOjE3MTAyNjA4NDd9.mCi5oRDSYSbaXXyNwhKZ459L3KgjaB34FYwLRcz3SdY"
+            },
             "tests": []
         }
     ],
