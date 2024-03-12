@@ -19,6 +19,7 @@
   },
   "homepage": "https://github.com/SoCSTech/asgard2#readme",
   "dependencies": {
+    "@types/showdown": "^2.0.6",
     "bcrypt": "^5.1.1",
     "cors": "^2.8.5",
     "dotenv": "^16.3.2",
@@ -30,6 +31,7 @@
     "mysql2": "^3.7.1",
     "nodemailer": "^6.9.8",
     "short-uuid": "^4.2.2",
+    "showdown": "^2.1.0",
     "ts-node": "^10.9.2"
   },
   "devDependencies": {
