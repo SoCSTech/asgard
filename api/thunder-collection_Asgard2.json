@@ -1,7 +1,7 @@
 {
     "client": "Thunder Client",
     "collectionName": "Asgard2",
-    "dateExported": "2024-03-11T17:07:36.386Z",
+    "dateExported": "2024-03-12T10:00:15.855Z",
     "version": "1.1",
     "folders": [
         {
@@ -29,13 +29,13 @@
             "method": "GET",
             "sortNum": 5000,
             "created": "2024-03-11T16:27:04.861Z",
-            "modified": "2024-03-11T16:29:34.418Z",
+            "modified": "2024-03-12T09:25:45.205Z",
             "headers": [],
             "params": [],
             "reqType": "get",
             "auth": {
                 "type": "bearer",
-                "bearer": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjF1cmJrdExhSGlyd3dBOUxmSnJhWFBBIiwidXNlcm5hbWUiOiJqb3NoY29vcGVyIiwiaWF0IjoxNzEwMTc0NDQ3LCJleHAiOjE3MTAyNjA4NDd9.mCi5oRDSYSbaXXyNwhKZ459L3KgjaB34FYwLRcz3SdY"
+                "bearer": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjF1cmJrdExhSGlyd3dBOUxmSnJhWFBBIiwidXNlcm5hbWUiOiJqb3NoY29vcGVyIiwiaWF0IjoxNzEwMjM1NTIzLCJleHAiOjE3MTAzMjE5MjN9.Vewmw1TRnpCo2IjvH097k9tKbaxcLg3di7jTySjtwag"
             },
             "tests": []
         },
@@ -48,14 +48,15 @@
             "method": "POST",
             "sortNum": 10000,
             "created": "2024-03-11T16:27:04.858Z",
-            "modified": "2024-03-11T16:27:04.858Z",
+            "modified": "2024-03-12T09:59:02.715Z",
             "headers": [],
             "params": [],
             "body": {
                 "type": "json",
-                "raw": "{\n  \"username\": \"joshcooper\",\n  \"password\": \"computing\"\n}",
+                "raw": "{\n  \"username\": \"fnoble\",\n  \"password\": \"handbags\"\n}",
                 "form": []
             },
+            "reqType": "post",
             "tests": []
         },
         {
@@ -67,9 +68,14 @@
             "method": "GET",
             "sortNum": 10000,
             "created": "2024-03-11T16:27:04.859Z",
-            "modified": "2024-03-11T16:27:04.859Z",
+            "modified": "2024-03-12T09:59:14.027Z",
             "headers": [],
             "params": [],
+            "reqType": "get",
+            "auth": {
+                "type": "bearer",
+                "bearer": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjRjMzAzNzNhLWQwYTUtNGRkZS1iYTE3LWQ5YzAzYjlmYjU0ZCIsInVzZXJuYW1lIjoiZm5vYmxlIiwiaWF0IjoxNzEwMjM3NTQyLCJleHAiOjE3MTAzMjM5NDJ9.ZsXq27-L59VYAEhCcuTtaVnhQk25TWA5EMzA6uKIRhY"
+            },
             "tests": []
         },
         {
@@ -95,12 +101,32 @@
             "method": "POST",
             "sortNum": 20000,
             "created": "2024-03-11T16:31:49.172Z",
-            "modified": "2024-03-11T17:07:28.373Z",
+            "modified": "2024-03-12T09:44:56.072Z",
             "headers": [],
             "params": [],
             "body": {
                 "type": "json",
-                "raw": "{\n  \"username\": \"bsmith\"\n}",
+                "raw": "{\n  \"username\": \"fnoble\"\n}",
+                "form": []
+            },
+            "reqType": "post",
+            "tests": []
+        },
+        {
+            "_id": "dea7b564-f10a-4b6c-a67f-ce6f3a9e33af",
+            "colId": "92700ffe-41cb-44b2-9402-69d56b1b926f",
+            "containerId": "84d24bcb-d7de-4a5b-820c-8c7caba7c0ad",
+            "name": "Change Password",
+            "url": "/v2/auth/change-password",
+            "method": "POST",
+            "sortNum": 30000,
+            "created": "2024-03-12T09:55:28.509Z",
+            "modified": "2024-03-12T09:56:28.430Z",
+            "headers": [],
+            "params": [],
+            "body": {
+                "type": "json",
+                "raw": "{\n  \"resetToken\": \"107E48E4\",\n  \"password\": \"handbags\"\n}",
                 "form": []
             },
             "reqType": "post",
@@ -133,17 +159,18 @@
             "method": "POST",
             "sortNum": 50000,
             "created": "2024-03-11T17:00:18.188Z",
-            "modified": "2024-03-11T17:06:11.693Z",
+            "modified": "2024-03-12T09:26:32.407Z",
             "headers": [],
             "params": [],
             "body": {
                 "type": "json",
-                "raw": "{\n  \"username\": \"bsmith\",\n  \"shortName\": \"Bob\",\n  \"fullName\": \"Bob Smith\",\n  \"role\": \"TECHNICIAN\",\n  \"email\": \"joshcooper+bsmith@lincoln.ac.uk\",\n  \"canLogin\": true\n}",
+                "raw": "{\n  \"username\": \"fnoble\",\n  \"shortName\": \"Florence\",\n  \"fullName\": \"Florence Noble\",\n  \"role\": \"TECHNICIAN\",\n  \"email\": \"fnoble@lincoln.ac.uk\",\n  \"canLogin\": true\n}",
                 "form": []
             },
+            "reqType": "post",
             "auth": {
                 "type": "bearer",
-                "bearer": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjF1cmJrdExhSGlyd3dBOUxmSnJhWFBBIiwidXNlcm5hbWUiOiJqb3NoY29vcGVyIiwiaWF0IjoxNzEwMTc0NDQ3LCJleHAiOjE3MTAyNjA4NDd9.mCi5oRDSYSbaXXyNwhKZ459L3KgjaB34FYwLRcz3SdY"
+                "bearer": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjF1cmJrdExhSGlyd3dBOUxmSnJhWFBBIiwidXNlcm5hbWUiOiJqb3NoY29vcGVyIiwiaWF0IjoxNzEwMjM1NTIzLCJleHAiOjE3MTAzMjE5MjN9.Vewmw1TRnpCo2IjvH097k9tKbaxcLg3di7jTySjtwag"
             },
             "tests": []
         }

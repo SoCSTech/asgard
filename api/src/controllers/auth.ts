@@ -1,7 +1,7 @@
 import e, { Request, Response, NextFunction } from "express";
 import { db } from '@/db';
 import { users as userSchema } from '@/db/schema';
-import { eq, and, or } from 'drizzle-orm';
+import { eq, and, or, gt } from 'drizzle-orm';
 import { hashPassword, comparePassword } from '@/utils/passwords';
 import * as email from '@/communication/email';
 import { generateSecureCode } from "@/utils/auth";
@@ -84,5 +84,38 @@ const forgotPassword = async (req: Request, res: Response, next: NextFunction) =
     res.status(201).json({ message: "Please check your email for the verification code" })
 };
 
+const changePassword = async (req: Request, res: Response, next: NextFunction) => {
+    const { resetToken, password } = req.body;
 
-export default { login, forgotPassword };
+    const serverTime = new Date();
+
+    // Search for user by username
+    const users = await db.select().from(userSchema)
+        .where(and(
+            eq(userSchema.canLogin, true),
+            eq(userSchema.isDeleted, false),
+            eq(userSchema.resetToken, String(resetToken)),
+            gt(userSchema.resetTokenExpiry, serverTime)
+        ));
+
+    // If there isn't a user, error.
+    if (users.length !== 1) {
+        return res.status(401).json({
+            message: "Token has expired or cannot find user...",
+        });
+    }
+
+    // Add the token to the user
+    const updatedUser = await db.update(userSchema)
+        .set({ resetToken: null, resetTokenExpiry: null, password: await hashPassword(password) })
+        .where(eq(userSchema.id, users[0].id));
+
+    // Send Password Email
+    await email.SendPasswordUpdatedEmail(users[0].email, users[0].shortName)
+
+    // Send 201
+    res.status(201).json({ message: "Password Updated" })
+};
+
+
+export default { login, forgotPassword, changePassword };
