@@ -1,7 +1,7 @@
 {
     "client": "Thunder Client",
     "collectionName": "Asgard2",
-    "dateExported": "2024-03-12T10:00:15.855Z",
+    "dateExported": "2024-03-15T06:37:06.565Z",
     "version": "1.1",
     "folders": [
         {
@@ -101,12 +101,12 @@
             "method": "POST",
             "sortNum": 20000,
             "created": "2024-03-11T16:31:49.172Z",
-            "modified": "2024-03-12T09:44:56.072Z",
+            "modified": "2024-03-13T10:09:03.466Z",
             "headers": [],
             "params": [],
             "body": {
                 "type": "json",
-                "raw": "{\n  \"username\": \"fnoble\"\n}",
+                "raw": "{\n  \"username\": \"joshcooper\"\n}",
                 "form": []
             },
             "reqType": "post",
@@ -121,12 +121,12 @@
             "method": "POST",
             "sortNum": 30000,
             "created": "2024-03-12T09:55:28.509Z",
-            "modified": "2024-03-12T09:56:28.430Z",
+            "modified": "2024-03-13T10:18:42.196Z",
             "headers": [],
             "params": [],
             "body": {
                 "type": "json",
-                "raw": "{\n  \"resetToken\": \"107E48E4\",\n  \"password\": \"handbags\"\n}",
+                "raw": "{\n  \"resetToken\": \"71C280CB\",\n  \"password\": \"computing\"\n}",
                 "form": []
             },
             "reqType": "post",
@@ -159,18 +159,18 @@
             "method": "POST",
             "sortNum": 50000,
             "created": "2024-03-11T17:00:18.188Z",
-            "modified": "2024-03-12T09:26:32.407Z",
+            "modified": "2024-03-13T10:16:16.219Z",
             "headers": [],
             "params": [],
             "body": {
                 "type": "json",
-                "raw": "{\n  \"username\": \"fnoble\",\n  \"shortName\": \"Florence\",\n  \"fullName\": \"Florence Noble\",\n  \"role\": \"TECHNICIAN\",\n  \"email\": \"fnoble@lincoln.ac.uk\",\n  \"canLogin\": true\n}",
+                "raw": "{\n  \"username\": \"sormancha2n\",\n  \"shortName\": \"Sam\",\n  \"fullName\": \"Sam Orman-Chan\",\n  \"role\": \"STANDARD\",\n  \"email\": \"joshcooper+samoc2@lincoln.ac.uk\"\n}",
                 "form": []
             },
             "reqType": "post",
             "auth": {
                 "type": "bearer",
-                "bearer": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjF1cmJrdExhSGlyd3dBOUxmSnJhWFBBIiwidXNlcm5hbWUiOiJqb3NoY29vcGVyIiwiaWF0IjoxNzEwMjM1NTIzLCJleHAiOjE3MTAzMjE5MjN9.Vewmw1TRnpCo2IjvH097k9tKbaxcLg3di7jTySjtwag"
+                "bearer": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjRjMzAzNzNhLWQwYTUtNGRkZS1iYTE3LWQ5YzAzYjlmYjU0ZCIsInVzZXJuYW1lIjoiZm5vYmxlIiwiaWF0IjoxNzEwMzI0OTAyLCJleHAiOjE3MTA0MTEzMDJ9.hKy0cQzCaRMIhqacvetpIhwHJn0iQ-LD6_aMKfZBw_A"
             },
             "tests": []
         }

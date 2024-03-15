@@ -6,7 +6,9 @@
   "scripts": {
     "start": "nodemon",
     "dev": "npm start",
-    "build": "rm -rf dist/ && tsc"
+    "build": "rm -rf dist/ && tsc",
+    "db:migrate": "npx drizzle-kit generate:mysql",
+    "db:push": "npx drizzle-kit push:mysql"
   },
   "repository": {
     "type": "git",

@@ -15,7 +15,6 @@ const login = async (req: Request, res: Response, next: NextFunction) => {
     // Search for user by username
     const users = await db.select().from(userSchema)
         .where(and(
-            eq(userSchema.canLogin, true),
             eq(userSchema.isDeleted, false),
             or(
                 eq(userSchema.username, String(username)),
@@ -51,7 +50,6 @@ const forgotPassword = async (req: Request, res: Response, next: NextFunction) =
     // Search for user by username
     const users = await db.select().from(userSchema)
         .where(and(
-            eq(userSchema.canLogin, true),
             eq(userSchema.isDeleted, false),
             or(
                 eq(userSchema.username, String(username)),
@@ -92,7 +90,6 @@ const changePassword = async (req: Request, res: Response, next: NextFunction) =
     // Search for user by username
     const users = await db.select().from(userSchema)
         .where(and(
-            eq(userSchema.canLogin, true),
             eq(userSchema.isDeleted, false),
             eq(userSchema.resetToken, String(resetToken)),
             gt(userSchema.resetTokenExpiry, serverTime)

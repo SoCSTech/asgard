@@ -31,9 +31,9 @@ You will get a response like `'urbktLaHirwwA9LfJraXPA'` copy it.
 
 ```sql
 INSERT INTO `users` 
-(`id`, `username`, `short_name`, `full_name`, `role`, `email`, `password`, `creation_date`, `reset_token`, `reset_token_expiry`, `profile_picture_url`, `is_deleted`, `initials`, `can_login`) 
+(`id`, `username`, `short_name`, `full_name`, `role`, `email`, `password`, `creation_date`, `reset_token`, `reset_token_expiry`, `profile_picture_url`, `is_deleted`, `initials`) 
 VALUES 
-('1urbktLaHirwwA9LfJraXPA', 'joshcooper', 'Josh', 'Josh Cooper', 'TECHNICIAN', 'joshcooper@lincoln.ac.uk', '$2a$12$l5YP7j9UcVujD9NBzfwlk.j9f85A4Kigml24K2mhZpka2STgjZmOa', NOW(), NULL, NULL, NULL, 0, 'JC', 1);
+('1urbktLaHirwwA9LfJraXPA', 'joshcooper', 'Josh', 'Josh Cooper', 'TECHNICIAN', 'joshcooper@lincoln.ac.uk', '$2a$12$l5YP7j9UcVujD9NBzfwlk.j9f85A4Kigml24K2mhZpka2STgjZmOa', NOW(), NULL, NULL, NULL, 0, 'JC');
 ```
 
 This will create you a `joshcooper` user with the password `computing`... feel free to substitute in your own information...

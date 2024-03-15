@@ -65,7 +65,7 @@ function formatMailTextAsHTML(rawText: string): string {
 </head>
 <body>
     <div class="email-content">
-        <h1>asgard2</h1>
+        <h1>asgard<sup>2</sup></h1>
         <hr />
         <div class="inner">
           ${html}

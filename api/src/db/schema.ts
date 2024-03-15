@@ -26,8 +26,7 @@ export const users = mysqlTable('users', {
     resetToken: char('reset_token', { length: 8 }),
     resetTokenExpiry: timestamp('reset_token_expiry'),
     profilePictureUrl: varchar('profile_picture_url', { length: 256 }),
-    isDeleted: boolean('is_deleted').default(false).notNull(),
-    canLogin: boolean('can_login').default(true).notNull(),
+    isDeleted: boolean('is_deleted').default(false).notNull()
 }, (users) => ({
     emailIndex: uniqueIndex('email_idx').on(users.email),
     usernameIndex: uniqueIndex('username_idx').on(users.username),
