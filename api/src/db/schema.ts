@@ -31,3 +31,14 @@ export const users = mysqlTable('users', {
     emailIndex: uniqueIndex('email_idx').on(users.email),
     usernameIndex: uniqueIndex('username_idx').on(users.username),
 }));
+
+export const timetables = mysqlTable('timetables', {
+    id: varchar('id', { length: 128 }).$defaultFn(() => short.uuid()).primaryKey(),
+    spaceCode: varchar('space_code', { length: 10 }).notNull(),
+    name: varchar('name', { length: 256 }).notNull(),
+    creationDate: timestamp('creation_date').defaultNow().notNull(),
+    capacity: int('capacity'),
+    isDeleted: boolean('is_deleted').default(false).notNull()
+}, (timetables) => ({
+    spaceCodeIndex: uniqueIndex('space_code_idx').on(timetables.spaceCode)
+}));
