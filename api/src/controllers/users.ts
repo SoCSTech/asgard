@@ -219,4 +219,4 @@ const undeleteUser = async (req: Request, res: Response, next: NextFunction) => 
     res.status(201).json({ users: user });
 };
 
-export default { getUserById, getAllUsers, createUser };
+export default { getUserById, getAllUsers, createUser, deleteUser, undeleteUser };
