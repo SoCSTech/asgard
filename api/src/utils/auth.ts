@@ -1,5 +1,4 @@
 import { randomBytes } from 'crypto';
-import { token } from 'morgan';
 
 export function generateSecureCode(): string {
     const chars = '0123456789ABCDEF';
