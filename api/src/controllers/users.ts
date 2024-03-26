@@ -3,7 +3,7 @@ import { db } from '@/db';
 import { users as userSchema } from '@/db/schema';
 import { eq, and, or } from 'drizzle-orm';
 import * as email from '@/communication/email';
-import { generateSecureCode, getUserIdFromJWT } from "@/utils/auth";
+import { getUserIdFromJWT, verifyUserAuthToken } from "@/utils/auth";
 const jwt = require('jsonwebtoken');
 const dotenv = require('dotenv');
 dotenv.config();
@@ -34,17 +34,7 @@ const getUserById = async (req: Request, res: Response, next: NextFunction) => {
     let userId: string = req.params.id
 
     if (userId == 'me') {
-        // Get the token from request headers, query params, cookies, etc.
-        let token = req.headers.authorization as string; // Assuming token is sent in the 'Authorization' header
-
-        try {
-            token = token.split(" ")[1] // Split out and just get the token "Bearer eyJhbGciOiJIUz"
-        }
-        catch (error) {
-            console.error(error);
-            res.status(401).json({ "message": "Invalid auth token" })
-        }
-
+        const token = verifyUserAuthToken(req, res)
         userId = getUserIdFromJWT(token);
     }
 
@@ -62,6 +52,8 @@ const getUserById = async (req: Request, res: Response, next: NextFunction) => {
 };
 
 const getAllUsers = async (req: Request, res: Response, next: NextFunction) => {
+    const token = verifyUserAuthToken(req, res)
+
     const users = await db.select(simplifiedUser)
         .from(userSchema)
         .where(eq(userSchema.isDeleted, false));
@@ -71,20 +63,9 @@ const getAllUsers = async (req: Request, res: Response, next: NextFunction) => {
 
 // POST: { "username": "jsmith", "shortName": "John", "fullName": "John Smith", "role": "TECHNICIAN", "email": "joshcooper+jsmith@lincoln.ac.uk" }
 const createUser = async (req: Request, res: Response, next: NextFunction) => {
-    // Get the token from request headers, query params, cookies, etc.
-    let token = req.headers.authorization as string; // Assuming token is sent in the 'Authorization' header
-
-    try {
-        token = token.split(" ")[1] // Split out and just get the token "Bearer eyJhbGciOiJIUz"
-    }
-    catch (error) {
-        console.error(error);
-        res.status(401).json({ "message": "Invalid auth token" })
-    }
-
     // This is the id of the person who is logged in sending the invite out.
+    const token = verifyUserAuthToken(req, res)
     const invitingUserId = getUserIdFromJWT(token);
-
 
     // Check the user doesn't already exist
     const oldUsers = await db.select(simplifiedUser).from(userSchema)
@@ -115,18 +96,8 @@ const createUser = async (req: Request, res: Response, next: NextFunction) => {
 const deleteUser = async (req: Request, res: Response, next: NextFunction) => {
     let userId: string = req.params.id
 
-    // Get the token from request headers, query params, cookies, etc.
-    let token = req.headers.authorization as string; // Assuming token is sent in the 'Authorization' header
-
-    try {
-        token = token.split(" ")[1] // Split out and just get the token "Bearer eyJhbGciOiJIUz"
-    }
-    catch (error) {
-        console.error(error);
-        res.status(401).json({"message": "Invalid auth token"})
-    }
-
-    // This is the id of the person who is logged in sending the invite out.
+    // This is the id of the person who is logged in
+    const token = verifyUserAuthToken(req, res)
     const currentUserId = getUserIdFromJWT(token);
 
     if (userId === currentUserId) {
@@ -147,7 +118,6 @@ const deleteUser = async (req: Request, res: Response, next: NextFunction) => {
         res.status(404).json({"message": "Cannot find account"})
     }
 
-
     const admin = await db.select(simplifiedUser).from(userSchema)
         .where(
             and(
@@ -165,22 +135,12 @@ const deleteUser = async (req: Request, res: Response, next: NextFunction) => {
         .set({ isDeleted: true })
         .where(eq(userSchema.id, user[0].id));
 
-    res.status(201).json({ users: user });
+    res.status(201).json({ user: user[0].id, message: `Account '${user[0].username}' has been deleted` });
 };
 
 const undeleteUser = async (req: Request, res: Response, next: NextFunction) => {
     let userId: string = req.params.id
-
-    // Get the token from request headers, query params, cookies, etc.
-    let token = req.headers.authorization as string; // Assuming token is sent in the 'Authorization' header
-
-    try {
-        token = token.split(" ")[1] // Split out and just get the token "Bearer eyJhbGciOiJIUz"
-    }
-    catch (error) {
-        console.error(error);
-        res.status(401).json({ "message": "Invalid auth token" })
-    }
+    const token = verifyUserAuthToken(req, res)
 
     // This is the id of the person who is logged in sending the invite out.
     const currentUserId = getUserIdFromJWT(token);
@@ -210,13 +170,14 @@ const undeleteUser = async (req: Request, res: Response, next: NextFunction) => 
 
     if (admin[0].role !== "TECHNICIAN") {
         res.status(401).json({ "message": "You don't have permission to reactivate user accounts" })
+        return
     }
 
     const updatedUser = await db.update(userSchema)
         .set({ isDeleted: false })
         .where(eq(userSchema.id, user[0].id));
 
-    res.status(201).json({ users: user });
+    res.status(201).json({ user: user[0].id, message: `Account '${user[0].username}' has been reactivated` });
 };
 
 export default { getUserById, getAllUsers, createUser, deleteUser, undeleteUser };

@@ -1,54 +1,56 @@
 {
     "client": "Thunder Client",
     "collectionName": "Asgard2",
-    "dateExported": "2024-03-15T06:37:06.565Z",
+    "dateExported": "2024-03-26T17:12:07.303Z",
     "version": "1.1",
     "folders": [
         {
-            "_id": "84d24bcb-d7de-4a5b-820c-8c7caba7c0ad",
+            "_id": "d57e689f-6776-4ccb-aa67-5d4cc6d28908",
             "name": "Auth",
             "containerId": "",
-            "created": "2024-03-11T16:27:04.859Z",
+            "created": "2024-03-26T14:32:53.894Z",
             "sortNum": 5000
         },
         {
-            "_id": "3e4386a9-4600-44ee-ab67-39dcd261bda5",
+            "_id": "865da588-83d6-46ef-b29d-1e121a30457d",
             "name": "Users",
             "containerId": "",
-            "created": "2024-03-11T16:27:04.858Z",
+            "created": "2024-03-26T14:32:53.893Z",
             "sortNum": 10000
+        },
+        {
+            "_id": "2296b882-3ce8-435b-8545-6006cb162c2b",
+            "name": "Timetables",
+            "containerId": "",
+            "created": "2024-03-26T14:33:35.227Z",
+            "sortNum": 20000
         }
     ],
     "requests": [
         {
-            "_id": "40003b6b-0efe-4e4d-a739-ac1c67e88139",
-            "colId": "92700ffe-41cb-44b2-9402-69d56b1b926f",
-            "containerId": "3e4386a9-4600-44ee-ab67-39dcd261bda5",
+            "_id": "94e2a863-840e-43f1-b045-b0d8ee5d5d68",
+            "colId": "de00decf-3ee9-4bfe-b429-d2c10df5a906",
+            "containerId": "865da588-83d6-46ef-b29d-1e121a30457d",
             "name": "User - All",
             "url": "/v2/user",
             "method": "GET",
             "sortNum": 5000,
-            "created": "2024-03-11T16:27:04.861Z",
-            "modified": "2024-03-12T09:25:45.205Z",
+            "created": "2024-03-26T14:32:53.896Z",
+            "modified": "2024-03-26T14:36:22.134Z",
             "headers": [],
             "params": [],
-            "reqType": "get",
-            "auth": {
-                "type": "bearer",
-                "bearer": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjF1cmJrdExhSGlyd3dBOUxmSnJhWFBBIiwidXNlcm5hbWUiOiJqb3NoY29vcGVyIiwiaWF0IjoxNzEwMjM1NTIzLCJleHAiOjE3MTAzMjE5MjN9.Vewmw1TRnpCo2IjvH097k9tKbaxcLg3di7jTySjtwag"
-            },
             "tests": []
         },
         {
-            "_id": "f97f6dec-23db-4256-99da-3440ac05346d",
-            "colId": "92700ffe-41cb-44b2-9402-69d56b1b926f",
-            "containerId": "84d24bcb-d7de-4a5b-820c-8c7caba7c0ad",
+            "_id": "5a994b7b-95a8-4c13-8822-9d7c1ce1efd5",
+            "colId": "de00decf-3ee9-4bfe-b429-d2c10df5a906",
+            "containerId": "d57e689f-6776-4ccb-aa67-5d4cc6d28908",
             "name": "Login",
             "url": "/v2/auth/login",
             "method": "POST",
             "sortNum": 10000,
-            "created": "2024-03-11T16:27:04.858Z",
-            "modified": "2024-03-12T09:59:02.715Z",
+            "created": "2024-03-26T14:32:53.893Z",
+            "modified": "2024-03-26T14:32:53.893Z",
             "headers": [],
             "params": [],
             "body": {
@@ -56,52 +58,46 @@
                 "raw": "{\n  \"username\": \"fnoble\",\n  \"password\": \"handbags\"\n}",
                 "form": []
             },
-            "reqType": "post",
             "tests": []
         },
         {
-            "_id": "38c49d9a-3572-4c59-bfab-e3d0c684cb89",
-            "colId": "92700ffe-41cb-44b2-9402-69d56b1b926f",
-            "containerId": "3e4386a9-4600-44ee-ab67-39dcd261bda5",
+            "_id": "54f570a5-9760-41dc-8891-257523fe64a2",
+            "colId": "de00decf-3ee9-4bfe-b429-d2c10df5a906",
+            "containerId": "865da588-83d6-46ef-b29d-1e121a30457d",
             "name": "User - Me",
             "url": "/v2/user/me",
             "method": "GET",
             "sortNum": 10000,
-            "created": "2024-03-11T16:27:04.859Z",
-            "modified": "2024-03-12T09:59:14.027Z",
+            "created": "2024-03-26T14:32:53.894Z",
+            "modified": "2024-03-26T14:36:19.932Z",
             "headers": [],
             "params": [],
-            "reqType": "get",
-            "auth": {
-                "type": "bearer",
-                "bearer": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjRjMzAzNzNhLWQwYTUtNGRkZS1iYTE3LWQ5YzAzYjlmYjU0ZCIsInVzZXJuYW1lIjoiZm5vYmxlIiwiaWF0IjoxNzEwMjM3NTQyLCJleHAiOjE3MTAzMjM5NDJ9.ZsXq27-L59VYAEhCcuTtaVnhQk25TWA5EMzA6uKIRhY"
-            },
             "tests": []
         },
         {
-            "_id": "8c3d66c8-f969-46bd-b279-104a915d014f",
-            "colId": "92700ffe-41cb-44b2-9402-69d56b1b926f",
-            "containerId": "3e4386a9-4600-44ee-ab67-39dcd261bda5",
+            "_id": "19b8b0ad-fa16-4ebb-9dbe-a6731401ecbe",
+            "colId": "de00decf-3ee9-4bfe-b429-d2c10df5a906",
+            "containerId": "865da588-83d6-46ef-b29d-1e121a30457d",
             "name": "User - ID",
             "url": "/v2/user/1urbktLaHirwwA9LfJraXPA",
             "method": "GET",
             "sortNum": 20000,
-            "created": "2024-03-11T16:27:04.860Z",
-            "modified": "2024-03-11T16:27:04.860Z",
+            "created": "2024-03-26T14:32:53.895Z",
+            "modified": "2024-03-26T14:32:53.895Z",
             "headers": [],
             "params": [],
             "tests": []
         },
         {
-            "_id": "c0541c1b-ccab-4666-820a-550f12322704",
-            "colId": "92700ffe-41cb-44b2-9402-69d56b1b926f",
-            "containerId": "84d24bcb-d7de-4a5b-820c-8c7caba7c0ad",
+            "_id": "a3d9aec9-46f0-45d7-a477-4b182cad964f",
+            "colId": "de00decf-3ee9-4bfe-b429-d2c10df5a906",
+            "containerId": "d57e689f-6776-4ccb-aa67-5d4cc6d28908",
             "name": "Forgot Password",
             "url": "/v2/auth/forgot-password",
             "method": "POST",
             "sortNum": 20000,
-            "created": "2024-03-11T16:31:49.172Z",
-            "modified": "2024-03-13T10:09:03.466Z",
+            "created": "2024-03-26T14:32:53.897Z",
+            "modified": "2024-03-26T14:32:53.897Z",
             "headers": [],
             "params": [],
             "body": {
@@ -109,19 +105,18 @@
                 "raw": "{\n  \"username\": \"joshcooper\"\n}",
                 "form": []
             },
-            "reqType": "post",
             "tests": []
         },
         {
-            "_id": "dea7b564-f10a-4b6c-a67f-ce6f3a9e33af",
-            "colId": "92700ffe-41cb-44b2-9402-69d56b1b926f",
-            "containerId": "84d24bcb-d7de-4a5b-820c-8c7caba7c0ad",
+            "_id": "689de797-45e7-4c7d-a887-b3b385eae968",
+            "colId": "de00decf-3ee9-4bfe-b429-d2c10df5a906",
+            "containerId": "d57e689f-6776-4ccb-aa67-5d4cc6d28908",
             "name": "Change Password",
             "url": "/v2/auth/change-password",
             "method": "POST",
             "sortNum": 30000,
-            "created": "2024-03-12T09:55:28.509Z",
-            "modified": "2024-03-13T10:18:42.196Z",
+            "created": "2024-03-26T14:32:53.900Z",
+            "modified": "2024-03-26T14:32:53.900Z",
             "headers": [],
             "params": [],
             "body": {
@@ -129,19 +124,18 @@
                 "raw": "{\n  \"resetToken\": \"71C280CB\",\n  \"password\": \"computing\"\n}",
                 "form": []
             },
-            "reqType": "post",
             "tests": []
         },
         {
-            "_id": "e92af0ab-97ba-4700-9bf9-40cf65ec0e63",
-            "colId": "92700ffe-41cb-44b2-9402-69d56b1b926f",
-            "containerId": "84d24bcb-d7de-4a5b-820c-8c7caba7c0ad",
+            "_id": "36856d2d-109f-4eed-9a7d-abb76ebff8b0",
+            "colId": "de00decf-3ee9-4bfe-b429-d2c10df5a906",
+            "containerId": "d57e689f-6776-4ccb-aa67-5d4cc6d28908",
             "name": "Test User is Authed",
             "url": "/v2/tests/auth",
             "method": "GET",
             "sortNum": 40000,
-            "created": "2024-03-11T16:42:05.896Z",
-            "modified": "2024-03-11T16:42:40.549Z",
+            "created": "2024-03-26T14:32:53.898Z",
+            "modified": "2024-03-26T14:32:53.898Z",
             "headers": [],
             "params": [],
             "auth": {
@@ -151,15 +145,15 @@
             "tests": []
         },
         {
-            "_id": "9bb23c53-ebed-41d8-a5c7-62602ee50cd5",
-            "colId": "92700ffe-41cb-44b2-9402-69d56b1b926f",
-            "containerId": "3e4386a9-4600-44ee-ab67-39dcd261bda5",
+            "_id": "8f8e6a93-5e4e-43ad-a1a3-d344fc105817",
+            "colId": "de00decf-3ee9-4bfe-b429-d2c10df5a906",
+            "containerId": "865da588-83d6-46ef-b29d-1e121a30457d",
             "name": "Create User",
             "url": "/v2/user",
             "method": "POST",
             "sortNum": 50000,
-            "created": "2024-03-11T17:00:18.188Z",
-            "modified": "2024-03-13T10:16:16.219Z",
+            "created": "2024-03-26T14:32:53.899Z",
+            "modified": "2024-03-26T14:32:53.899Z",
             "headers": [],
             "params": [],
             "body": {
@@ -167,10 +161,101 @@
                 "raw": "{\n  \"username\": \"sormancha2n\",\n  \"shortName\": \"Sam\",\n  \"fullName\": \"Sam Orman-Chan\",\n  \"role\": \"STANDARD\",\n  \"email\": \"joshcooper+samoc2@lincoln.ac.uk\"\n}",
                 "form": []
             },
-            "reqType": "post",
             "auth": {
                 "type": "bearer",
                 "bearer": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjRjMzAzNzNhLWQwYTUtNGRkZS1iYTE3LWQ5YzAzYjlmYjU0ZCIsInVzZXJuYW1lIjoiZm5vYmxlIiwiaWF0IjoxNzEwMzI0OTAyLCJleHAiOjE3MTA0MTEzMDJ9.hKy0cQzCaRMIhqacvetpIhwHJn0iQ-LD6_aMKfZBw_A"
+            },
+            "tests": []
+        },
+        {
+            "_id": "9a324b2c-107b-4d6c-b152-194333240a76",
+            "colId": "de00decf-3ee9-4bfe-b429-d2c10df5a906",
+            "containerId": "2296b882-3ce8-435b-8545-6006cb162c2b",
+            "name": "Timetable - All",
+            "url": "/v2/timetable",
+            "method": "GET",
+            "sortNum": 80000,
+            "created": "2024-03-26T14:33:47.610Z",
+            "modified": "2024-03-26T14:35:02.305Z",
+            "headers": [],
+            "params": [],
+            "tests": []
+        },
+        {
+            "_id": "65f4ab0a-ba56-4a36-a17d-63db8c40b2dd",
+            "colId": "de00decf-3ee9-4bfe-b429-d2c10df5a906",
+            "containerId": "2296b882-3ce8-435b-8545-6006cb162c2b",
+            "name": "Timetable - ID",
+            "url": "/v2/timetable/INB1305",
+            "method": "GET",
+            "sortNum": 90000,
+            "created": "2024-03-26T14:33:57.488Z",
+            "modified": "2024-03-26T14:37:47.559Z",
+            "headers": [],
+            "params": [],
+            "tests": []
+        },
+        {
+            "_id": "eb885504-6f09-4e69-a071-3e5817c368eb",
+            "colId": "de00decf-3ee9-4bfe-b429-d2c10df5a906",
+            "containerId": "2296b882-3ce8-435b-8545-6006cb162c2b",
+            "name": "Create Timetable",
+            "url": "/v2/timetable",
+            "method": "POST",
+            "sortNum": 100000,
+            "created": "2024-03-26T14:34:14.182Z",
+            "modified": "2024-03-26T14:39:33.836Z",
+            "headers": [],
+            "params": [],
+            "body": {
+                "type": "json",
+                "raw": "{\n  \"spaceCode\": \"INB1307\",\n  \"name\": \"Lab 7\",\n  \"capacity\": 30\n}",
+                "form": []
+            },
+            "tests": []
+        },
+        {
+            "_id": "2ce21ce5-9c0f-48f6-828b-08057a2c8991",
+            "colId": "de00decf-3ee9-4bfe-b429-d2c10df5a906",
+            "containerId": "2296b882-3ce8-435b-8545-6006cb162c2b",
+            "name": "Delete Timetable",
+            "url": "/v2/timetable/7bf40deb-0eec-420d-b999-5ed6c1970660",
+            "method": "DELETE",
+            "sortNum": 110000,
+            "created": "2024-03-26T14:34:23.351Z",
+            "modified": "2024-03-26T15:39:54.811Z",
+            "headers": [],
+            "params": [],
+            "tests": []
+        },
+        {
+            "_id": "3f288ed6-97e4-4a57-abc8-c477a6e3657b",
+            "colId": "de00decf-3ee9-4bfe-b429-d2c10df5a906",
+            "containerId": "2296b882-3ce8-435b-8545-6006cb162c2b",
+            "name": "Undelete Timetable",
+            "url": "",
+            "method": "GET",
+            "sortNum": 120000,
+            "created": "2024-03-26T14:34:33.550Z",
+            "modified": "2024-03-26T14:34:33.550Z",
+            "headers": []
+        },
+        {
+            "_id": "4c2a28ca-cfdd-4330-88b7-116c612824d9",
+            "colId": "de00decf-3ee9-4bfe-b429-d2c10df5a906",
+            "containerId": "2296b882-3ce8-435b-8545-6006cb162c2b",
+            "name": "Update Timetable",
+            "url": "/v2/timetable/INB1306",
+            "method": "PUT",
+            "sortNum": 130000,
+            "created": "2024-03-26T17:09:49.592Z",
+            "modified": "2024-03-26T17:11:56.242Z",
+            "headers": [],
+            "params": [],
+            "body": {
+                "type": "json",
+                "raw": "{\n  \"name\": \"Lab 6A\",\n  \"spaceCode\": \"INB1316\",\n  \"capacity\": 3,\n  \"isDeleted\": false\n}",
+                "form": []
             },
             "tests": []
         }
@@ -178,7 +263,7 @@
     "settings": {
         "auth": {
             "type": "bearer",
-            "bearer": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjF1cmJrdExhSGlyd3dBOUxmSnJhWFBBIiwidXNlcm5hbWUiOiJqb3NoY29vcGVyIiwiaWF0IjoxNzA5NjU2MjUxLCJleHAiOjE3MDk3NDI2NTF9.cQdDi6jBvlLBc89SvRallkuB5vcW7PljimrHoZ3Tuco"
+            "bearer": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjRjMzAzNzNhLWQwYTUtNGRkZS1iYTE3LWQ5YzAzYjlmYjU0ZCIsInVzZXJuYW1lIjoiZm5vYmxlIiwiaWF0IjoxNzExNDYzNzM4LCJleHAiOjE3MTE1NTAxMzh9.ApWfRxq-GMA8tqU9PhUNcJ9mIJGaHXhxqSWa0AfBhvg"
         },
         "options": {
             "baseUrl": "http://localhost:3000"
