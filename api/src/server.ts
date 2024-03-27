@@ -24,7 +24,7 @@ app.use((req, res, next) => {
     );
     // set the CORS method headers
     if (req.method === "OPTIONS") {
-        res.header("Access-Control-Allow-Methods", "GET PATCH DELETE POST");
+        res.header("Access-Control-Allow-Methods", "GET POST PUT DELETE");
         return res.status(200).json({});
     }
     next();
@@ -39,6 +39,7 @@ app.get('/', (req: Request, res: Response) => {
 app.use('/v2', require('./routes/auth'));
 app.use('/v2', authenticate, require('./routes/users'));
 app.use('/v2', authenticate, require('./routes/timetables'));
+app.use('/v2', authenticate, require('./routes/events'));
 app.use('/v2', authenticate, require('./routes/tests'));
 
 /* Error handling */
