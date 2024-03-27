@@ -43,6 +43,16 @@ const getAllTimetables = async (req: Request, res: Response, next: NextFunction)
     res.json({ timetables: timetables });
 };
 
+const getAllDeletedTimetables = async (req: Request, res: Response, next: NextFunction) => {
+    const token = verifyUserAuthToken(req, res)
+
+    const timetables = await db.select()
+        .from(timetableSchema)
+        .where(eq(timetableSchema.isDeleted, true));
+
+    res.json({ timetables: timetables });
+};
+
 // POST: { "spaceCode": "INB1305", "name": "Games Lab", "capacity": 30 }
 // POST: { "spaceCode": "INB1102", "name": "Computing Lab 1A", "capacity": 77, "canCombine": true, "combinedPartnerId": "<uuid>"  }
 const createTimetable = async (req: Request, res: Response, next: NextFunction) => {
@@ -59,6 +69,17 @@ const createTimetable = async (req: Request, res: Response, next: NextFunction) 
             res.status(409).json({ "message": "Cannot combine with that room, does it exist in the list? And are you giving me the ID not the space code?" })
             return;
         }
+    }
+
+    // Check if timetable with that space code already exists
+    const oldTimetable = await db.select().from(timetableSchema).where(
+        eq(timetableSchema.spaceCode, String(req.body.spaceCode)),
+    )
+
+    if (oldTimetable.length !== 0)
+    {
+        res.status(409).json({ "message": "A timetable with that space code already exists, perhaps it has been disabled?" })
+        return;
     }
 
     // Push to DB new timetable
@@ -89,6 +110,7 @@ const deleteTimetable = async (req: Request, res: Response, next: NextFunction) 
 
     if (timetables.length !== 1) {
         res.status(404).json({ "message": "Cannot find timetable to delete" })
+        return
     }
 
     const updatedTimetable = await db.update(timetableSchema)
@@ -118,6 +140,7 @@ const undeleteTimetable = async (req: Request, res: Response, next: NextFunction
 
     if (timetable.length !== 1) {
         res.status(404).json({ "message": "Cannot find timetable or timetable is already active" })
+        return
     }
 
     const updatedTimetable = await db.update(timetableSchema)
@@ -147,7 +170,7 @@ const updateTimetable = async (req: Request, res: Response, next: NextFunction) 
 
     const timetable = await db.select().from(timetableSchema)
         .where(
-            and(
+            or(
                 eq(timetableSchema.id, String(timetableId)),
                 eq(timetableSchema.spaceCode, String(timetableId)),
             )
@@ -155,6 +178,7 @@ const updateTimetable = async (req: Request, res: Response, next: NextFunction) 
 
     if (timetable.length !== 1) {
         res.status(404).json({ "message": "Cannot find timetable" })
+        return
     }
 
     const updatedTimetable = await db.update(timetableSchema)
@@ -171,4 +195,4 @@ const updateTimetable = async (req: Request, res: Response, next: NextFunction) 
     res.status(201).json({ message: `Timetable for ${timetable[0].spaceCode} has been updated`, timetable: timetable[0].id });
 };
 
-export default { getTimetableById, getAllTimetables, createTimetable, deleteTimetable, undeleteTimetable, updateTimetable };
+export default { getTimetableById, getAllTimetables, getAllDeletedTimetables, createTimetable, deleteTimetable, undeleteTimetable, updateTimetable };

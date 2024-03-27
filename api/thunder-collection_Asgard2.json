@@ -1,7 +1,7 @@
 {
     "client": "Thunder Client",
     "collectionName": "Asgard2",
-    "dateExported": "2024-03-26T17:12:07.303Z",
+    "dateExported": "2024-03-27T12:00:24.597Z",
     "version": "1.1",
     "folders": [
         {
@@ -37,6 +37,20 @@
             "sortNum": 5000,
             "created": "2024-03-26T14:32:53.896Z",
             "modified": "2024-03-26T14:36:22.134Z",
+            "headers": [],
+            "params": [],
+            "tests": []
+        },
+        {
+            "_id": "61c2b1f4-f2b5-431d-9cf1-f338637052fa",
+            "colId": "de00decf-3ee9-4bfe-b429-d2c10df5a906",
+            "containerId": "865da588-83d6-46ef-b29d-1e121a30457d",
+            "name": "User - All Deleted",
+            "url": "/v2/user/deleted",
+            "method": "GET",
+            "sortNum": 7500,
+            "created": "2024-03-27T11:51:52.257Z",
+            "modified": "2024-03-27T11:52:04.514Z",
             "headers": [],
             "params": [],
             "tests": []
@@ -127,6 +141,20 @@
             "tests": []
         },
         {
+            "_id": "03cee21a-5f97-4663-8e4f-113084f33d91",
+            "colId": "de00decf-3ee9-4bfe-b429-d2c10df5a906",
+            "containerId": "865da588-83d6-46ef-b29d-1e121a30457d",
+            "name": "Delete User",
+            "url": "/v2/user/jsmith",
+            "method": "DELETE",
+            "sortNum": 35000,
+            "created": "2024-03-27T11:54:16.857Z",
+            "modified": "2024-03-27T11:59:03.832Z",
+            "headers": [],
+            "params": [],
+            "tests": []
+        },
+        {
             "_id": "36856d2d-109f-4eed-9a7d-abb76ebff8b0",
             "colId": "de00decf-3ee9-4bfe-b429-d2c10df5a906",
             "containerId": "d57e689f-6776-4ccb-aa67-5d4cc6d28908",
@@ -145,6 +173,20 @@
             "tests": []
         },
         {
+            "_id": "57d43258-d4cb-4812-80fb-a1d25bba68d7",
+            "colId": "de00decf-3ee9-4bfe-b429-d2c10df5a906",
+            "containerId": "865da588-83d6-46ef-b29d-1e121a30457d",
+            "name": "Undelete User",
+            "url": "/v2/user/reactivate/jsmith",
+            "method": "POST",
+            "sortNum": 42500,
+            "created": "2024-03-27T11:57:09.269Z",
+            "modified": "2024-03-27T11:58:51.867Z",
+            "headers": [],
+            "params": [],
+            "tests": []
+        },
+        {
             "_id": "8f8e6a93-5e4e-43ad-a1a3-d344fc105817",
             "colId": "de00decf-3ee9-4bfe-b429-d2c10df5a906",
             "containerId": "865da588-83d6-46ef-b29d-1e121a30457d",
@@ -153,17 +195,13 @@
             "method": "POST",
             "sortNum": 50000,
             "created": "2024-03-26T14:32:53.899Z",
-            "modified": "2024-03-26T14:32:53.899Z",
+            "modified": "2024-03-27T11:49:09.416Z",
             "headers": [],
             "params": [],
             "body": {
                 "type": "json",
-                "raw": "{\n  \"username\": \"sormancha2n\",\n  \"shortName\": \"Sam\",\n  \"fullName\": \"Sam Orman-Chan\",\n  \"role\": \"STANDARD\",\n  \"email\": \"joshcooper+samoc2@lincoln.ac.uk\"\n}",
+                "raw": "{\n  \"username\": \"joshc\",\n  \"shortName\": \"joshc\",\n  \"fullName\": \"joshc\",\n  \"role\": \"STANDARD\",\n  \"email\": \"josh@joshc.uk\"\n}",
                 "form": []
-            },
-            "auth": {
-                "type": "bearer",
-                "bearer": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjRjMzAzNzNhLWQwYTUtNGRkZS1iYTE3LWQ5YzAzYjlmYjU0ZCIsInVzZXJuYW1lIjoiZm5vYmxlIiwiaWF0IjoxNzEwMzI0OTAyLCJleHAiOjE3MTA0MTEzMDJ9.hKy0cQzCaRMIhqacvetpIhwHJn0iQ-LD6_aMKfZBw_A"
             },
             "tests": []
         },
@@ -182,17 +220,50 @@
             "tests": []
         },
         {
+            "_id": "a04283ee-1ed0-41f2-b32c-8f3c981ca9d7",
+            "colId": "de00decf-3ee9-4bfe-b429-d2c10df5a906",
+            "containerId": "2296b882-3ce8-435b-8545-6006cb162c2b",
+            "name": "Timetable - All Deleted",
+            "url": "/v2/timetable/deleted",
+            "method": "GET",
+            "sortNum": 85000,
+            "created": "2024-03-27T11:01:51.195Z",
+            "modified": "2024-03-27T11:02:24.103Z",
+            "headers": [],
+            "params": [],
+            "tests": []
+        },
+        {
             "_id": "65f4ab0a-ba56-4a36-a17d-63db8c40b2dd",
             "colId": "de00decf-3ee9-4bfe-b429-d2c10df5a906",
             "containerId": "2296b882-3ce8-435b-8545-6006cb162c2b",
             "name": "Timetable - ID",
-            "url": "/v2/timetable/INB1305",
+            "url": "/v2/timetable/365c3cc1-2086-4d0f-9261-4d0cf68bfa47",
             "method": "GET",
             "sortNum": 90000,
             "created": "2024-03-26T14:33:57.488Z",
-            "modified": "2024-03-26T14:37:47.559Z",
+            "modified": "2024-03-27T10:34:05.255Z",
             "headers": [],
             "params": [],
+            "tests": []
+        },
+        {
+            "_id": "8d821f50-8ce0-47db-a7eb-4bea42ad9d90",
+            "colId": "de00decf-3ee9-4bfe-b429-d2c10df5a906",
+            "containerId": "865da588-83d6-46ef-b29d-1e121a30457d",
+            "name": "Update User",
+            "url": "/v2/user/272fea67-06e1-45b8-9c09-59afc3ba65b1",
+            "method": "PUT",
+            "sortNum": 95000,
+            "created": "2024-03-27T11:55:37.579Z",
+            "modified": "2024-03-27T11:56:41.766Z",
+            "headers": [],
+            "params": [],
+            "body": {
+                "type": "json",
+                "raw": "{\n  \"username\": \"samoc\",\n  \"shortName\": \"Sam\",\n  \"fullName\": \"Sam O-C\",\n  \"role\": \"STANDARD\",\n  \"isDeleted\": false\n}",
+                "form": []
+            },
             "tests": []
         },
         {
@@ -204,12 +275,12 @@
             "method": "POST",
             "sortNum": 100000,
             "created": "2024-03-26T14:34:14.182Z",
-            "modified": "2024-03-26T14:39:33.836Z",
+            "modified": "2024-03-27T10:54:10.762Z",
             "headers": [],
             "params": [],
             "body": {
                 "type": "json",
-                "raw": "{\n  \"spaceCode\": \"INB1307\",\n  \"name\": \"Lab 7\",\n  \"capacity\": 30\n}",
+                "raw": "{\n  \"spaceCode\": \"INB1308\",\n  \"name\": \"Lab 8\",\n  \"capacity\": 30\n}",
                 "form": []
             },
             "tests": []
@@ -233,23 +304,25 @@
             "colId": "de00decf-3ee9-4bfe-b429-d2c10df5a906",
             "containerId": "2296b882-3ce8-435b-8545-6006cb162c2b",
             "name": "Undelete Timetable",
-            "url": "",
-            "method": "GET",
+            "url": "/v2/timetable/reactivate/INB1307",
+            "method": "POST",
             "sortNum": 120000,
             "created": "2024-03-26T14:34:33.550Z",
-            "modified": "2024-03-26T14:34:33.550Z",
-            "headers": []
+            "modified": "2024-03-27T10:56:47.162Z",
+            "headers": [],
+            "params": [],
+            "tests": []
         },
         {
             "_id": "4c2a28ca-cfdd-4330-88b7-116c612824d9",
             "colId": "de00decf-3ee9-4bfe-b429-d2c10df5a906",
             "containerId": "2296b882-3ce8-435b-8545-6006cb162c2b",
             "name": "Update Timetable",
-            "url": "/v2/timetable/INB1306",
+            "url": "/v2/timetable/INB1316",
             "method": "PUT",
             "sortNum": 130000,
             "created": "2024-03-26T17:09:49.592Z",
-            "modified": "2024-03-26T17:11:56.242Z",
+            "modified": "2024-03-27T11:00:29.068Z",
             "headers": [],
             "params": [],
             "body": {
@@ -257,6 +330,20 @@
                 "raw": "{\n  \"name\": \"Lab 6A\",\n  \"spaceCode\": \"INB1316\",\n  \"capacity\": 3,\n  \"isDeleted\": false\n}",
                 "form": []
             },
+            "tests": []
+        },
+        {
+            "_id": "24015787-f53d-4e26-8089-3ea1a34db50a",
+            "colId": "de00decf-3ee9-4bfe-b429-d2c10df5a906",
+            "containerId": "865da588-83d6-46ef-b29d-1e121a30457d",
+            "name": "User - Profile Picture",
+            "url": "/v2/user/joshc.jpg",
+            "method": "GET",
+            "sortNum": 140000,
+            "created": "2024-03-27T11:46:34.033Z",
+            "modified": "2024-03-27T11:49:18.493Z",
+            "headers": [],
+            "params": [],
             "tests": []
         }
     ],
