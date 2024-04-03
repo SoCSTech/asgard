@@ -9,7 +9,6 @@ import {
     decimal,
     mysqlTable,
     mysqlEnum,
-    datetime
 } from 'drizzle-orm/mysql-core';
 import { relations } from 'drizzle-orm';
 const short = require('short-uuid');
@@ -62,9 +61,9 @@ export const events = mysqlTable('events', {
     timetableId: varchar('timetable_id', { length: 128 }).references(() => timetables.id),
     type: mysqlEnum('type', ['OTHER', 'WORKSHOP', 'LECTURE', 'SOCIAL', 'MAINTENANCE', 'EXAM', 'PROJECT']).default('OTHER').notNull(),
     colour: varchar('colour', {length: 7}),
-    start: datetime('start', { mode: 'date' || "string" }).notNull(),
-    end: datetime('end', { mode: 'date' || "string" }).notNull(),
-    lastModified: datetime('last_modified', { mode: 'date' || "string" }).notNull(),
+    start: timestamp('start', { mode: "string" }).notNull(),
+    end: timestamp('end', { mode: "string" }).notNull(),
+    lastModified: timestamp('last_modified', { mode: "string" }).notNull(),
     modifiedBy: varchar('modified_by_id', { length: 128 }).references(() => users.id),
     isCombinedSession: boolean('is_combined_session').default(false),
 })

@@ -4,6 +4,7 @@ import { events as eventSchema, users as userSchema } from '@/db/schema';
 import { eq, and, or, gte, lte } from 'drizzle-orm';
 import { getUserIdFromJWT, verifyUserAuthToken } from "@/utils/auth";
 import { isUserATechnician } from "@/utils/users";
+import { dateToString } from "@/utils/date";
 const moment = require('moment');
 const dotenv = require('dotenv');
 dotenv.config();
@@ -53,6 +54,8 @@ const createEvent = async (req: Request, res: Response, next: NextFunction) => {
         return;
     }
 
+    let currentTime: Date = new Date();
+    let currentTimeStr = dateToString(currentTime);
 
     const newEvent = await db.insert(eventSchema).values({
         name: req.body.name,
@@ -61,9 +64,9 @@ const createEvent = async (req: Request, res: Response, next: NextFunction) => {
         timetableId: req.body.timetableId,
         type: req.body.type || 'OTHER',
         colour: req.body.colour || "#ff0077",
-        start: moment(req.body.start),
-        end: moment(req.body.end),
-        lastModified: moment(),
+        start: req.body.start || "",
+        end: req.body.end || "",
+        lastModified: currentTimeStr,
         modifiedBy: getUserIdFromJWT(token),
         isCombinedSession: req.body.isCombinedSession || false
     });
