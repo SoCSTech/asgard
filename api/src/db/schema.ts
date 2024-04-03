@@ -8,7 +8,8 @@ import {
     int,
     decimal,
     mysqlTable,
-    mysqlEnum
+    mysqlEnum,
+    datetime
 } from 'drizzle-orm/mysql-core';
 import { relations } from 'drizzle-orm';
 const short = require('short-uuid');
@@ -55,25 +56,15 @@ export const timetablesRelations = relations(timetables, ({ one, many }) => ({
 
 export const events = mysqlTable('events', {
     id: varchar('id', { length: 128 }).$defaultFn(() => short.uuid()).primaryKey(),
-    name: varchar('name', { length: 128 }).notNull(),
+    name: varchar('name', { length: 128 }),
+    staff: varchar('staff', { length: 128 }),
     moduleCode: varchar('module_code', { length: 20 }),
-    timetable: varchar('timetable_id', { length: 128 }),
+    timetableId: varchar('timetable_id', { length: 128 }).references(() => timetables.id),
     type: mysqlEnum('type', ['OTHER', 'WORKSHOP', 'LECTURE', 'SOCIAL', 'MAINTENANCE', 'EXAM', 'PROJECT']).default('OTHER').notNull(),
     colour: varchar('colour', {length: 7}),
-    start: timestamp('start').notNull(),
-    end: timestamp('end').notNull(),
-    lastModified: timestamp('last_modified').defaultNow().notNull(),
-    modifiedBy: varchar('modified_by_id', { length: 128 }),
+    start: datetime('start', { mode: 'date' || "string" }).notNull(),
+    end: datetime('end', { mode: 'date' || "string" }).notNull(),
+    lastModified: datetime('last_modified', { mode: 'date' || "string" }).notNull(),
+    modifiedBy: varchar('modified_by_id', { length: 128 }).references(() => users.id),
     isCombinedSession: boolean('is_combined_session').default(false),
 })
-
-export const eventsRelations = relations(events, ({ one }) => ({
-    modifiedBy: one(users, {
-        fields: [events.modifiedBy],
-        references: [users.id]
-    }),
-    timetable: one(timetables, {
-        fields: [events.timetable],
-        references: [timetables.id]
-    })
-}))

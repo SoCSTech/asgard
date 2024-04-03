@@ -3,6 +3,7 @@ import { db } from '@/db';
 import { timetables as timetableSchema, users as userSchema } from '@/db/schema';
 import { eq, and, or } from 'drizzle-orm';
 import { getUserIdFromJWT, verifyUserAuthToken } from "@/utils/auth";
+import { isUserATechnician } from "@/utils/users";
 const dotenv = require('dotenv');
 dotenv.config();
 
@@ -45,6 +46,11 @@ const getAllTimetables = async (req: Request, res: Response, next: NextFunction)
 
 const getAllDeletedTimetables = async (req: Request, res: Response, next: NextFunction) => {
     const token = verifyUserAuthToken(req, res)
+    const currentUserId = getUserIdFromJWT(token);
+    if (await isUserATechnician(currentUserId) == false) {
+        res.status(401).json({ "message": "You don't have permission to view deleted timetables" })
+        return
+    }
 
     const timetables = await db.select()
         .from(timetableSchema)
@@ -57,8 +63,13 @@ const getAllDeletedTimetables = async (req: Request, res: Response, next: NextFu
 // POST: { "spaceCode": "INB1102", "name": "Computing Lab 1A", "capacity": 77, "canCombine": true, "combinedPartnerId": "<uuid>"  }
 const createTimetable = async (req: Request, res: Response, next: NextFunction) => {
     const token = verifyUserAuthToken(req, res)
+    const currentUserId = getUserIdFromJWT(token);
+    if (await isUserATechnician(currentUserId) == false) {
+        res.status(401).json({ "message": "You don't have permission to create timetables" })
+        return
+    }
 
-    if (req.body.canCombine) {
+    if (!!req.body.canCombine) {
         // Check the user doesn't already exist
         const partnerRoom = await db.select().from(timetableSchema)
             .where(
@@ -96,6 +107,11 @@ const createTimetable = async (req: Request, res: Response, next: NextFunction) 
 
 const deleteTimetable = async (req: Request, res: Response, next: NextFunction) => {
     const token = verifyUserAuthToken(req, res)
+    const currentUserId = getUserIdFromJWT(token);
+    if (await isUserATechnician(currentUserId) == false) {
+        res.status(401).json({ "message": "You don't have permission to delete timetables" })
+        return
+    }
 
     let timetableId: string = req.params.id
     const timetables = await db.select().from(timetableSchema)
@@ -124,9 +140,11 @@ const undeleteTimetable = async (req: Request, res: Response, next: NextFunction
     let timetableId: string = req.params.id
 
     const token = verifyUserAuthToken(req, res)
-
-    // This is the id of the person who is logged in sending the invite out.
     const currentUserId = getUserIdFromJWT(token);
+    if (await isUserATechnician(currentUserId) == false) {
+        res.status(401).json({ "message": "You don't have permission to reactivate timetables" })
+        return
+    }
 
     const timetable = await db.select().from(timetableSchema)
         .where(
@@ -155,16 +173,8 @@ const updateTimetable = async (req: Request, res: Response, next: NextFunction) 
 
     const token = verifyUserAuthToken(req, res)
     const currentUserId = getUserIdFromJWT(token);
-
-    const admin = await db.select({ role: userSchema.role }).from(userSchema)
-        .where(
-            and(
-                eq(userSchema.id, String(currentUserId)),
-                eq(userSchema.isDeleted, false))
-        );
-
-    if (admin[0].role !== "TECHNICIAN") {
-        res.status(401).json({ "message": "You don't have permission to reactivate user accounts" })
+    if (await isUserATechnician(currentUserId) == false) {
+        res.status(401).json({ "message": "You don't have permission to update timetables" })
         return
     }
 
