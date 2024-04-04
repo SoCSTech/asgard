@@ -23,7 +23,7 @@ You will get the response `undefined` this is fine.
 ```ts
 short.generate();
 ```
-You will get a response like `'urbktLaHirwwA9LfJraXPA'` copy it.
+You will get a response like `'addd3df3-d227-4e12-ad35-4e00633de7b5'` copy it.
 
 8. go to https://bcrypt-generator.com/ and generate a bcrypt of whatever password you want. (or use the one I have given you... im not your boss)
 
@@ -33,7 +33,7 @@ You will get a response like `'urbktLaHirwwA9LfJraXPA'` copy it.
 INSERT INTO `users` 
 (`id`, `username`, `short_name`, `full_name`, `role`, `email`, `password`, `creation_date`, `reset_token`, `reset_token_expiry`, `profile_picture_url`, `is_deleted`, `initials`) 
 VALUES 
-('1urbktLaHirwwA9LfJraXPA', 'joshcooper', 'Josh', 'Josh Cooper', 'TECHNICIAN', 'joshcooper@lincoln.ac.uk', '$2a$12$l5YP7j9UcVujD9NBzfwlk.j9f85A4Kigml24K2mhZpka2STgjZmOa', NOW(), NULL, NULL, NULL, 0, 'JC');
+('addd3df3-d227-4e12-ad35-4e00633de7b5', 'joshcooper', 'Josh', 'Josh Cooper', 'TECHNICIAN', 'joshcooper@lincoln.ac.uk', '$2a$12$l5YP7j9UcVujD9NBzfwlk.j9f85A4Kigml24K2mhZpka2STgjZmOa', NOW(), NULL, NULL, NULL, 0, 'JC');
 ```
 
 This will create you a `joshcooper` user with the password `computing`... feel free to substitute in your own information...
