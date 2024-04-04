@@ -134,7 +134,7 @@ const createUser = async (req: Request, res: Response, next: NextFunction) => {
 
     email.SendWelcomeEmail(req.body.email, req.body.shortName, req.body.username);
 
-    res.status(201).json({ username: req.body.username });
+    res.status(201).json({ username: req.body.username, message: 'User has been created' });
 };
 
 const deleteUser = async (req: Request, res: Response, next: NextFunction) => {

@@ -1,6 +1,6 @@
 import e, { Request, Response, NextFunction } from "express";
 import { db } from '@/db';
-import { events as eventSchema, users as userSchema } from '@/db/schema';
+import { events as eventSchema, events, users as userSchema } from '@/db/schema';
 import { eq, and, or, gte, lte } from 'drizzle-orm';
 import { getUserIdFromJWT, verifyUserAuthToken } from "@/utils/auth";
 import { isUserATechnician } from "@/utils/users";
@@ -71,8 +71,7 @@ const createEvent = async (req: Request, res: Response, next: NextFunction) => {
         isCombinedSession: req.body.isCombinedSession || false
     });
 
-    res.status(201).json({ message: "new event"})
-
+    res.status(201).json({ timetableId: req.body.timetableId, message: 'Event has been created' });
 };
 
 
@@ -86,12 +85,31 @@ const deleteEvent = async (req: Request, res: Response, next: NextFunction) => {
         return
     }
 
+    // Check if the event exists before trying to delete it
+    const foundEvent = await db.select()
+        .from(eventSchema)
+        .where(eq(eventSchema.id, eventId));
 
+    console.log(foundEvent)
+
+    if (foundEvent.length !== 1) {
+        res.status(404).json({ message: "Could not find event to delete, has it already been deleted?" });
+        return;
+    }
+
+    // Delete it
+    try {
+        await db.delete(eventSchema).where(eq(eventSchema.id, foundEvent[0].id));
+    } catch {
+        res.status(500).json({ "message": "Couldn't delete the event you specified" })
+    }
+
+    res.status(200).json({ event: foundEvent[0].id, message: "Event has been deleted" })
 }
 
 const updateEvent = async (req: Request, res: Response, next: NextFunction) => {
     const eventId: string = req.params.id
-    
+
     const token = verifyUserAuthToken(req, res)
     const currentUserId = getUserIdFromJWT(token);
     if (await isUserATechnician(currentUserId) == false) {
@@ -99,15 +117,48 @@ const updateEvent = async (req: Request, res: Response, next: NextFunction) => {
         return
     }
 
+    // Check if the event exists before trying to delete it
+    const event = await db.select()
+        .from(eventSchema)
+        .where(eq(eventSchema.id, eventId));
+
+    if (event.length !== 1) {
+        res.status(404).json({ message: "Could not find event to update." });
+        return;
+    }
+
+    let currentTime: Date = new Date();
+    let currentTimeStr = dateToString(currentTime);
+
+    const updatedTimetable = await db.update(eventSchema)
+        .set({
+            name: req.body.name || event[0].name,
+            staff: req.body.staff || event[0].staff,
+            moduleCode: req.body.moduleCode || event[0].moduleCode,
+            timetableId: req.body.timetableId || event[0].timetableId,
+            type: req.body.type || event[0].type,
+            colour: req.body.colour || event[0].colour,
+            start: req.body.start || event[0].start,
+            end: req.body.end || event[0].end,
+            lastModified: currentTimeStr,
+            modifiedBy: currentUserId,
+            isCombinedSession: req.body.isCombinedSession || event[0].isCombinedSession
+        })
+        .where(eq(eventSchema.id, event[0].id));
+
+    res.status(201).json({ message: `Event '${event[0].name}' has been updated`, event: event[0].id });
+
 }
 
 const getEventsForTimetable = async (req: Request, res: Response, next: NextFunction) => {
-    const eventId: string = req.params.eventId
     const timetableId: string = req.params.timetableId
-    
     const token = verifyUserAuthToken(req, res)
-    
 
+    const events = await db.select()
+        .from(eventSchema)
+        .where(eq(eventSchema.timetableId, timetableId))
+
+    res.json({ events: events });
 }
 
 export default { getEventById, getAllEvents, createEvent, deleteEvent, updateEvent, getEventsForTimetable };

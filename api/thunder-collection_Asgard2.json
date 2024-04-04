@@ -1,7 +1,7 @@
 {
     "client": "Thunder Client",
     "collectionName": "Asgard2",
-    "dateExported": "2024-03-27T12:00:24.597Z",
+    "dateExported": "2024-04-04T10:13:19.457Z",
     "version": "1.1",
     "folders": [
         {
@@ -24,6 +24,13 @@
             "containerId": "",
             "created": "2024-03-26T14:33:35.227Z",
             "sortNum": 20000
+        },
+        {
+            "_id": "77acf637-17a1-41e2-95c6-342fbc85cbfc",
+            "name": "Events",
+            "containerId": "",
+            "created": "2024-03-28T10:35:25.224Z",
+            "sortNum": 30000
         }
     ],
     "requests": [
@@ -220,6 +227,20 @@
             "tests": []
         },
         {
+            "_id": "9e18e68f-ee69-4138-aae3-87ab627f24e7",
+            "colId": "de00decf-3ee9-4bfe-b429-d2c10df5a906",
+            "containerId": "77acf637-17a1-41e2-95c6-342fbc85cbfc",
+            "name": "Event - All",
+            "url": "/v2/event",
+            "method": "GET",
+            "sortNum": 80000,
+            "created": "2024-03-28T10:35:25.224Z",
+            "modified": "2024-04-03T14:02:39.082Z",
+            "headers": [],
+            "params": [],
+            "tests": []
+        },
+        {
             "_id": "a04283ee-1ed0-41f2-b32c-8f3c981ca9d7",
             "colId": "de00decf-3ee9-4bfe-b429-d2c10df5a906",
             "containerId": "2296b882-3ce8-435b-8545-6006cb162c2b",
@@ -248,6 +269,20 @@
             "tests": []
         },
         {
+            "_id": "e0fa9301-ef1d-43d9-ad37-4dac3041410d",
+            "colId": "de00decf-3ee9-4bfe-b429-d2c10df5a906",
+            "containerId": "77acf637-17a1-41e2-95c6-342fbc85cbfc",
+            "name": "Event - ID",
+            "url": "/v2/event/b0948ec9-a410-465c-b746-5177c7b2e537",
+            "method": "GET",
+            "sortNum": 90000,
+            "created": "2024-03-28T10:35:25.226Z",
+            "modified": "2024-04-04T09:51:53.683Z",
+            "headers": [],
+            "params": [],
+            "tests": []
+        },
+        {
             "_id": "8d821f50-8ce0-47db-a7eb-4bea42ad9d90",
             "colId": "de00decf-3ee9-4bfe-b429-d2c10df5a906",
             "containerId": "865da588-83d6-46ef-b29d-1e121a30457d",
@@ -264,6 +299,20 @@
                 "raw": "{\n  \"username\": \"samoc\",\n  \"shortName\": \"Sam\",\n  \"fullName\": \"Sam O-C\",\n  \"role\": \"STANDARD\",\n  \"isDeleted\": false\n}",
                 "form": []
             },
+            "tests": []
+        },
+        {
+            "_id": "640f1ecf-ec4f-4a67-87bd-ca50b33c1783",
+            "colId": "de00decf-3ee9-4bfe-b429-d2c10df5a906",
+            "containerId": "77acf637-17a1-41e2-95c6-342fbc85cbfc",
+            "name": "Events for Timetable",
+            "url": "/v2/timetable/8bd7a144-f011-4955-82d7-9fe6f25ea80a/events",
+            "method": "GET",
+            "sortNum": 95000,
+            "created": "2024-04-04T09:55:45.730Z",
+            "modified": "2024-04-04T09:56:46.235Z",
+            "headers": [],
+            "params": [],
             "tests": []
         },
         {
@@ -286,6 +335,25 @@
             "tests": []
         },
         {
+            "_id": "6176450f-107e-48cb-83b6-91c1c1254e3b",
+            "colId": "de00decf-3ee9-4bfe-b429-d2c10df5a906",
+            "containerId": "77acf637-17a1-41e2-95c6-342fbc85cbfc",
+            "name": "Create Event",
+            "url": "/v2/event",
+            "method": "POST",
+            "sortNum": 100000,
+            "created": "2024-03-28T10:35:25.227Z",
+            "modified": "2024-04-04T09:50:59.360Z",
+            "headers": [],
+            "params": [],
+            "body": {
+                "type": "json",
+                "raw": "{\n  \"name\": \"Computer Science for Noobs\",\n  \"staff\": \"Bob Smith, Derek Jones\",\n  \"moduleCode\": \"CMP0004\",\n  \"timetableId\": \"8bd7a144-f011-4955-82d7-9fe6f25ea80a\",\n  \"type\": \"OTHER\",\n  \"colour\": \"#ff0077\",\n  \"start\": \"2024-04-03 14:00:00\",\n  \"end\": \"2024-04-03 16:00:00\",\n  \"isCombinedSession\": false\n}",
+                "form": []
+            },
+            "tests": []
+        },
+        {
             "_id": "2ce21ce5-9c0f-48f6-828b-08057a2c8991",
             "colId": "de00decf-3ee9-4bfe-b429-d2c10df5a906",
             "containerId": "2296b882-3ce8-435b-8545-6006cb162c2b",
@@ -295,6 +363,20 @@
             "sortNum": 110000,
             "created": "2024-03-26T14:34:23.351Z",
             "modified": "2024-03-26T15:39:54.811Z",
+            "headers": [],
+            "params": [],
+            "tests": []
+        },
+        {
+            "_id": "a039215c-d567-48d7-93ae-7e913ee0049c",
+            "colId": "de00decf-3ee9-4bfe-b429-d2c10df5a906",
+            "containerId": "77acf637-17a1-41e2-95c6-342fbc85cbfc",
+            "name": "Delete Event",
+            "url": "/v2/event/44047224-bac1-4a15-9672-071453a26dbe",
+            "method": "DELETE",
+            "sortNum": 110000,
+            "created": "2024-03-28T10:35:25.228Z",
+            "modified": "2024-04-04T09:48:52.738Z",
             "headers": [],
             "params": [],
             "tests": []
@@ -333,6 +415,25 @@
             "tests": []
         },
         {
+            "_id": "4db8de35-6ce0-444c-87e8-c8bb4547351a",
+            "colId": "de00decf-3ee9-4bfe-b429-d2c10df5a906",
+            "containerId": "77acf637-17a1-41e2-95c6-342fbc85cbfc",
+            "name": "Update Event",
+            "url": "/v2/event/b0948ec9-a410-465c-b746-5177c7b2e537",
+            "method": "PUT",
+            "sortNum": 130000,
+            "created": "2024-03-28T10:35:25.230Z",
+            "modified": "2024-04-04T10:12:40.016Z",
+            "headers": [],
+            "params": [],
+            "body": {
+                "type": "json",
+                "raw": "{\n  \"name\": \"Computer Science for Pros\",\n  \"staff\": \"Florence Noble\",\n  \"moduleCode\": \"CMP1234\",\n  \"timetableId\": \"365c3cc1-2086-4d0f-9261-4d0cf68bfa47\",\n  \"type\": \"LECTURE\",\n  \"colour\": \"#59d5d9\",\n  \"start\": \"2024-04-04 12:00:00\",\n  \"end\": \"2024-04-04 14:00:00\",\n  \"isCombinedSession\": false\n}",
+                "form": []
+            },
+            "tests": []
+        },
+        {
             "_id": "24015787-f53d-4e26-8089-3ea1a34db50a",
             "colId": "de00decf-3ee9-4bfe-b429-d2c10df5a906",
             "containerId": "865da588-83d6-46ef-b29d-1e121a30457d",
@@ -350,7 +451,7 @@
     "settings": {
         "auth": {
             "type": "bearer",
-            "bearer": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjRjMzAzNzNhLWQwYTUtNGRkZS1iYTE3LWQ5YzAzYjlmYjU0ZCIsInVzZXJuYW1lIjoiZm5vYmxlIiwiaWF0IjoxNzExNDYzNzM4LCJleHAiOjE3MTE1NTAxMzh9.ApWfRxq-GMA8tqU9PhUNcJ9mIJGaHXhxqSWa0AfBhvg"
+            "bearer": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjRjMzAzNzNhLWQwYTUtNGRkZS1iYTE3LWQ5YzAzYjlmYjU0ZCIsInVzZXJuYW1lIjoiZm5vYmxlIiwiaWF0IjoxNzEyMTQxOTc5LCJleHAiOjE3MTIyMjgzNzl9.-tQ_QQLFzfUxkUppq56Q-P-JfJf0ObkPIQNQpFYgnxo"
         },
         "options": {
             "baseUrl": "http://localhost:3000"

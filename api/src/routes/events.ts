@@ -7,6 +7,6 @@ router.get('/event', controller.getAllEvents);
 router.post('/event', controller.createEvent);
 router.delete('/event/:id', controller.deleteEvent);
 router.put('/event/:id', controller.updateEvent);
-router.get('/timetable/:timetableId/event/:eventId', controller.getEventsForTimetable);
+router.get('/timetable/:timetableId/events', controller.getEventsForTimetable);
 
 export = router;
