@@ -14,8 +14,9 @@ The server is expected to be running Ubuntu Server and have Docker and Docker Co
 
 | Document | Purpose |
 | -------- | ------- |
-| [colours.html](/docs/colours.html) | List of the colours used with their hex code and name within Tailwind |
+| [Colours](/docs/colours.html) | List of the colours used with their hex code and name within Tailwind |
 | [Data Design](#data-design) | Overview of how the tables in the database interact with each other. |
+| [Creating Your First User](/docs/create-first-user.md) | Manually creating your first user in the system (so I don't have to make a wizard). |
 
 
 ### Data Design
