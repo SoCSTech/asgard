@@ -1,7 +1,7 @@
 {
     "client": "Thunder Client",
     "collectionName": "Asgard2",
-    "dateExported": "2024-04-04T10:13:19.457Z",
+    "dateExported": "2024-04-04T10:35:53.349Z",
     "version": "1.1",
     "folders": [
         {
@@ -71,12 +71,12 @@
             "method": "POST",
             "sortNum": 10000,
             "created": "2024-03-26T14:32:53.893Z",
-            "modified": "2024-03-26T14:32:53.893Z",
+            "modified": "2024-04-04T10:35:06.058Z",
             "headers": [],
             "params": [],
             "body": {
                 "type": "json",
-                "raw": "{\n  \"username\": \"fnoble\",\n  \"password\": \"handbags\"\n}",
+                "raw": "{\n  \"username\": \"joshcooper\",\n  \"password\": \"computing\"\n}",
                 "form": []
             },
             "tests": []
@@ -118,12 +118,12 @@
             "method": "POST",
             "sortNum": 20000,
             "created": "2024-03-26T14:32:53.897Z",
-            "modified": "2024-03-26T14:32:53.897Z",
+            "modified": "2024-04-04T10:29:46.451Z",
             "headers": [],
             "params": [],
             "body": {
                 "type": "json",
-                "raw": "{\n  \"username\": \"joshcooper\"\n}",
+                "raw": "{\n  \"username\": \"bsmith\"\n}",
                 "form": []
             },
             "tests": []
@@ -137,12 +137,12 @@
             "method": "POST",
             "sortNum": 30000,
             "created": "2024-03-26T14:32:53.900Z",
-            "modified": "2024-03-26T14:32:53.900Z",
+            "modified": "2024-04-04T10:30:35.454Z",
             "headers": [],
             "params": [],
             "body": {
                 "type": "json",
-                "raw": "{\n  \"resetToken\": \"71C280CB\",\n  \"password\": \"computing\"\n}",
+                "raw": "{\n  \"resetToken\": \"c3bc8d65\",\n  \"password\": \"computing\"\n}",
                 "form": []
             },
             "tests": []
@@ -442,7 +442,7 @@
             "method": "GET",
             "sortNum": 140000,
             "created": "2024-03-27T11:46:34.033Z",
-            "modified": "2024-03-27T11:49:18.493Z",
+            "modified": "2024-04-04T10:35:18.457Z",
             "headers": [],
             "params": [],
             "tests": []

@@ -91,7 +91,7 @@ const changePassword = async (req: Request, res: Response, next: NextFunction) =
     const users = await db.select().from(userSchema)
         .where(and(
             eq(userSchema.isDeleted, false),
-            eq(userSchema.resetToken, String(resetToken)),
+            eq(userSchema.resetToken, String(resetToken).toUpperCase()),
             gt(userSchema.resetTokenExpiry, serverTime)
         ));
 
