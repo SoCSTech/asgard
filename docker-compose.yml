@@ -1,0 +1,35 @@
+version: "3"
+
+services:
+  api:
+    build: ./api
+    container_name: asgard-api
+    restart: always
+    networks:
+      - asgard_internal
+    env_file:
+      - .env
+    ports:
+     - 9001:3000
+
+  db:
+    container_name: asgard-db
+    image: mysql:8
+    command: --default-authentication-plugin=mysql_native_password --character-set-server=utf8 --collation-server=utf8_general_ci
+    restart: unless-stopped
+    # network_mode: service:db
+    volumes:
+      - mysql-data:/var/lib/mysql
+    networks:
+      - asgard_internal
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+      MYSQL_DATABASE: ${DB_DATABASE}
+      MYSQL_USER: ${DB_USERNAME}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+
+volumes:
+  mysql-data:
+
+networks:
+  asgard_internal:
