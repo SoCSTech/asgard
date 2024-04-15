@@ -17,12 +17,10 @@ COPY . .
 
 RUN npm run build
 
-## Production
-FROM base as production
-
 ENV NODE_PATH=./dist
 
+# Add a healthcheck and a port forward
 HEALTHCHECK CMD curl --fail http://localhost:3000/ || exit 1
 EXPOSE 3000
 
-CMD [ "npx", "drizzle-kit", "push:mysql", "--config=/app/drizzle.config.ts;", "node", "dist/server.js" ]
+CMD [ "node", "dist/server.js" ]

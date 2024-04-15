@@ -40,6 +40,7 @@ app.use('/v2', require('./routes/auth'));
 app.use('/v2', authenticate, require('./routes/users'));
 app.use('/v2', authenticate, require('./routes/timetables'));
 app.use('/v2', authenticate, require('./routes/events'));
+app.use('/v2', authenticate, require('./routes/timetableGroups'));
 app.use('/v2', authenticate, require('./routes/tests'));
 
 /* Error handling */
@@ -54,5 +55,5 @@ app.use((req, res, next) => {
 const PORT: any = process.env.PORT || 3000;
 const httpServer = http.createServer(app);
 httpServer.listen(PORT, () =>
-    console.log(`👂 The server listening at http://localhost:${PORT}`)
+    console.log(`The api server listening at on Port ${PORT}. If you're working locally you can access it via http://localhost:${PORT}`)
 );

@@ -1,67 +1,40 @@
 import e, { Request, Response, NextFunction } from "express";
 import { db } from '@/db';
-import { timetables as timetableSchema, users as userSchema } from '@/db/schema';
+import { timetables as timetableSchema, timetableGroups as groupsSchema, timetableGroupMembers as joiningSchema } from '@/db/schema';
 import { eq, and, or } from 'drizzle-orm';
 import { getUserIdFromJWT, getTokenFromAuthCookie } from "@/utils/auth";
 import { isUserATechnician } from "@/utils/users";
+import { dateToString } from "@/utils/date";
+import { group } from "console";
 const dotenv = require('dotenv');
 dotenv.config();
 
-// Schema of New Timetable
-const newTimetable = {
-    spaceCode: timetableSchema.spaceCode,
-    name: timetableSchema.name,
-    capacity: timetableSchema.capacity,
-    canCombine: timetableSchema.canCombine || false,
-    combinedPartnerId: timetableSchema.combinedPartnerId || null
-}
+const getTimetableGroupById = async (req: Request, res: Response, next: NextFunction) => {
+    let groupId: string = req.params.id
 
-const getTimetableById = async (req: Request, res: Response, next: NextFunction) => {
-    const token = getTokenFromAuthCookie(req, res)
-
-    let timetableId: string = req.params.id
-
-    const timetable = await db.select().from(timetableSchema)
+    const groups = await db.select().from(groupsSchema)
+        .leftJoin(joiningSchema, eq(groupsSchema.id, joiningSchema.groupId))
+        .leftJoin(timetableSchema, eq(joiningSchema.timetableId, timetableSchema.id))
         .where(
             and(
-                or(
-                    eq(timetableSchema.id, String(timetableId)),
-                    eq(timetableSchema.spaceCode, String(timetableId)),
-                ),
-                eq(timetableSchema.isDeleted, false))
-        );
-
-    res.json({ timetables: timetable });
+                eq(groupsSchema.id, String(groupId)),
+                eq(timetableSchema.isDeleted, false)
+            )
+        )
+    res.json({ groups: groups });
 };
 
-const getAllTimetables = async (req: Request, res: Response, next: NextFunction) => {
-    const token = getTokenFromAuthCookie(req, res)
+const getAllTimetableGroups = async (req: Request, res: Response, next: NextFunction) => {
+    const groups = await db.select().from(groupsSchema)
+        .leftJoin(joiningSchema, eq(groupsSchema.id, joiningSchema.groupId))
+        .leftJoin(timetableSchema, eq(joiningSchema.timetableId, timetableSchema.id))
+        .where(eq(timetableSchema.isDeleted, false))
 
-    const timetables = await db.select()
-        .from(timetableSchema)
-        .where(eq(timetableSchema.isDeleted, false));
-
-    res.json({ timetables: timetables });
+    res.json({ groups: groups });
 };
 
-const getAllDeletedTimetables = async (req: Request, res: Response, next: NextFunction) => {
-    const token = getTokenFromAuthCookie(req, res)
-    const currentUserId = getUserIdFromJWT(token);
-    if (await isUserATechnician(currentUserId) == false) {
-        res.status(401).json({ "message": "You don't have permission to view deleted timetables" })
-        return
-    }
-
-    const timetables = await db.select()
-        .from(timetableSchema)
-        .where(eq(timetableSchema.isDeleted, true));
-
-    res.json({ timetables: timetables });
-};
-
-// POST: { "spaceCode": "INB1305", "name": "Games Lab", "capacity": 30 }
-// POST: { "spaceCode": "INB1102", "name": "Computing Lab 1A", "capacity": 77, "canCombine": true, "combinedPartnerId": "<uuid>"  }
-const createTimetable = async (req: Request, res: Response, next: NextFunction) => {
+// POST: { "name": "Today's Timetable", "subtitle": "School of Computer Science" }
+const createTimetableGroup = async (req: Request, res: Response, next: NextFunction) => {
     const token = getTokenFromAuthCookie(req, res)
     const currentUserId = getUserIdFromJWT(token);
     if (await isUserATechnician(currentUserId) == false) {
@@ -69,43 +42,51 @@ const createTimetable = async (req: Request, res: Response, next: NextFunction) 
         return
     }
 
-    if (!!req.body.canCombine) {
-        // Check the user doesn't already exist
-        const partnerRoom = await db.select().from(timetableSchema)
-            .where(
-                eq(timetableSchema.id, String(req.body.combinedPartnerId))
-            );
-
-        if (partnerRoom.length != 1) {
-            res.status(409).json({ "message": "Cannot combine with that room, does it exist in the list? And are you giving me the ID not the space code?" })
-            return;
-        }
-    }
-
-    // Check if timetable with that space code already exists
-    const oldTimetable = await db.select().from(timetableSchema).where(
-        eq(timetableSchema.spaceCode, String(req.body.spaceCode)),
-    )
-
-    if (oldTimetable.length !== 0)
-    {
-        res.status(409).json({ "message": "A timetable with that space code already exists, perhaps it has been disabled?" })
-        return;
-    }
-
     // Push to DB new timetable
-    const timetable = await db.insert(timetableSchema).values({
-        spaceCode: req.body.spaceCode,
-        name: req.body.name,
-        capacity: req.body.capacity,
-        canCombine: req.body.canCombine || false,
-        combinedPartnerId: req.body.combinedPartnerId || null
+    const group = await db.insert(groupsSchema).values({
+        name: req.body.name || "Today's timetable",
+        subtitle: req.body.subtitle || "School of Computer Science",
+        modifiedBy: currentUserId
     })
 
-    res.status(201).json({ "message": "Timetable has been added", "spaceCode": req.body.spaceCode });
+    res.status(201).json({ "message": "Timetable group has been added" });
 };
 
-const deleteTimetable = async (req: Request, res: Response, next: NextFunction) => {
+const updateTimetableGroup = async (req: Request, res: Response, next: NextFunction) => {
+    const token = getTokenFromAuthCookie(req, res)
+    const currentUserId = getUserIdFromJWT(token);
+    if (await isUserATechnician(currentUserId) == false) {
+        res.status(401).json({ "message": "You don't have permission to update timetable groups" })
+        return
+    }
+
+    let groupId: string = req.params.id
+    const groups = await db.select().from(groupsSchema)
+        .where(
+            eq(groupsSchema.id, String(groupId))
+        );
+
+    if (groups.length !== 1) {
+        res.status(404).json({ "message": "Cannot find timetable group to update" })
+        return
+    }
+
+    let currentTime: Date = new Date();
+    let currentTimeStr = dateToString(currentTime);
+    
+    const updatedGroups = await db.update(groupsSchema)
+        .set({ 
+            name: req.body.name || groups[0].name,
+            subtitle: req.body.subtitle || groups[0].subtitle,
+            lastModified: currentTimeStr,
+            modifiedBy: currentUserId,
+        })
+        .where(eq(timetableSchema.id, groups[0].id));
+
+    res.status(201).json({ message: "Timetable group has been updated", group: groups[0].id });
+};
+
+const deleteTimetableGroup = async (req: Request, res: Response, next: NextFunction) => {
     const token = getTokenFromAuthCookie(req, res)
     const currentUserId = getUserIdFromJWT(token);
     if (await isUserATechnician(currentUserId) == false) {
@@ -136,39 +117,7 @@ const deleteTimetable = async (req: Request, res: Response, next: NextFunction) 
     res.status(201).json({ message: "Timetable has been deleted", timetable: timetableId });
 };
 
-const undeleteTimetable = async (req: Request, res: Response, next: NextFunction) => {
-    let timetableId: string = req.params.id
-
-    const token = getTokenFromAuthCookie(req, res)
-    const currentUserId = getUserIdFromJWT(token);
-    if (await isUserATechnician(currentUserId) == false) {
-        res.status(401).json({ "message": "You don't have permission to reactivate timetables" })
-        return
-    }
-
-    const timetable = await db.select().from(timetableSchema)
-        .where(
-            and(
-                or(
-                    eq(timetableSchema.id, String(timetableId)),
-                    eq(timetableSchema.spaceCode, String(timetableId)),
-                ),
-                eq(timetableSchema.isDeleted, true))
-        );
-
-    if (timetable.length !== 1) {
-        res.status(404).json({ "message": "Cannot find timetable or timetable is already active" })
-        return
-    }
-
-    const updatedTimetable = await db.update(timetableSchema)
-        .set({ isDeleted: false })
-        .where(eq(timetableSchema.id, timetable[0].id));
-
-    res.status(201).json({ message: "Timetable has been reactivated", timetable: timetable[0].id });
-};
-
-const updateTimetable = async (req: Request, res: Response, next: NextFunction) => {
+const addTimetableToGroup = async (req: Request, res: Response, next: NextFunction) => {
     let timetableId: string = req.params.id
 
     const token = getTokenFromAuthCookie(req, res)
@@ -205,4 +154,41 @@ const updateTimetable = async (req: Request, res: Response, next: NextFunction) 
     res.status(201).json({ message: `Timetable for ${timetable[0].spaceCode} has been updated`, timetable: timetable[0].id });
 };
 
-export default { getTimetableById, getAllTimetables, getAllDeletedTimetables, createTimetable, deleteTimetable, undeleteTimetable, updateTimetable };
+const removeTimetableFromGroup = async (req: Request, res: Response, next: NextFunction) => {
+    let timetableId: string = req.params.id
+
+    const token = getTokenFromAuthCookie(req, res)
+    const currentUserId = getUserIdFromJWT(token);
+    if (await isUserATechnician(currentUserId) == false) {
+        res.status(401).json({ "message": "You don't have permission to update timetables" })
+        return
+    }
+
+    const timetable = await db.select().from(timetableSchema)
+        .where(
+            or(
+                eq(timetableSchema.id, String(timetableId)),
+                eq(timetableSchema.spaceCode, String(timetableId)),
+            )
+        );
+
+    if (timetable.length !== 1) {
+        res.status(404).json({ "message": "Cannot find timetable" })
+        return
+    }
+
+    const updatedTimetable = await db.update(timetableSchema)
+        .set({
+            name: req.body.name || timetable[0].name,
+            spaceCode: req.body.spaceCode || timetable[0].spaceCode,
+            capacity: req.body.capacity || timetable[0].capacity,
+            canCombine: req.body.canCombine || timetable[0].canCombine,
+            combinedPartnerId: req.body.combinedPartnerId || timetable[0].combinedPartnerId,
+            isDeleted: req.body.isDeleted || timetable[0].isDeleted
+        })
+        .where(eq(timetableSchema.id, timetable[0].id));
+
+    res.status(201).json({ message: `Timetable for ${timetable[0].spaceCode} has been updated`, timetable: timetable[0].id });
+};
+
+export default { getTimetableGroupById, getAllTimetableGroups, createTimetableGroup, updateTimetableGroup };

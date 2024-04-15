@@ -70,16 +70,16 @@ export const events = mysqlTable('events', {
     colour: varchar('colour', {length: 7}),
     start: timestamp('start', { mode: "string" }).notNull(),
     end: timestamp('end', { mode: "string" }).notNull(),
-    lastModified: timestamp('last_modified', { mode: "string" }).notNull(),
+    lastModified: timestamp('last_modified', { mode: "string" }).defaultNow().notNull(),
     modifiedBy: varchar('modified_by_id', { length: 128 }).references(() => users.id),
     isCombinedSession: boolean('is_combined_session').default(false),
 })
 
 export const timetableGroups = mysqlTable('timetable_groups', {
     id: varchar('id', { length: 128 }).$defaultFn(() => short.uuid()).primaryKey(),
-    name: varchar('name', { length: 128 }),
-    subtitle: varchar('subtitle', { length: 128 }),
-    lastModified: timestamp('last_modified', { mode: "string" }).notNull(),
+    name: varchar('name', { length: 128 }).notNull(),
+    subtitle: varchar('subtitle', { length: 128 }).notNull(),
+    lastModified: timestamp('last_modified', { mode: "string" }).defaultNow().notNull(),
     modifiedBy: varchar('modified_by_id', { length: 128 }).references(() => users.id)
 })
 
