@@ -13,6 +13,13 @@ import {
 import { relations } from 'drizzle-orm';
 const short = require('short-uuid');
 
+export const logs = mysqlTable('logs', {
+    id: varchar('id', { length: 128 }).$defaultFn(() => short.uuid()).primaryKey(),
+    user: varchar('user', { length: 128 }).notNull().references(() => users.id),
+    message: text('message').notNull(),
+    time: timestamp('time').defaultNow().notNull()
+});
+
 export const users = mysqlTable('users', {
     id: varchar('id', { length: 128 }).$defaultFn(() => short.uuid()).primaryKey(),
     username: varchar('username', { length: 50 }).notNull(),
@@ -66,4 +73,17 @@ export const events = mysqlTable('events', {
     lastModified: timestamp('last_modified', { mode: "string" }).notNull(),
     modifiedBy: varchar('modified_by_id', { length: 128 }).references(() => users.id),
     isCombinedSession: boolean('is_combined_session').default(false),
+})
+
+export const timetableGroups = mysqlTable('timetable_groups', {
+    id: varchar('id', { length: 128 }).$defaultFn(() => short.uuid()).primaryKey(),
+    name: varchar('name', { length: 128 }),
+    subtitle: varchar('subtitle', { length: 128 }),
+    lastModified: timestamp('last_modified', { mode: "string" }).notNull(),
+    modifiedBy: varchar('modified_by_id', { length: 128 }).references(() => users.id)
+})
+
+export const timetableGroupMembers = mysqlTable('timetable_group_members', {
+    groupId: varchar('group_id', { length: 128 }).references(() => timetableGroups.id),
+    timetableId: varchar('timetable_id', { length: 128 }).references(() => timetables.id),
 })

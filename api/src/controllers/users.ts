@@ -3,7 +3,7 @@ import { db } from '@/db';
 import { users as userSchema } from '@/db/schema';
 import { eq, and, or } from 'drizzle-orm';
 import * as email from '@/communication/email';
-import { getUserIdFromJWT, verifyUserAuthToken } from "@/utils/auth";
+import { getUserIdFromJWT, getTokenFromAuthCookie } from "@/utils/auth";
 import { getGravatarUrl } from "@/utils/users";
 const jwt = require('jsonwebtoken');
 const dotenv = require('dotenv');
@@ -35,7 +35,7 @@ const getUserById = async (req: Request, res: Response, next: NextFunction) => {
     let userId: string = req.params.id
 
     if (userId == 'me') {
-        const token = verifyUserAuthToken(req, res)
+        const token = getTokenFromAuthCookie(req, res)
         userId = getUserIdFromJWT(token);
     }
 
@@ -56,7 +56,7 @@ const getUserProfilePicture = async (req: Request, res: Response, next: NextFunc
     let userId: string = req.params.id
 
     if (userId == 'me') {
-        const token = verifyUserAuthToken(req, res)
+        const token = getTokenFromAuthCookie(req, res)
         userId = getUserIdFromJWT(token);
     }
 
@@ -84,7 +84,7 @@ const getUserProfilePicture = async (req: Request, res: Response, next: NextFunc
 };
 
 const getAllUsers = async (req: Request, res: Response, next: NextFunction) => {
-    const token = verifyUserAuthToken(req, res)
+    const token = getTokenFromAuthCookie(req, res)
 
     const users = await db.select(simplifiedUser)
         .from(userSchema)
@@ -94,7 +94,7 @@ const getAllUsers = async (req: Request, res: Response, next: NextFunction) => {
 };
 
 const getAllDeletedUsers = async (req: Request, res: Response, next: NextFunction) => {
-    const token = verifyUserAuthToken(req, res)
+    const token = getTokenFromAuthCookie(req, res)
 
     const users = await db.select(simplifiedUser)
         .from(userSchema)
@@ -107,7 +107,7 @@ const getAllDeletedUsers = async (req: Request, res: Response, next: NextFunctio
 // POST: { "username": "jsmith", "shortName": "John", "fullName": "John Smith", "role": "TECHNICIAN", "email": "joshcooper+jsmith@lincoln.ac.uk" }
 const createUser = async (req: Request, res: Response, next: NextFunction) => {
     // This is the id of the person who is logged in sending the invite out.
-    const token = verifyUserAuthToken(req, res)
+    const token = getTokenFromAuthCookie(req, res)
     const invitingUserId = getUserIdFromJWT(token);
 
     // Check the user doesn't already exist
@@ -141,7 +141,7 @@ const deleteUser = async (req: Request, res: Response, next: NextFunction) => {
     let userId: string = req.params.id
 
     // This is the id of the person who is logged in
-    const token = verifyUserAuthToken(req, res)
+    const token = getTokenFromAuthCookie(req, res)
     const currentUserId = getUserIdFromJWT(token);
 
     if (userId === currentUserId) {
@@ -187,7 +187,7 @@ const deleteUser = async (req: Request, res: Response, next: NextFunction) => {
 
 const undeleteUser = async (req: Request, res: Response, next: NextFunction) => {
     let userId: string = req.params.id
-    const token = verifyUserAuthToken(req, res)
+    const token = getTokenFromAuthCookie(req, res)
 
     // This is the id of the person who is logged in sending the invite out.
     const currentUserId = getUserIdFromJWT(token);
@@ -229,7 +229,7 @@ const undeleteUser = async (req: Request, res: Response, next: NextFunction) => 
 
 const updateUser = async (req: Request, res: Response, next: NextFunction) => {
     let userId: string = req.params.id
-    const token = verifyUserAuthToken(req, res)
+    const token = getTokenFromAuthCookie(req, res)
 
     // This is the id of the person who is logged in sending the invite out.
     const currentUserId = getUserIdFromJWT(token);

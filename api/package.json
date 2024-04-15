@@ -8,7 +8,8 @@
     "dev": "npm start",
     "build": "rm -rf dist/ && tsc && tsc-alias",
     "db:migrate": "npx drizzle-kit generate:mysql",
-    "db:push": "npx drizzle-kit push:mysql"
+    "db:push": "npx drizzle-kit push:mysql",
+    "db:undo-migrate": "npx drizzle-kit drop"
   },
   "repository": {
     "type": "git",

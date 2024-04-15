@@ -32,7 +32,7 @@ export function getUserIdFromJWT(jwt: string): string {
     return tokenData['id']
 }
 
-export function verifyUserAuthToken(req: Request, res: Response) {
+export function getTokenFromAuthCookie(req: Request, res: Response) {
     // Get the token from request headers, query params, cookies, etc.
     let token = req.headers.authorization as string; // Assuming token is sent in the 'Authorization' header
 

@@ -2,7 +2,7 @@ import e, { Request, Response, NextFunction } from "express";
 import { db } from '@/db';
 import { events as eventSchema, events, users as userSchema } from '@/db/schema';
 import { eq, and, or, gte, lte } from 'drizzle-orm';
-import { getUserIdFromJWT, verifyUserAuthToken } from "@/utils/auth";
+import { getUserIdFromJWT, getTokenFromAuthCookie } from "@/utils/auth";
 import { isUserATechnician } from "@/utils/users";
 import { dateToString } from "@/utils/date";
 const moment = require('moment');
@@ -10,7 +10,7 @@ const dotenv = require('dotenv');
 dotenv.config();
 
 const getEventById = async (req: Request, res: Response, next: NextFunction) => {
-    const token = verifyUserAuthToken(req, res)
+    const token = getTokenFromAuthCookie(req, res)
     const eventId: string = req.params.id
 
     const events = await db.select()
@@ -21,7 +21,7 @@ const getEventById = async (req: Request, res: Response, next: NextFunction) => 
 }
 
 const getAllEvents = async (req: Request, res: Response, next: NextFunction) => {
-    const token = verifyUserAuthToken(req, res)
+    const token = getTokenFromAuthCookie(req, res)
 
     const events = await db.select()
         .from(eventSchema)
@@ -30,7 +30,7 @@ const getAllEvents = async (req: Request, res: Response, next: NextFunction) => 
 }
 
 const createEvent = async (req: Request, res: Response, next: NextFunction) => {
-    const token = verifyUserAuthToken(req, res)
+    const token = getTokenFromAuthCookie(req, res)
     const currentUserId = getUserIdFromJWT(token);
     if (await isUserATechnician(currentUserId) == false) {
         res.status(401).json({ "message": "You don't have permission to create events" })
@@ -78,7 +78,7 @@ const createEvent = async (req: Request, res: Response, next: NextFunction) => {
 const deleteEvent = async (req: Request, res: Response, next: NextFunction) => {
     const eventId: string = req.params.id
 
-    const token = verifyUserAuthToken(req, res)
+    const token = getTokenFromAuthCookie(req, res)
     const currentUserId = getUserIdFromJWT(token);
     if (await isUserATechnician(currentUserId) == false) {
         res.status(401).json({ "message": "You don't have permission to delete events" })
@@ -110,7 +110,7 @@ const deleteEvent = async (req: Request, res: Response, next: NextFunction) => {
 const updateEvent = async (req: Request, res: Response, next: NextFunction) => {
     const eventId: string = req.params.id
 
-    const token = verifyUserAuthToken(req, res)
+    const token = getTokenFromAuthCookie(req, res)
     const currentUserId = getUserIdFromJWT(token);
     if (await isUserATechnician(currentUserId) == false) {
         res.status(401).json({ "message": "You don't have permission to update events" })
@@ -152,7 +152,7 @@ const updateEvent = async (req: Request, res: Response, next: NextFunction) => {
 
 const getEventsForTimetable = async (req: Request, res: Response, next: NextFunction) => {
     const timetableId: string = req.params.timetableId
-    const token = verifyUserAuthToken(req, res)
+    const token = getTokenFromAuthCookie(req, res)
 
     const events = await db.select()
         .from(eventSchema)
