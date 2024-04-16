@@ -1,0 +1,4 @@
+[submodule "yggdrasil-web"]
+	path = yggdrasil-web
+	url = git@github.com:SoCSTech/yggdrasil-revamp.git
+	branch = asgard2
