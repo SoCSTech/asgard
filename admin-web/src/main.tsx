@@ -3,17 +3,9 @@ import ReactDOM from "react-dom/client";
 
 import type { LoaderFunctionArgs } from "react-router-dom";
 import {
-  Form,
-  Link,
-  Outlet,
   RouterProvider,
   createBrowserRouter,
   redirect,
-  useActionData,
-  useFetcher,
-  useLocation,
-  useNavigation,
-  useRouteLoaderData,
 } from "react-router-dom";
 
 import { AuthProvider } from "@/auth";
@@ -48,7 +40,6 @@ async function loginAction({ request }: LoaderFunctionArgs) {
     };
   }
 }
-
 
 async function loginLoader() {
   if (AuthProvider.isAuthenticated) {
@@ -97,7 +88,7 @@ function App() {
     {
       path: "/logout",
       async action() {
-        console.log("hi im logging out")
+        console.log("hi im logging out");
         // We signout in a "resource route" that we can hit from a fetcher.Form
         await AuthProvider.signout();
         return redirect("/");

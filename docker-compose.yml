@@ -11,6 +11,32 @@ services:
       - .env
     ports:
      - 9001:3000
+    depends_on:
+     - db
+
+  yggdrasil-web:
+    build: ./yggdrasil-web
+    container_name: yggdrasil-web
+    restart: always
+    networks:
+      - asgard_internal
+    env_file:
+      - .env
+    ports:
+     - 4444:80
+
+  admin-web:
+    build: ./admin-web
+    container_name: admin-web
+    restart: always
+    networks:
+      - asgard_internal
+    environment:
+    - VITE_API_BASE_URL=http://localhost:9001
+    ports:
+     - 1337:80
+    depends_on:
+     - api
 
   db:
     container_name: asgard-db

@@ -1,7 +1,7 @@
 {
     "client": "Thunder Client",
     "collectionName": "Asgard2",
-    "dateExported": "2024-04-04T10:35:53.349Z",
+    "dateExported": "2024-04-17T16:05:48.225Z",
     "version": "1.1",
     "folders": [
         {
@@ -31,6 +31,13 @@
             "containerId": "",
             "created": "2024-03-28T10:35:25.224Z",
             "sortNum": 30000
+        },
+        {
+            "_id": "d4eed0d7-96cc-4302-877e-eb603b7d038c",
+            "name": "Timetable Groups",
+            "containerId": "",
+            "created": "2024-04-15T15:02:07.222Z",
+            "sortNum": 40000
         }
     ],
     "requests": [
@@ -118,12 +125,12 @@
             "method": "POST",
             "sortNum": 20000,
             "created": "2024-03-26T14:32:53.897Z",
-            "modified": "2024-04-04T10:29:46.451Z",
+            "modified": "2024-04-17T15:56:25.419Z",
             "headers": [],
             "params": [],
             "body": {
                 "type": "json",
-                "raw": "{\n  \"username\": \"bsmith\"\n}",
+                "raw": "{\n  \"username\": \"joshcooper\"\n}",
                 "form": []
             },
             "tests": []
@@ -137,12 +144,12 @@
             "method": "POST",
             "sortNum": 30000,
             "created": "2024-03-26T14:32:53.900Z",
-            "modified": "2024-04-04T10:30:35.454Z",
+            "modified": "2024-04-17T15:57:02.020Z",
             "headers": [],
             "params": [],
             "body": {
                 "type": "json",
-                "raw": "{\n  \"resetToken\": \"c3bc8d65\",\n  \"password\": \"computing\"\n}",
+                "raw": "{\n  \"resetToken\": \"9D78BA82\",\n  \"password\": \"computing\"\n}",
                 "form": []
             },
             "tests": []
@@ -170,13 +177,9 @@
             "method": "GET",
             "sortNum": 40000,
             "created": "2024-03-26T14:32:53.898Z",
-            "modified": "2024-03-26T14:32:53.898Z",
+            "modified": "2024-04-15T10:49:42.732Z",
             "headers": [],
             "params": [],
-            "auth": {
-                "type": "bearer",
-                "bearer": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjF1cmJrdExhSGlyd3dBOUxmSnJhWFBBIiwidXNlcm5hbWUiOiJqb3NoY29vcGVyIiwiaWF0IjoxNzEwMTc0NDQ3LCJleHAiOjE3MTAyNjA4NDd9.mCi5oRDSYSbaXXyNwhKZ459L3KgjaB34FYwLRcz3SdY"
-            },
             "tests": []
         },
         {
@@ -202,14 +205,28 @@
             "method": "POST",
             "sortNum": 50000,
             "created": "2024-03-26T14:32:53.899Z",
-            "modified": "2024-03-27T11:49:09.416Z",
+            "modified": "2024-04-17T15:57:47.354Z",
             "headers": [],
             "params": [],
             "body": {
                 "type": "json",
-                "raw": "{\n  \"username\": \"joshc\",\n  \"shortName\": \"joshc\",\n  \"fullName\": \"joshc\",\n  \"role\": \"STANDARD\",\n  \"email\": \"josh@joshc.uk\"\n}",
+                "raw": "{\n  \"username\": \"joshtest\",\n  \"shortName\": \"Joshua\",\n  \"fullName\": \"Joshua Testington\",\n  \"role\": \"TECHNICIAN\",\n  \"email\": \"joshcooper+test1@lincoln.ac.uk\"\n}",
                 "form": []
             },
+            "tests": []
+        },
+        {
+            "_id": "d8cf91b5-e5d4-48dc-b279-ee26b35d2b78",
+            "colId": "de00decf-3ee9-4bfe-b429-d2c10df5a906",
+            "containerId": "d4eed0d7-96cc-4302-877e-eb603b7d038c",
+            "name": "Timetable Groups - All",
+            "url": "/v2/timetable-groups",
+            "method": "GET",
+            "sortNum": 75000,
+            "created": "2024-04-15T15:02:34.371Z",
+            "modified": "2024-04-15T15:02:56.315Z",
+            "headers": [],
+            "params": [],
             "tests": []
         },
         {
@@ -291,12 +308,12 @@
             "method": "PUT",
             "sortNum": 95000,
             "created": "2024-03-27T11:55:37.579Z",
-            "modified": "2024-03-27T11:56:41.766Z",
+            "modified": "2024-04-17T16:04:11.072Z",
             "headers": [],
             "params": [],
             "body": {
                 "type": "json",
-                "raw": "{\n  \"username\": \"samoc\",\n  \"shortName\": \"Sam\",\n  \"fullName\": \"Sam O-C\",\n  \"role\": \"STANDARD\",\n  \"isDeleted\": false\n}",
+                "raw": "{\n  \"username\": \"fnoble\",\n  \"shortName\": \"Florrie\",\n  \"fullName\": \"Florence Noble\",\n  \"role\": \"TECHNICIAN\",\n  \"isDeleted\": false\n}",
                 "form": []
             },
             "tests": []
@@ -438,20 +455,53 @@
             "colId": "de00decf-3ee9-4bfe-b429-d2c10df5a906",
             "containerId": "865da588-83d6-46ef-b29d-1e121a30457d",
             "name": "User - Profile Picture",
-            "url": "/v2/user/joshc.jpg",
+            "url": "/v2/user/joshcooper.jpg",
             "method": "GET",
             "sortNum": 140000,
             "created": "2024-03-27T11:46:34.033Z",
-            "modified": "2024-04-04T10:35:18.457Z",
+            "modified": "2024-04-17T16:03:28.480Z",
             "headers": [],
             "params": [],
+            "tests": []
+        },
+        {
+            "_id": "db07357b-479c-40d8-909c-14f5adea9635",
+            "colId": "de00decf-3ee9-4bfe-b429-d2c10df5a906",
+            "containerId": "d4eed0d7-96cc-4302-877e-eb603b7d038c",
+            "name": "Timetable Group - ID",
+            "url": "/v2/timetable-groups/guid",
+            "method": "GET",
+            "sortNum": 150000,
+            "created": "2024-04-15T15:02:22.942Z",
+            "modified": "2024-04-15T15:03:15.679Z",
+            "headers": [],
+            "params": [],
+            "tests": []
+        },
+        {
+            "_id": "ba38cc18-e0c5-492a-97f8-6fcdb0ea9404",
+            "colId": "de00decf-3ee9-4bfe-b429-d2c10df5a906",
+            "containerId": "d4eed0d7-96cc-4302-877e-eb603b7d038c",
+            "name": "Create Timetable Groups",
+            "url": "/v2/timetable-groups",
+            "method": "POST",
+            "sortNum": 170000,
+            "created": "2024-04-15T15:50:23.583Z",
+            "modified": "2024-04-15T15:51:24.675Z",
+            "headers": [],
+            "params": [],
+            "body": {
+                "type": "json",
+                "raw": "{\n  \"name\": \"Today's Timetable\",\n  \"subtitle\": \"School of Computer Science\"\n}",
+                "form": []
+            },
             "tests": []
         }
     ],
     "settings": {
         "auth": {
             "type": "bearer",
-            "bearer": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjRjMzAzNzNhLWQwYTUtNGRkZS1iYTE3LWQ5YzAzYjlmYjU0ZCIsInVzZXJuYW1lIjoiZm5vYmxlIiwiaWF0IjoxNzEyMTQxOTc5LCJleHAiOjE3MTIyMjgzNzl9.-tQ_QQLFzfUxkUppq56Q-P-JfJf0ObkPIQNQpFYgnxo"
+            "bearer": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjF1cmJrdExhSGlyd3dBOUxmSnJhWFBBIiwidXNlcm5hbWUiOiJqb3NoY29vcGVyIiwiaWF0IjoxNzEzMzY5NDc0LCJleHAiOjE3MTM0NTU4NzR9.BK5qQP1nuVCLMswLOE56ThXcNJcQp6sVTlInqrmREPQ"
         },
         "options": {
             "baseUrl": "http://localhost:3000"

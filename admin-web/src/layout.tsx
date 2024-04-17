@@ -1,8 +1,4 @@
-import { AuthProvider } from "@/auth";
-
-import { Outlet, useRouteLoaderData, useFetcher } from "react-router-dom";
-
-import Sidebar from "@/components/navigation/sidebar";
+import { Outlet, useRouteLoaderData } from "react-router-dom";
 import TopBar from "@/components/navigation/top-bar";
 
 function AuthStatus() {
