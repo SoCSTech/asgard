@@ -17,8 +17,6 @@ const newTimetable = {
 }
 
 const getTimetableById = async (req: Request, res: Response, next: NextFunction) => {
-    const token = getTokenFromAuthCookie(req, res)
-
     let timetableId: string = req.params.id
 
     const timetable = await db.select().from(timetableSchema)
@@ -35,8 +33,6 @@ const getTimetableById = async (req: Request, res: Response, next: NextFunction)
 };
 
 const getAllTimetables = async (req: Request, res: Response, next: NextFunction) => {
-    const token = getTokenFromAuthCookie(req, res)
-
     const timetables = await db.select()
         .from(timetableSchema)
         .where(eq(timetableSchema.isDeleted, false));

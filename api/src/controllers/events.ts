@@ -10,7 +10,6 @@ const dotenv = require('dotenv');
 dotenv.config();
 
 const getEventById = async (req: Request, res: Response, next: NextFunction) => {
-    const token = getTokenFromAuthCookie(req, res)
     const eventId: string = req.params.id
 
     const events = await db.select()
@@ -21,8 +20,6 @@ const getEventById = async (req: Request, res: Response, next: NextFunction) => 
 }
 
 const getAllEvents = async (req: Request, res: Response, next: NextFunction) => {
-    const token = getTokenFromAuthCookie(req, res)
-
     const events = await db.select()
         .from(eventSchema)
 
