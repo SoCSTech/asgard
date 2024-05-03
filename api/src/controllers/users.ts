@@ -1,7 +1,7 @@
 import e, { Request, Response, NextFunction } from "express";
 import { db } from '@/db';
 import { users as userSchema } from '@/db/schema';
-import { eq, and, or } from 'drizzle-orm';
+import { eq, and, or, asc } from 'drizzle-orm';
 import * as email from '@/communication/email';
 import { getUserIdFromJWT, getTokenFromAuthCookie } from "@/utils/auth";
 import { getGravatarUrl } from "@/utils/users";
@@ -88,7 +88,9 @@ const getAllUsers = async (req: Request, res: Response, next: NextFunction) => {
 
     const users = await db.select(simplifiedUser)
         .from(userSchema)
-        .where(eq(userSchema.isDeleted, false));
+        .where(eq(userSchema.isDeleted, false))
+        .orderBy(asc(userSchema.fullName));
+
 
     res.json({ users: users });
 };

@@ -3,9 +3,6 @@ import express, { Express, Request, Response, NextFunction } from "express";
 import morgan from "morgan";
 import helmet from "helmet";
 const cors = require('cors');
-
-import { authenticate } from '@/middleware/authenticate';
-
 const app: Express = express();
 
 app.use(morgan("dev"));
@@ -37,11 +34,11 @@ app.get('/', (req: Request, res: Response) => {
 
 /* Routes */
 app.use('/v2', require('./routes/auth'));
-app.use('/v2', authenticate, require('./routes/users'));
-app.use('/v2', authenticate, require('./routes/timetables'));
-app.use('/v2', authenticate, require('./routes/events'));
-app.use('/v2', authenticate, require('./routes/timetableGroups'));
-app.use('/v2', authenticate, require('./routes/tests'));
+app.use('/v2', require('./routes/timetables'));
+app.use('/v2', require('./routes/users'));
+app.use('/v2', require('./routes/events'));
+app.use('/v2', require('./routes/timetableGroups'));
+app.use('/v2', require('./routes/tests'));
 
 /* Error handling */
 app.use((req, res, next) => {

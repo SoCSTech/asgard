@@ -1,7 +1,7 @@
 import e, { Request, Response, NextFunction } from "express";
 import { db } from '@/db';
 import { timetables as timetableSchema, users as userSchema } from '@/db/schema';
-import { eq, and, or } from 'drizzle-orm';
+import { eq, and, or, asc } from 'drizzle-orm';
 import { getUserIdFromJWT, getTokenFromAuthCookie } from "@/utils/auth";
 import { isUserATechnician } from "@/utils/users";
 const dotenv = require('dotenv');
@@ -35,7 +35,8 @@ const getTimetableById = async (req: Request, res: Response, next: NextFunction)
 const getAllTimetables = async (req: Request, res: Response, next: NextFunction) => {
     const timetables = await db.select()
         .from(timetableSchema)
-        .where(eq(timetableSchema.isDeleted, false));
+        .where(eq(timetableSchema.isDeleted, false))
+        .orderBy(asc(timetableSchema.spaceCode));
 
     res.json({ timetables: timetables });
 };
@@ -50,7 +51,8 @@ const getAllDeletedTimetables = async (req: Request, res: Response, next: NextFu
 
     const timetables = await db.select()
         .from(timetableSchema)
-        .where(eq(timetableSchema.isDeleted, true));
+        .where(eq(timetableSchema.isDeleted, true))
+        .orderBy(asc(timetableSchema.spaceCode));
 
     res.json({ timetables: timetables });
 };
