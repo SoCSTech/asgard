@@ -4,6 +4,7 @@ import { timetables as timetableSchema, users as userSchema } from '@/db/schema'
 import { eq, and, or, asc } from 'drizzle-orm';
 import { getUserIdFromJWT, getTokenFromAuthCookie } from "@/utils/auth";
 import { isUserATechnician } from "@/utils/users";
+import { log } from "@/utils/log";
 const dotenv = require('dotenv');
 dotenv.config();
 
@@ -99,6 +100,8 @@ const createTimetable = async (req: Request, res: Response, next: NextFunction) 
         combinedPartnerId: req.body.combinedPartnerId || null
     })
 
+    await log(`Has created timetable with name ${req.body.name} (${req.body.spaceCode})`, currentUserId)
+    
     res.status(201).json({ "message": "Timetable has been added", "spaceCode": req.body.spaceCode });
 };
 
@@ -130,6 +133,7 @@ const deleteTimetable = async (req: Request, res: Response, next: NextFunction) 
         .set({ isDeleted: true })
         .where(eq(timetableSchema.id, timetables[0].id));
 
+    await log(`Has deleted timetable with id ${timetableId}`, currentUserId)
     res.status(201).json({ message: "Timetable has been deleted", timetable: timetableId });
 };
 
@@ -140,6 +144,7 @@ const undeleteTimetable = async (req: Request, res: Response, next: NextFunction
     const currentUserId = getUserIdFromJWT(token);
     if (await isUserATechnician(currentUserId) == false) {
         res.status(401).json({ "message": "You don't have permission to reactivate timetables" })
+        await log(`Has tried to reactivated timetable with id ${timetableId}`, currentUserId)
         return
     }
 
@@ -162,6 +167,7 @@ const undeleteTimetable = async (req: Request, res: Response, next: NextFunction
         .set({ isDeleted: false })
         .where(eq(timetableSchema.id, timetable[0].id));
 
+    await log(`Has reactivated timetable with id ${timetableId}`, currentUserId)
     res.status(201).json({ message: "Timetable has been reactivated", timetable: timetable[0].id });
 };
 
@@ -199,6 +205,7 @@ const updateTimetable = async (req: Request, res: Response, next: NextFunction) 
         })
         .where(eq(timetableSchema.id, timetable[0].id));
 
+    await log(`Has updated timetable with id ${timetableId}`, currentUserId)
     res.status(201).json({ message: `Timetable for ${timetable[0].spaceCode} has been updated`, timetable: timetable[0].id });
 };
 

@@ -5,6 +5,7 @@ import { eq, and, or, gt } from 'drizzle-orm';
 import { hashPassword, comparePassword } from '@/utils/passwords';
 import * as email from '@/communication/email';
 import { generateSecureCode } from "@/utils/auth";
+import { log } from "@/utils/log";
 const jwt = require('jsonwebtoken');
 const dotenv = require('dotenv');
 dotenv.config();
@@ -39,6 +40,8 @@ const login = async (req: Request, res: Response, next: NextFunction) => {
 
     // Create a JWT - make it last for 24 hours
     const token = jwt.sign({ id: users[0].id, username: users[0].username, }, process.env.AUTH_SECRET, { expiresIn: '86400s' });
+
+    await log("Logged in", users[0].id)
 
     res.cookie('TOKEN', token, { maxAge: 86400, httpOnly: true, sameSite: true, secure: true }).json({ TOKEN: token });
 
@@ -78,6 +81,8 @@ const forgotPassword = async (req: Request, res: Response, next: NextFunction) =
     // Send Password Email
     await email.SendPasswordResetEmail(users[0].email, users[0].shortName, _resetToken)
 
+    await log("Requested password reset email", users[0].id)
+
     // Send 201
     res.status(201).json({ message: "Please check your email for the verification code" })
 };
@@ -109,6 +114,8 @@ const changePassword = async (req: Request, res: Response, next: NextFunction) =
 
     // Send Password Email
     await email.SendPasswordUpdatedEmail(users[0].email, users[0].shortName)
+
+    await log("Has changed password", users[0].id)
 
     // Send 201
     res.status(201).json({ message: "Password Updated" })

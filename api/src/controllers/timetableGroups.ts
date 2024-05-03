@@ -6,6 +6,7 @@ import { getUserIdFromJWT, getTokenFromAuthCookie } from "@/utils/auth";
 import { isUserATechnician } from "@/utils/users";
 import { dateToString } from "@/utils/date";
 import { group } from "console";
+import { log } from "@/utils/log";
 const dotenv = require('dotenv');
 dotenv.config();
 
@@ -49,6 +50,8 @@ const createTimetableGroup = async (req: Request, res: Response, next: NextFunct
         modifiedBy: currentUserId
     })
 
+    await log(`Has created timetable group with name ${req.body.name}`, currentUserId)
+
     res.status(201).json({ "message": "Timetable group has been added" });
 };
 
@@ -83,6 +86,8 @@ const updateTimetableGroup = async (req: Request, res: Response, next: NextFunct
         })
         .where(eq(timetableSchema.id, groups[0].id));
 
+    await log(`Has updated timetable group with id ${groupId}`, currentUserId)
+
     res.status(201).json({ message: "Timetable group has been updated", group: groups[0].id });
 };
 
@@ -113,6 +118,8 @@ const deleteTimetableGroup = async (req: Request, res: Response, next: NextFunct
     const updatedTimetable = await db.update(timetableSchema)
         .set({ isDeleted: true })
         .where(eq(timetableSchema.id, timetables[0].id));
+
+    // await log(`Has updated timetable group with id ${groupId}`, currentUserId)
 
     res.status(201).json({ message: "Timetable has been deleted", timetable: timetableId });
 };
@@ -151,6 +158,8 @@ const addTimetableToGroup = async (req: Request, res: Response, next: NextFuncti
         })
         .where(eq(timetableSchema.id, timetable[0].id));
 
+    // await log(`Has updated timetable group with id ${groupId}`, currentUserId)
+
     res.status(201).json({ message: `Timetable for ${timetable[0].spaceCode} has been updated`, timetable: timetable[0].id });
 };
 
@@ -187,6 +196,8 @@ const removeTimetableFromGroup = async (req: Request, res: Response, next: NextF
             isDeleted: req.body.isDeleted || timetable[0].isDeleted
         })
         .where(eq(timetableSchema.id, timetable[0].id));
+
+    // await log(`Has updated timetable group with id ${groupId}`, currentUserId)
 
     res.status(201).json({ message: `Timetable for ${timetable[0].spaceCode} has been updated`, timetable: timetable[0].id });
 };

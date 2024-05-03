@@ -5,32 +5,11 @@ import { eq, and, or, asc } from 'drizzle-orm';
 import * as email from '@/communication/email';
 import { getUserIdFromJWT, getTokenFromAuthCookie } from "@/utils/auth";
 import { getGravatarUrl } from "@/utils/users";
+import { simplifiedUser, newUser } from "@/utils/users";
 const request = require('request');
 const jwt = require('jsonwebtoken');
 const dotenv = require('dotenv');
 dotenv.config();
-
-/// User Schema for responses
-const simplifiedUser = {
-    id: userSchema.id,
-    username: userSchema.username,
-    shortName: userSchema.shortName,
-    fullName: userSchema.fullName,
-    initials: userSchema.initials,
-    role: userSchema.role,
-    email: userSchema.email,
-    creationDate: userSchema.creationDate,
-    profilePictureUrl: userSchema.profilePictureUrl,
-};
-
-// Schema of New User
-const newUser = {
-    username: userSchema.username,
-    shortName: userSchema.shortName,
-    fullName: userSchema.fullName,
-    role: userSchema.role,
-    email: userSchema.email,
-}
 
 const getUserById = async (req: Request, res: Response, next: NextFunction) => {
     let userId: string = req.params.id

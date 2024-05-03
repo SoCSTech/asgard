@@ -5,6 +5,7 @@ import { eq, and, or, gte, lte } from 'drizzle-orm';
 import { getUserIdFromJWT, getTokenFromAuthCookie } from "@/utils/auth";
 import { isUserATechnician } from "@/utils/users";
 import { dateToString } from "@/utils/date";
+import { log } from "@/utils/log";
 const moment = require('moment');
 const dotenv = require('dotenv');
 dotenv.config();
@@ -68,6 +69,8 @@ const createEvent = async (req: Request, res: Response, next: NextFunction) => {
         isCombinedSession: req.body.isCombinedSession || false
     });
 
+    await log(`Has created event ${req.body.name} (${req.body.moduleCode || "none"}), starting ${req.body.start} and ending ${req.body.end} to Timetable ${req.body.timetableId}`, currentUserId)
+
     res.status(201).json({ timetableId: req.body.timetableId, message: 'Event has been created' });
 };
 
@@ -100,6 +103,8 @@ const deleteEvent = async (req: Request, res: Response, next: NextFunction) => {
     } catch {
         res.status(500).json({ "message": "Couldn't delete the event you specified" })
     }
+
+    await log(`Has deleted event ${req.body.eventId}`, currentUserId)
 
     res.status(200).json({ event: foundEvent[0].id, message: "Event has been deleted" })
 }
@@ -145,6 +150,7 @@ const updateEvent = async (req: Request, res: Response, next: NextFunction) => {
 
     res.status(201).json({ message: `Event '${event[0].name}' has been updated`, event: event[0].id });
 
+    await log(`Has updated event ${req.body.eventId}`, currentUserId)
 }
 
 const getEventsForTimetable = async (req: Request, res: Response, next: NextFunction) => {
