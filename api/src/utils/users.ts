@@ -16,14 +16,14 @@ export const simplifiedUser = {
     profilePictureUrl: userSchema.profilePictureUrl,
 };
 
-// Schema of New User
-export const newUser = {
-    username: userSchema.username,
-    shortName: userSchema.shortName,
-    fullName: userSchema.fullName,
-    role: userSchema.role,
-    email: userSchema.email,
-}
+// // Schema of New User
+// export const newUser = {
+//     username: userSchema.username,
+//     shortName: userSchema.shortName,
+//     fullName: userSchema.fullName,
+//     role: userSchema.role,
+//     email: userSchema.email,
+// }
 
 export const getGravatarUrl = async (email: String): Promise<string> => {
     const hash = await crypto.createHash('md5').update(email).digest("hex")
