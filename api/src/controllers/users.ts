@@ -5,6 +5,7 @@ import { eq, and, or, asc } from 'drizzle-orm';
 import * as email from '@/communication/email';
 import { getUserIdFromJWT, getTokenFromAuthCookie } from "@/utils/auth";
 import { getGravatarUrl } from "@/utils/users";
+const request = require('request');
 const jwt = require('jsonwebtoken');
 const dotenv = require('dotenv');
 dotenv.config();
@@ -54,10 +55,15 @@ const getUserById = async (req: Request, res: Response, next: NextFunction) => {
 
 const getUserProfilePicture = async (req: Request, res: Response, next: NextFunction) => {
     let userId: string = req.params.id
+    let token = req.headers.authorization as string; // Assuming token is sent in the 'Authorization' header
 
     if (userId == 'me') {
-        const token = getTokenFromAuthCookie(req, res)
-        userId = getUserIdFromJWT(token);
+        if (!!token) {
+            userId = getUserIdFromJWT(token);
+        } else {
+            res.status(401).json({ "message": "You need to be logged in to access me.jpg" })
+            return
+        }
     }
 
     const user = await db.select({ profilePictureUrl: userSchema.profilePictureUrl }).from(userSchema)
@@ -80,7 +86,8 @@ const getUserProfilePicture = async (req: Request, res: Response, next: NextFunc
         return
     }
 
-    res.redirect(user[0].profilePictureUrl as string)
+    // res.redirect(user[0].profilePictureUrl as string)
+    request(user[0].profilePictureUrl as string).pipe(res);
 };
 
 const getAllUsers = async (req: Request, res: Response, next: NextFunction) => {
