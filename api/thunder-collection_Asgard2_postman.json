@@ -1,0 +1,630 @@
+{
+    "info": {
+        "_postman_id": "caf41ea0-5863-4958-8e16-c2f2cb5dcd8b",
+        "name": "Asgard2",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+        "description": ""
+    },
+    "item": [
+        {
+            "name": "Users",
+            "item": [
+                {
+                    "name": "User - Me",
+                    "request": {
+                        "method": "GET",
+                        "url": {
+                            "raw": "/v2/user/me",
+                            "path": [
+                                "user",
+                                "me"
+                            ],
+                            "host": [
+                                "v2"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "User - ID",
+                    "request": {
+                        "method": "GET",
+                        "url": {
+                            "raw": "/v2/user/addd3df3-d227-4e12-ad35-4e00633de7b5",
+                            "path": [
+                                "user",
+                                "addd3df3-d227-4e12-ad35-4e00633de7b5"
+                            ],
+                            "host": [
+                                "v2"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "User - All",
+                    "request": {
+                        "method": "GET",
+                        "url": {
+                            "raw": "/v2/user",
+                            "path": [
+                                "user"
+                            ],
+                            "host": [
+                                "v2"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Create User",
+                    "request": {
+                        "method": "POST",
+                        "url": {
+                            "raw": "/v2/user",
+                            "path": [
+                                "user"
+                            ],
+                            "host": [
+                                "v2"
+                            ]
+                        },
+                        "body": {
+                            "mode": "raw",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            },
+                            "raw": "{\n  \"username\": \"fnoble\",\n  \"shortName\": \"Florence\",\n  \"fullName\": \"Florence Noble\",\n  \"role\": \"TECHNICIAN\",\n  \"email\": \"fnoble@lincoln.ac.uk\"\n}"
+                        }
+                    }
+                },
+                {
+                    "name": "User - Profile Picture",
+                    "request": {
+                        "method": "GET",
+                        "url": {
+                            "raw": "/v2/user/joshcooper.jpg",
+                            "path": [
+                                "user",
+                                "joshcooper.jpg"
+                            ],
+                            "host": [
+                                "v2"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "User - All Deleted",
+                    "request": {
+                        "method": "GET",
+                        "url": {
+                            "raw": "/v2/user/deleted",
+                            "path": [
+                                "user",
+                                "deleted"
+                            ],
+                            "host": [
+                                "v2"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Delete User",
+                    "request": {
+                        "method": "DELETE",
+                        "url": {
+                            "raw": "/v2/user/jsmith",
+                            "path": [
+                                "user",
+                                "jsmith"
+                            ],
+                            "host": [
+                                "v2"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Update User",
+                    "request": {
+                        "method": "PUT",
+                        "url": {
+                            "raw": "/v2/user/272fea67-06e1-45b8-9c09-59afc3ba65b1",
+                            "path": [
+                                "user",
+                                "272fea67-06e1-45b8-9c09-59afc3ba65b1"
+                            ],
+                            "host": [
+                                "v2"
+                            ]
+                        },
+                        "body": {
+                            "mode": "raw",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            },
+                            "raw": "{\n  \"username\": \"fnoble\",\n  \"shortName\": \"Florrie\",\n  \"fullName\": \"Florence Noble\",\n  \"role\": \"TECHNICIAN\",\n  \"isDeleted\": false\n}"
+                        }
+                    }
+                },
+                {
+                    "name": "Undelete User",
+                    "request": {
+                        "method": "POST",
+                        "url": {
+                            "raw": "/v2/user/reactivate/jsmith",
+                            "path": [
+                                "user",
+                                "reactivate",
+                                "jsmith"
+                            ],
+                            "host": [
+                                "v2"
+                            ]
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Auth",
+            "item": [
+                {
+                    "name": "Login",
+                    "request": {
+                        "method": "POST",
+                        "url": {
+                            "raw": "/v2/auth/login",
+                            "path": [
+                                "auth",
+                                "login"
+                            ],
+                            "host": [
+                                "v2"
+                            ]
+                        },
+                        "body": {
+                            "mode": "raw",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            },
+                            "raw": "{\n  \"username\": \"joshcooper\",\n  \"password\": \"computing\"\n}"
+                        }
+                    }
+                },
+                {
+                    "name": "Forgot Password",
+                    "request": {
+                        "method": "POST",
+                        "url": {
+                            "raw": "/v2/auth/forgot-password",
+                            "path": [
+                                "auth",
+                                "forgot-password"
+                            ],
+                            "host": [
+                                "v2"
+                            ]
+                        },
+                        "body": {
+                            "mode": "raw",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            },
+                            "raw": "{\n  \"username\": \"joshcooper\"\n}"
+                        }
+                    }
+                },
+                {
+                    "name": "Test User is Authed",
+                    "request": {
+                        "method": "GET",
+                        "url": {
+                            "raw": "/v2/tests/auth",
+                            "path": [
+                                "tests",
+                                "auth"
+                            ],
+                            "host": [
+                                "v2"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Change Password",
+                    "request": {
+                        "method": "POST",
+                        "url": {
+                            "raw": "/v2/auth/change-password",
+                            "path": [
+                                "auth",
+                                "change-password"
+                            ],
+                            "host": [
+                                "v2"
+                            ]
+                        },
+                        "body": {
+                            "mode": "raw",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            },
+                            "raw": "{\n  \"resetToken\": \"9D78BA82\",\n  \"password\": \"computing\"\n}"
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Timetables",
+            "item": [
+                {
+                    "name": "Timetable - All",
+                    "request": {
+                        "method": "GET",
+                        "url": {
+                            "raw": "/v2/timetable",
+                            "path": [
+                                "timetable"
+                            ],
+                            "host": [
+                                "v2"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Timetable - ID",
+                    "request": {
+                        "method": "GET",
+                        "url": {
+                            "raw": "/v2/timetable/365c3cc1-2086-4d0f-9261-4d0cf68bfa47",
+                            "path": [
+                                "timetable",
+                                "365c3cc1-2086-4d0f-9261-4d0cf68bfa47"
+                            ],
+                            "host": [
+                                "v2"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Create Timetable",
+                    "request": {
+                        "method": "POST",
+                        "url": {
+                            "raw": "/v2/timetable",
+                            "path": [
+                                "timetable"
+                            ],
+                            "host": [
+                                "v2"
+                            ]
+                        },
+                        "body": {
+                            "mode": "raw",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            },
+                            "raw": "{\n  \"spaceCode\": \"INB1306\",\n  \"name\": \"Lab 6\",\n  \"capacity\": 30\n}"
+                        }
+                    }
+                },
+                {
+                    "name": "Delete Timetable",
+                    "request": {
+                        "method": "DELETE",
+                        "url": {
+                            "raw": "/v2/timetable/7bf40deb-0eec-420d-b999-5ed6c1970660",
+                            "path": [
+                                "timetable",
+                                "7bf40deb-0eec-420d-b999-5ed6c1970660"
+                            ],
+                            "host": [
+                                "v2"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Undelete Timetable",
+                    "request": {
+                        "method": "POST",
+                        "url": {
+                            "raw": "/v2/timetable/reactivate/INB1307",
+                            "path": [
+                                "timetable",
+                                "reactivate",
+                                "INB1307"
+                            ],
+                            "host": [
+                                "v2"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Update Timetable",
+                    "request": {
+                        "method": "PUT",
+                        "url": {
+                            "raw": "/v2/timetable/INB1306",
+                            "path": [
+                                "timetable",
+                                "INB1306"
+                            ],
+                            "host": [
+                                "v2"
+                            ]
+                        },
+                        "body": {
+                            "mode": "raw",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            },
+                            "raw": "{\n  \"name\": \"Lab 6A\",\n  \"spaceCode\": \"INB1306\",\n  \"capacity\": 3,\n  \"isDeleted\": false\n}"
+                        }
+                    }
+                },
+                {
+                    "name": "Timetable - All Deleted",
+                    "request": {
+                        "method": "GET",
+                        "url": {
+                            "raw": "/v2/timetable/deleted",
+                            "path": [
+                                "timetable",
+                                "deleted"
+                            ],
+                            "host": [
+                                "v2"
+                            ]
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Events",
+            "item": [
+                {
+                    "name": "Event - All",
+                    "request": {
+                        "method": "GET",
+                        "url": {
+                            "raw": "/v2/event",
+                            "path": [
+                                "event"
+                            ],
+                            "host": [
+                                "v2"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Event - ID",
+                    "request": {
+                        "method": "GET",
+                        "url": {
+                            "raw": "/v2/event/b0948ec9-a410-465c-b746-5177c7b2e537",
+                            "path": [
+                                "event",
+                                "b0948ec9-a410-465c-b746-5177c7b2e537"
+                            ],
+                            "host": [
+                                "v2"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Create Event",
+                    "request": {
+                        "method": "POST",
+                        "url": {
+                            "raw": "/v2/event",
+                            "path": [
+                                "event"
+                            ],
+                            "host": [
+                                "v2"
+                            ]
+                        },
+                        "body": {
+                            "mode": "raw",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            },
+                            "raw": "{\n  \"name\": \"Computer Science for Noobs\",\n  \"staff\": \"Bob Smith, Derek Jones\",\n  \"moduleCode\": \"CMP0004\",\n  \"timetableId\": \"8bd7a144-f011-4955-82d7-9fe6f25ea80a\",\n  \"type\": \"OTHER\",\n  \"colour\": \"#ff0077\",\n  \"start\": \"2024-04-03 14:00:00\",\n  \"end\": \"2024-04-03 16:00:00\",\n  \"isCombinedSession\": false\n}"
+                        }
+                    }
+                },
+                {
+                    "name": "Delete Event",
+                    "request": {
+                        "method": "DELETE",
+                        "url": {
+                            "raw": "/v2/event/44047224-bac1-4a15-9672-071453a26dbe",
+                            "path": [
+                                "event",
+                                "44047224-bac1-4a15-9672-071453a26dbe"
+                            ],
+                            "host": [
+                                "v2"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Update Event",
+                    "request": {
+                        "method": "PUT",
+                        "url": {
+                            "raw": "/v2/event/b0948ec9-a410-465c-b746-5177c7b2e537",
+                            "path": [
+                                "event",
+                                "b0948ec9-a410-465c-b746-5177c7b2e537"
+                            ],
+                            "host": [
+                                "v2"
+                            ]
+                        },
+                        "body": {
+                            "mode": "raw",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            },
+                            "raw": "{\n  \"name\": \"Computer Science for Pros\",\n  \"staff\": \"Florence Noble\",\n  \"moduleCode\": \"CMP1234\",\n  \"timetableId\": \"365c3cc1-2086-4d0f-9261-4d0cf68bfa47\",\n  \"type\": \"LECTURE\",\n  \"colour\": \"#59d5d9\",\n  \"start\": \"2024-04-04 12:00:00\",\n  \"end\": \"2024-04-04 14:00:00\",\n  \"isCombinedSession\": false\n}"
+                        }
+                    }
+                },
+                {
+                    "name": "Events for Timetable",
+                    "request": {
+                        "method": "GET",
+                        "url": {
+                            "raw": "/v2/timetable/8bd7a144-f011-4955-82d7-9fe6f25ea80a/events",
+                            "path": [
+                                "timetable",
+                                "8bd7a144-f011-4955-82d7-9fe6f25ea80a",
+                                "events"
+                            ],
+                            "host": [
+                                "v2"
+                            ]
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Timetable Groups",
+            "item": [
+                {
+                    "name": "Timetable Group - ID",
+                    "request": {
+                        "method": "GET",
+                        "url": {
+                            "raw": "/v2/timetable-groups/guid",
+                            "path": [
+                                "timetable-groups",
+                                "guid"
+                            ],
+                            "host": [
+                                "v2"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Timetable Groups - All",
+                    "request": {
+                        "method": "GET",
+                        "url": {
+                            "raw": "/v2/timetable-groups",
+                            "path": [
+                                "timetable-groups"
+                            ],
+                            "host": [
+                                "v2"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Create Timetable Groups",
+                    "request": {
+                        "method": "POST",
+                        "url": {
+                            "raw": "/v2/timetable-groups",
+                            "path": [
+                                "timetable-groups"
+                            ],
+                            "host": [
+                                "v2"
+                            ]
+                        },
+                        "body": {
+                            "mode": "raw",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            },
+                            "raw": "{\n  \"name\": \"Today's Timetable\",\n  \"subtitle\": \"School of Computer Science\"\n}"
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Logs",
+            "item": [
+                {
+                    "name": "Logs - All",
+                    "request": {
+                        "method": "GET",
+                        "url": {
+                            "raw": "/v2/log",
+                            "path": [
+                                "log"
+                            ],
+                            "host": [
+                                "v2"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Logs - ID",
+                    "request": {
+                        "method": "GET",
+                        "url": {
+                            "raw": "/v2/log/5f311266-73de-452b-a6f3-4964c8a2d91b",
+                            "path": [
+                                "log",
+                                "5f311266-73de-452b-a6f3-4964c8a2d91b"
+                            ],
+                            "host": [
+                                "v2"
+                            ]
+                        }
+                    }
+                }
+            ]
+        }
+    ],
+    "auth": {
+        "type": "bearer",
+        "bearer": [
+            {
+                "key": "token",
+                "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImFkZGQzZGYzLWQyMjctNGUxMi1hZDM1LTRlMDA2MzNkZTdiNSIsInVzZXJuYW1lIjoiam9zaGNvb3BlciIsImlhdCI6MTcxNDcyNzE5MiwiZXhwIjoxNzE0ODEzNTkyfQ.EibpVYBNPldJqLt2GMwXR8-9_SMXMRpSHCCMYrheH3U",
+                "type": "string"
+            }
+        ]
+    }
+}
