@@ -35,6 +35,7 @@ const createEvent = async (req: Request, res: Response, next: NextFunction) => {
         return
     }
 
+    //TODO: fix the problem where an event cant be added because it over laps. (9 till 10 blocks a 10 till 11 event.)
     const clashingEvents = await db.select()
         .from(eventSchema)
         .where(
