@@ -170,5 +170,4 @@ for item in items:
 		print("is the api server broken? im having trouble making requests!")
 		exit()
 
-# TODO: fix the problem where an event cant be added because it over laps. (9 till 10 blocks a 10 till 11 event.)
 print("✅")

@@ -35,15 +35,20 @@ const createEvent = async (req: Request, res: Response, next: NextFunction) => {
         return
     }
 
-    //TODO: fix the problem where an event cant be added because it over laps. (9 till 10 blocks a 10 till 11 event.)
+    const adjustedEndTime = new Date(req.body.end)
+    adjustedEndTime.setMinutes(adjustedEndTime.getMinutes() - 1);
+
+    const adjustedStartTime = new Date(req.body.start)
+    adjustedStartTime.setMinutes(adjustedStartTime.getMinutes() + 1);
+
     const clashingEvents = await db.select()
         .from(eventSchema)
         .where(
             and(
                 eq(eventSchema.timetableId, req.body.timetableId),
                 and(
-                    gte(eventSchema.end, req.body.start),
-                    lte(eventSchema.start, req.body.end) // corrected from req.body.end
+                    gte(eventSchema.end, dateTimeToString(adjustedStartTime)),
+                    lte(eventSchema.start, dateTimeToString(adjustedEndTime))
                 )
             )
         );
