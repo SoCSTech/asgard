@@ -4,7 +4,7 @@ import { events as eventSchema, events, users as userSchema } from '@/db/schema'
 import { eq, and, or, gte, lte } from 'drizzle-orm';
 import { getUserIdFromJWT, getTokenFromAuthCookie } from "@/utils/auth";
 import { isUserATechnician } from "@/utils/users";
-import { dateToString } from "@/utils/date";
+import { dateToString, dateTimeToString } from "@/utils/date";
 import { log } from "@/utils/log";
 const moment = require('moment');
 const dotenv = require('dotenv');
@@ -53,7 +53,7 @@ const createEvent = async (req: Request, res: Response, next: NextFunction) => {
     }
 
     let currentTime: Date = new Date();
-    let currentTimeStr = dateToString(currentTime);
+    let currentTimeStr = dateTimeToString(currentTime);
 
     const newEvent = await db.insert(eventSchema).values({
         name: req.body.name,
@@ -130,7 +130,7 @@ const updateEvent = async (req: Request, res: Response, next: NextFunction) => {
     }
 
     let currentTime: Date = new Date();
-    let currentTimeStr = dateToString(currentTime);
+    let currentTimeStr = dateTimeToString(currentTime);
 
     const updatedTimetable = await db.update(eventSchema)
         .set({
@@ -155,7 +155,6 @@ const updateEvent = async (req: Request, res: Response, next: NextFunction) => {
 
 const getEventsForTimetable = async (req: Request, res: Response, next: NextFunction) => {
     const timetableId: string = req.params.timetableId
-    const token = getTokenFromAuthCookie(req, res)
 
     const events = await db.select()
         .from(eventSchema)
@@ -164,4 +163,18 @@ const getEventsForTimetable = async (req: Request, res: Response, next: NextFunc
     res.json({ events: events });
 }
 
-export default { getEventById, getAllEvents, createEvent, deleteEvent, updateEvent, getEventsForTimetable };
+const getNowAndNextEventsForTimetable = async (req: Request, res: Response, next: NextFunction) => {
+    const timetableId: string = req.params.timetableId
+
+    let currentDate: Date = new Date();
+    let currentDateStr = dateToString(currentDate);
+
+    const events = await db.select()
+        .from(eventSchema)
+        .where(and(eq(eventSchema.start, currentDateStr), eq(eventSchema.timetableId, timetableId)))
+
+    // res.json({ events: events });
+    res.json("error")
+}
+
+export default { getEventById, getAllEvents, createEvent, deleteEvent, updateEvent, getEventsForTimetable, getNowAndNextEventsForTimetable };
