@@ -201,12 +201,17 @@ for item in items:
 	combined = False
 	if len(item['allRoomIds']) > len(room):
 		combined = True
+  
+	# filter out staff thats not staff
+	staff = item["allLecturerNames"]
+	if staff.isdigit():
+		staff = ""
 		
   	# Send Asgard the new event!
 	url = config["asgard_server"] + "/v2/event"
 	data = {
 		"name": name,
-		"staff": item["allLecturerNames"],
+		"staff": staff,
 		"moduleCode": moduleId,
 		"timetableId": timetable_id,
 		"type": event,

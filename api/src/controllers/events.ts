@@ -63,7 +63,7 @@ const createEvent = async (req: Request, res: Response, next: NextFunction) => {
 
     const newEvent = await db.insert(eventSchema).values({
         name: req.body.name,
-        staff: req.body.staff || "",
+        staff: req.body.staff || null,
         moduleCode: req.body.moduleCode || null,
         timetableId: req.body.timetableId,
         type: req.body.type || 'OTHER',
