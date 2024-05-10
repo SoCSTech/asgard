@@ -17,5 +17,7 @@
     "current_week": 33,
     "current_week_start_date": "May 06 2024 00:00AM",
     "default_cell_color": "#F9844A",
-    "asgard_server": "http://localhost:3000"
+    "asgard_server": "http://localhost:3000",
+    "asgard_username": "svc-dataimporter",
+    "asgard_password": "computing"
 }
