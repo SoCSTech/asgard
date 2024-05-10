@@ -1,7 +1,7 @@
 import e, { Request, Response, NextFunction } from "express";
 import { db } from '@/db';
-import { events as eventSchema, events, users as userSchema } from '@/db/schema';
-import { eq, and, or, gte, lte } from 'drizzle-orm';
+import { events as eventSchema, events, users as userSchema, timetables as timetableSchema } from '@/db/schema';
+import { eq, and, or, gte, lte, is } from 'drizzle-orm';
 import { getUserIdFromJWT, getTokenFromAuthCookie } from "@/utils/auth";
 import { isUserATechnician } from "@/utils/users";
 import { dateToString, dateTimeToString } from "@/utils/date";
@@ -162,7 +162,18 @@ const updateEvent = async (req: Request, res: Response, next: NextFunction) => {
 }
 
 const getEventsForTimetable = async (req: Request, res: Response, next: NextFunction) => {
-    const timetableId: string = req.params.timetableId
+    let timetableId: string = req.params.timetableId
+
+    const isSpaceCode: RegExp = /^[A-Za-z]{3}\d{4}$/; // Three Letters - 4 Numbers
+    if (isSpaceCode.test(timetableId)){
+        const timetable = await db.select().from(timetableSchema)
+            .where(and(
+                        eq(timetableSchema.spaceCode, String(timetableId)),
+                        eq(timetableSchema.isDeleted, false)
+                    ));
+
+        timetableId = timetable[0].id;
+    }
 
     const events = await db.select()
         .from(eventSchema)
