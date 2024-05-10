@@ -72,7 +72,8 @@ const createEvent = async (req: Request, res: Response, next: NextFunction) => {
         end: req.body.end || "",
         lastModified: currentTimeStr,
         modifiedBy: getUserIdFromJWT(token),
-        isCombinedSession: req.body.isCombinedSession || false
+        isCombinedSession: req.body.isCombinedSession || false,
+        group: req.body.group || null,
     });
 
     await log(`Has created event ${req.body.name} (${req.body.moduleCode || "none"}), starting ${req.body.start} and ending ${req.body.end} to Timetable ${req.body.timetableId}`, currentUserId)
@@ -150,7 +151,8 @@ const updateEvent = async (req: Request, res: Response, next: NextFunction) => {
             end: req.body.end || event[0].end,
             lastModified: currentTimeStr,
             modifiedBy: currentUserId,
-            isCombinedSession: req.body.isCombinedSession || event[0].isCombinedSession
+            isCombinedSession: req.body.isCombinedSession || event[0].isCombinedSession,
+            group: req.body.group || event[0].group,
         })
         .where(eq(eventSchema.id, event[0].id));
 

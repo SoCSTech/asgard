@@ -73,6 +73,7 @@ export const events = mysqlTable('events', {
     lastModified: timestamp('last_modified', { mode: "string" }).defaultNow().notNull(),
     modifiedBy: varchar('modified_by_id', { length: 128 }).references(() => users.id),
     isCombinedSession: boolean('is_combined_session').default(false),
+    group: varchar('group', { length: 10 }),
 })
 
 export const timetableGroups = mysqlTable('timetable_groups', {

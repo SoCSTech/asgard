@@ -1,0 +1,1 @@
+ALTER TABLE `events` ADD `group` varchar(10);

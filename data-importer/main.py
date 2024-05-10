@@ -195,6 +195,12 @@ for item in items:
  	# TODO: ... because if you book an event in CMIS the module code will be the full event name. 
 	if len(moduleId) > 20:
 		moduleId = ""
+  
+	# work out if the room should be combined or not
+	# look at the length of all the space codes and see if its longer than just the current one.
+	combined = False
+	if len(item['allRoomIds']) > len(room):
+		combined = True
 		
   	# Send Asgard the new event!
 	url = config["asgard_server"] + "/v2/event"
@@ -207,7 +213,8 @@ for item in items:
 		"colour": cell_colour,
 		"start": start_dt.isoformat(),
 		"end": end_dt.isoformat(),
-		"isCombinedSession": False # To Be Implemented Later
+		"isCombinedSession": combined,
+		"group": item['allGroupCodes']
 	}
  
 	headers = {"Authorization": "Bearer " + token}
