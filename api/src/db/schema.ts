@@ -11,17 +11,17 @@ import {
     mysqlEnum,
 } from 'drizzle-orm/mysql-core';
 import { relations } from 'drizzle-orm';
-const short = require('short-uuid');
+import { createId } from '@paralleldrive/cuid2';
 
 export const logs = mysqlTable('logs', {
-    id: varchar('id', { length: 128 }).$defaultFn(() => short.uuid()).primaryKey(),
+    id: varchar('id', { length: 128 }).$defaultFn(() => createId()).primaryKey(),
     user: varchar('user', { length: 128 }).notNull().references(() => users.id),
     message: text('message').notNull(),
     time: timestamp('time').defaultNow().notNull()
 });
 
 export const users = mysqlTable('users', {
-    id: varchar('id', { length: 128 }).$defaultFn(() => short.uuid()).primaryKey(),
+    id: varchar('id', { length: 128 }).$defaultFn(() => createId()).primaryKey(),
     username: varchar('username', { length: 50 }).notNull(),
     shortName: varchar('short_name', { length: 50 }).notNull(),
     fullName: varchar('full_name', { length: 256 }).notNull(),
@@ -40,7 +40,7 @@ export const users = mysqlTable('users', {
 }));
 
 export const timetables = mysqlTable('timetables', {
-    id: varchar('id', { length: 128 }).$defaultFn(() => short.uuid()).primaryKey(),
+    id: varchar('id', { length: 128 }).$defaultFn(() => createId()).primaryKey(),
     spaceCode: varchar('space_code', { length: 10 }).notNull(),
     name: varchar('name', { length: 256 }).notNull(),
     creationDate: timestamp('creation_date').defaultNow().notNull(),
@@ -61,7 +61,7 @@ export const timetablesRelations = relations(timetables, ({ one, many }) => ({
 }))
 
 export const events = mysqlTable('events', {
-    id: varchar('id', { length: 128 }).$defaultFn(() => short.uuid()).primaryKey(),
+    id: varchar('id', { length: 128 }).$defaultFn(() => createId()).primaryKey(),
     name: varchar('name', { length: 128 }),
     staff: varchar('staff', { length: 128 }),
     moduleCode: varchar('module_code', { length: 20 }),
@@ -77,7 +77,7 @@ export const events = mysqlTable('events', {
 })
 
 export const timetableGroups = mysqlTable('timetable_groups', {
-    id: varchar('id', { length: 128 }).$defaultFn(() => short.uuid()).primaryKey(),
+    id: varchar('id', { length: 128 }).$defaultFn(() => createId()).primaryKey(),
     name: varchar('name', { length: 128 }).notNull(),
     subtitle: varchar('subtitle', { length: 128 }).notNull(),
     lastModified: timestamp('last_modified', { mode: "string" }).defaultNow().notNull(),

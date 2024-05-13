@@ -24,7 +24,7 @@ function formatMailTextAsHTML(rawText: string): string {
     const sd = new showdown.Converter();
     sd.setOption('simplifiedAutoLink', true);
     const html = sd.makeHtml(rawText);
-    
+
     return `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -96,24 +96,28 @@ asgard2 by SoCS Technicians
 University of Lincoln
 *Please reply to this email if you have any queries about this system.*`
 
-    // Sends email from the system
-    const info = await transporter.sendMail({
-        from: `"Asgard - Timetables and Bookings" <${process.env.MAIL_FROM}>`, // sender address
-        replyTo: `${process.env.MAIL_REPLY}`,
-        to: to,
-        subject: subject,
-        text: body.replace(removeAsterisksPattern, "") + plainEmailSignature,
-        html: formatMailTextAsHTML(body),
-    });
+    try {
+        // Sends email from the system
+        const info = await transporter.sendMail({
+            from: `"Asgard - Timetables and Bookings" <${process.env.MAIL_FROM}>`, // sender address
+            replyTo: `${process.env.MAIL_REPLY}`,
+            to: to,
+            subject: subject,
+            text: body.replace(removeAsterisksPattern, "") + plainEmailSignature,
+            html: formatMailTextAsHTML(body),
+        });
 
-    // Logs out the msg id for debugging
-    console.log("📫 Message sent: " + info.messageId);
+        // Logs out the msg id for debugging
+        console.log("📫 Message sent: " + info.messageId);
+    } catch (error) {
+        console.warn("📭 Message failed to send: " + error);
+    }
 }
 
 export async function SendPasswordResetEmail(to: string, name: string, code: string) {
     await SendEmail(
-        to, 
-        `Your account verification code is ${code}`, 
+        to,
+        `Your account verification code is ${code}`,
         `Hi ${name}, 
 
 Your Asgard password reset code is **${code}**.

@@ -5,7 +5,7 @@ import { eq, and, or, asc } from 'drizzle-orm';
 import * as email from '@/communication/email';
 import { getUserIdFromJWT, getTokenFromAuthCookie } from "@/utils/auth";
 import { simplifiedUser, getGravatarUrl } from "@/utils/users";
-const request = require('request');
+import axios from 'axios';
 const jwt = require('jsonwebtoken');
 const dotenv = require('dotenv');
 dotenv.config();
@@ -63,9 +63,21 @@ const getUserProfilePicture = async (req: Request, res: Response, next: NextFunc
         res.status(404).json({ "message": "User hasn't set profile picture" })
         return
     }
-
-    // res.redirect(user[0].profilePictureUrl as string)
-    request(user[0].profilePictureUrl as string).pipe(res);
+    
+    axios.get(user[0].profilePictureUrl as string, {
+        responseType: 'arraybuffer',
+        headers: {
+            'Accept': 'image/avif,image/webp,image/apng'
+        }
+    }).then(function (response) {
+        const contentType = response.headers['content-type'];
+        res.set('Content-Type', contentType);
+        res.send(response.data)
+    })
+        .catch(function (error) {
+            console.log(error);
+            res.status(500).json({ "message": "Couldn't get profile picture" });
+        })
 };
 
 const getAllUsers = async (req: Request, res: Response, next: NextFunction) => {

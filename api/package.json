@@ -22,7 +22,9 @@
   },
   "homepage": "https://github.com/SoCSTech/asgard2#readme",
   "dependencies": {
+    "@paralleldrive/cuid2": "^2.2.2",
     "@types/showdown": "^2.0.6",
+    "axios": "^1.6.8",
     "bcrypt": "^5.1.1",
     "cors": "^2.8.5",
     "dotenv": "^16.3.2",
@@ -34,8 +36,6 @@
     "morgan": "^1.10.0",
     "mysql2": "^3.7.1",
     "nodemailer": "^6.9.8",
-    "request": "^2.88.2",
-    "short-uuid": "^4.2.2",
     "showdown": "^2.1.0",
     "ts-node": "^10.9.2"
   },
@@ -43,7 +43,7 @@
     "@types/express": "^4.17.21",
     "@types/helmet": "^4.0.0",
     "@types/morgan": "^1.9.9",
-    "@types/node": "^20.11.5",
+    "@types/node": "^20.12.11",
     "@types/nodemailer": "^6.4.14",
     "drizzle-kit": "^0.20.13",
     "nodemon": "^3.0.3",
