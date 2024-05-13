@@ -1,7 +1,7 @@
 import e, { Request, Response, NextFunction } from "express";
 import { db } from '@/db';
-import { events as eventSchema, events, users as userSchema, timetables as timetableSchema } from '@/db/schema';
-import { eq, and, or, gte, lte, is } from 'drizzle-orm';
+import { events as eventSchema, users as userSchema, timetables as timetableSchema, events } from '@/db/schema';
+import { eq, and, or, gte, lte, lt, gt } from 'drizzle-orm';
 import { getUserIdFromJWT, getTokenFromAuthCookie } from "@/utils/auth";
 import { isUserATechnician } from "@/utils/users";
 import { dateToString, dateTimeToString } from "@/utils/date";
@@ -97,8 +97,6 @@ const deleteEvent = async (req: Request, res: Response, next: NextFunction) => {
         .from(eventSchema)
         .where(eq(eventSchema.id, eventId));
 
-    console.log(foundEvent)
-
     if (foundEvent.length !== 1) {
         res.status(404).json({ message: "Could not find event to delete, has it already been deleted?" });
         return;
@@ -165,12 +163,12 @@ const getEventsForTimetable = async (req: Request, res: Response, next: NextFunc
     let timetableId: string = req.params.timetableId
 
     const isSpaceCode: RegExp = /^[A-Za-z]{3}\d{4}$/; // Three Letters - 4 Numbers
-    if (isSpaceCode.test(timetableId)){
+    if (isSpaceCode.test(timetableId)) {
         const timetable = await db.select().from(timetableSchema)
             .where(and(
-                        eq(timetableSchema.spaceCode, String(timetableId)),
-                        eq(timetableSchema.isDeleted, false)
-                    ));
+                eq(timetableSchema.spaceCode, String(timetableId)),
+                eq(timetableSchema.isDeleted, false)
+            ));
 
         timetableId = timetable[0].id;
     }
@@ -185,15 +183,51 @@ const getEventsForTimetable = async (req: Request, res: Response, next: NextFunc
 const getNowAndNextEventsForTimetable = async (req: Request, res: Response, next: NextFunction) => {
     const timetableId: string = req.params.timetableId
 
-    let currentDate: Date = new Date();
-    let currentDateStr = dateToString(currentDate);
+    let currentTime: Date = new Date();
+    let currentTimeStr = dateTimeToString(currentTime);
 
-    const events = await db.select()
+    let tomorrow: Date = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1); // Add 1 day
+    tomorrow.setHours(0, 0, 0, 0); // Set the time to midnight
+
+    const currentEvent = await db.select()
         .from(eventSchema)
-        .where(and(eq(eventSchema.start, currentDateStr), eq(eventSchema.timetableId, timetableId)))
+        .where(
+            and(
+                lte(eventSchema.start, currentTimeStr),
+                gte(eventSchema.end, currentTimeStr),
+                eq(eventSchema.timetableId, timetableId)
+            )
+        ).orderBy(eventSchema.start)
+        .limit(1)
 
-    // res.json({ events: events });
-    res.json("error")
+    const nextEvent = await db.select()
+        .from(eventSchema)
+        .where(
+            and(
+                gt(eventSchema.start, currentEvent[0].end),
+                eq(eventSchema.timetableId, timetableId),
+                lt(eventSchema.start, dateTimeToString(tomorrow))
+            )
+        ).orderBy(eventSchema.start)
+        .limit(1)
+
+    // Handle if nothing is on for the rest of the day
+    let eventNowReturnValue, eventNextReturnValue;
+    if (currentEvent.length !== 1)
+        eventNowReturnValue = { "nothing": true }
+    else
+        eventNowReturnValue = currentEvent[0]
+
+    if (nextEvent.length !== 1)
+        eventNextReturnValue = { "nothing": true }
+    else
+        eventNextReturnValue = nextEvent[0]
+
+    res.json({
+        "now": eventNowReturnValue,
+        "next": eventNextReturnValue
+    })
 }
 
 export default { getEventById, getAllEvents, createEvent, deleteEvent, updateEvent, getEventsForTimetable, getNowAndNextEventsForTimetable };

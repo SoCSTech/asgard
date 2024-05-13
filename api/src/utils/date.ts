@@ -1,4 +1,6 @@
 export function dateTimeToString(date: Date): string {
+    const timeOptions = { timeZone: "Europe/London" };
+
     const newDate: string =
         date.getFullYear() +
         "/" +
@@ -6,9 +8,8 @@ export function dateTimeToString(date: Date): string {
         "/" +
         +date.getDate() +
         " " +
-        +date.getHours() +
-        ":" +
-        +date.getMinutes();
+        date.toLocaleTimeString("en-GB", timeOptions)
+
     return newDate;
 }
 

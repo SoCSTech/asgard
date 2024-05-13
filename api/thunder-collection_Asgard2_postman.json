@@ -1,6 +1,6 @@
 {
     "info": {
-        "_postman_id": "caf41ea0-5863-4958-8e16-c2f2cb5dcd8b",
+        "_postman_id": "4e29ed88-6443-4e8e-a11d-5586ec092cc5",
         "name": "Asgard2",
         "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
         "description": ""
@@ -76,7 +76,7 @@
                                     "language": "json"
                                 }
                             },
-                            "raw": "{\n  \"username\": \"fnoble\",\n  \"shortName\": \"Florence\",\n  \"fullName\": \"Florence Noble\",\n  \"role\": \"TECHNICIAN\",\n  \"email\": \"fnoble@lincoln.ac.uk\"\n}"
+                            "raw": "{\n  \"username\": \"svc-dataimporter\",\n  \"shortName\": \"Data Importer Service Account\",\n  \"fullName\": \"Data Importer Service Account\",\n  \"role\": \"TECHNICIAN\",\n  \"email\": \"joshcooper+svc-dataimporter@lincoln.ac.uk\"\n}"
                         }
                     }
                 },
@@ -221,7 +221,7 @@
                                     "language": "json"
                                 }
                             },
-                            "raw": "{\n  \"username\": \"joshcooper\"\n}"
+                            "raw": "{\n  \"username\": \"svc-dataimporter\"\n}"
                         }
                     }
                 },
@@ -262,7 +262,7 @@
                                     "language": "json"
                                 }
                             },
-                            "raw": "{\n  \"resetToken\": \"9D78BA82\",\n  \"password\": \"computing\"\n}"
+                            "raw": "{\n  \"resetToken\": \"55611661\",\n  \"password\": \"computing\"\n}"
                         }
                     }
                 }
@@ -322,7 +322,7 @@
                                     "language": "json"
                                 }
                             },
-                            "raw": "{\n  \"spaceCode\": \"INB1306\",\n  \"name\": \"Lab 6\",\n  \"capacity\": 30\n}"
+                            "raw": "{\n  \"spaceCode\": \"INB1102\",\n  \"name\": \"Compter Lab 1A\",\n  \"capacity\": 77\n}"
                         }
                     }
                 },
@@ -364,10 +364,10 @@
                     "request": {
                         "method": "PUT",
                         "url": {
-                            "raw": "/v2/timetable/INB1306",
+                            "raw": "/v2/timetable/INB1102",
                             "path": [
                                 "timetable",
-                                "INB1306"
+                                "INB1102"
                             ],
                             "host": [
                                 "v2"
@@ -380,7 +380,7 @@
                                     "language": "json"
                                 }
                             },
-                            "raw": "{\n  \"name\": \"Lab 6A\",\n  \"spaceCode\": \"INB1306\",\n  \"capacity\": 3,\n  \"isDeleted\": false\n}"
+                            "raw": "{\n  \"name\": \"SoCS Lab 1A\",\n  \"spaceCode\": \"INB1102\",\n  \"capacity\": 69,\n  \"isDeleted\": false\n}"
                         }
                     }
                 },
@@ -456,7 +456,7 @@
                                     "language": "json"
                                 }
                             },
-                            "raw": "{\n  \"name\": \"Computer Science for Noobs\",\n  \"staff\": \"Bob Smith, Derek Jones\",\n  \"moduleCode\": \"CMP0004\",\n  \"timetableId\": \"8bd7a144-f011-4955-82d7-9fe6f25ea80a\",\n  \"type\": \"OTHER\",\n  \"colour\": \"#ff0077\",\n  \"start\": \"2024-04-03 14:00:00\",\n  \"end\": \"2024-04-03 16:00:00\",\n  \"isCombinedSession\": false\n}"
+                            "raw": "{\n  \"name\": \"Social: Computer Science for Noobs\",\n  \"staff\": \"Bob Smith, Derek Jones\",\n  \"moduleCode\": \"CMP0004\",\n  \"timetableId\": \"a02e6de1-187b-4cd8-8729-1002c6bdc5a1\",\n  \"type\": \"SOCIAL\",\n  \"colour\": \"#ff0077\",\n  \"start\": \"2024-05-10 17:00:00\",\n  \"end\": \"2024-05-10 18:00:00\",\n  \"isCombinedSession\": false,\n  \"group\": \"A\"\n}"
                         }
                     }
                 },
@@ -481,10 +481,10 @@
                     "request": {
                         "method": "PUT",
                         "url": {
-                            "raw": "/v2/event/b0948ec9-a410-465c-b746-5177c7b2e537",
+                            "raw": "/v2/event/3b4cfed0-231e-4bf6-9ce6-e2cccc922a28",
                             "path": [
                                 "event",
-                                "b0948ec9-a410-465c-b746-5177c7b2e537"
+                                "3b4cfed0-231e-4bf6-9ce6-e2cccc922a28"
                             ],
                             "host": [
                                 "v2"
@@ -497,7 +497,7 @@
                                     "language": "json"
                                 }
                             },
-                            "raw": "{\n  \"name\": \"Computer Science for Pros\",\n  \"staff\": \"Florence Noble\",\n  \"moduleCode\": \"CMP1234\",\n  \"timetableId\": \"365c3cc1-2086-4d0f-9261-4d0cf68bfa47\",\n  \"type\": \"LECTURE\",\n  \"colour\": \"#59d5d9\",\n  \"start\": \"2024-04-04 12:00:00\",\n  \"end\": \"2024-04-04 14:00:00\",\n  \"isCombinedSession\": false\n}"
+                            "raw": "{\n  \"name\": \"Computer Science for Pros\",\n  \"staff\": \"Florence Noble\",\n  \"moduleCode\": \"CMP1234\",\n  \"timetableId\": \"365c3cc1-2086-4d0f-9261-4d0cf68bfa47\",\n  \"type\": \"LECTURE\",\n  \"colour\": \"#59d5d9\",\n  \"start\": \"2024-04-04 12:00:00\",\n  \"end\": \"2024-04-04 14:00:00\",\n  \"isCombinedSession\": false,\n  \"group\": \"B\"\n}"
                         }
                     }
                 },
@@ -506,11 +506,28 @@
                     "request": {
                         "method": "GET",
                         "url": {
-                            "raw": "/v2/timetable/8bd7a144-f011-4955-82d7-9fe6f25ea80a/events",
+                            "raw": "/v2/timetable/a02e6de1-187b-4cd8-8729-1002c6bdc5a1/events",
                             "path": [
                                 "timetable",
-                                "8bd7a144-f011-4955-82d7-9fe6f25ea80a",
+                                "a02e6de1-187b-4cd8-8729-1002c6bdc5a1",
                                 "events"
+                            ],
+                            "host": [
+                                "v2"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Get Now and Next Events",
+                    "request": {
+                        "method": "GET",
+                        "url": {
+                            "raw": "/v2/timetable/a02e6de1-187b-4cd8-8729-1002c6bdc5a1/now-next",
+                            "path": [
+                                "timetable",
+                                "a02e6de1-187b-4cd8-8729-1002c6bdc5a1",
+                                "now-next"
                             ],
                             "host": [
                                 "v2"
@@ -622,7 +639,7 @@
         "bearer": [
             {
                 "key": "token",
-                "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImFkZGQzZGYzLWQyMjctNGUxMi1hZDM1LTRlMDA2MzNkZTdiNSIsInVzZXJuYW1lIjoiam9zaGNvb3BlciIsImlhdCI6MTcxNDcyNzE5MiwiZXhwIjoxNzE0ODEzNTkyfQ.EibpVYBNPldJqLt2GMwXR8-9_SMXMRpSHCCMYrheH3U",
+                "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImFkZGQzZGYzLWQyMjctNGUxMi1hZDM1LTRlMDA2MzNkZTdiNSIsInVzZXJuYW1lIjoiam9zaGNvb3BlciIsImlhdCI6MTcxNTYwNDExNCwiZXhwIjoxNzE1NjkwNTE0fQ.J1rmr4cBHfXm34EowPShspP04ntwgv16Wz2pJ9tk9QY",
                 "type": "string"
             }
         ]
