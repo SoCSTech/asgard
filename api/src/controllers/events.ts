@@ -1,11 +1,12 @@
 import e, { Request, Response, NextFunction } from "express";
 import { db } from '@/db';
-import { events as eventSchema, users as userSchema, timetables as timetableSchema, events } from '@/db/schema';
+import { events as eventSchema, users as userSchema, timetables as timetableSchema } from '@/db/schema';
 import { eq, and, or, gte, lte, lt, gt } from 'drizzle-orm';
 import { getUserIdFromJWT, getTokenFromAuthCookie } from "@/utils/auth";
 import { isUserATechnician } from "@/utils/users";
 import { dateToString, dateTimeToString } from "@/utils/date";
 import { log } from "@/utils/log";
+import { convertSpaceCodeToTimetableId } from "@/controllers/timetables"
 const moment = require('moment');
 const dotenv = require('dotenv');
 dotenv.config();
@@ -161,17 +162,7 @@ const updateEvent = async (req: Request, res: Response, next: NextFunction) => {
 
 const getEventsForTimetable = async (req: Request, res: Response, next: NextFunction) => {
     let timetableId: string = req.params.timetableId
-
-    const isSpaceCode: RegExp = /^[A-Za-z]{3}\d{4}$/; // Three Letters - 4 Numbers
-    if (isSpaceCode.test(timetableId)) {
-        const timetable = await db.select().from(timetableSchema)
-            .where(and(
-                eq(timetableSchema.spaceCode, String(timetableId)),
-                eq(timetableSchema.isDeleted, false)
-            ));
-
-        timetableId = timetable[0].id;
-    }
+    timetableId = await convertSpaceCodeToTimetableId(timetableId)
 
     const events = await db.select()
         .from(eventSchema)
@@ -181,7 +172,8 @@ const getEventsForTimetable = async (req: Request, res: Response, next: NextFunc
 }
 
 const getNowAndNextEventsForTimetable = async (req: Request, res: Response, next: NextFunction) => {
-    const timetableId: string = req.params.timetableId
+    let timetableId: string = req.params.timetableId
+    timetableId = await convertSpaceCodeToTimetableId(timetableId)
 
     let currentTime: Date = new Date();
     let currentTimeStr = dateTimeToString(currentTime);

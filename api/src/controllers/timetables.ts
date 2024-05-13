@@ -17,6 +17,20 @@ const newTimetable = {
     combinedPartnerId: timetableSchema.combinedPartnerId || null
 }
 
+export const convertSpaceCodeToTimetableId = async (timetableId: string) => {
+    const isSpaceCode: RegExp = /^[A-Za-z]{3}\d{4}$/; // Three Letters - 4 Numbers
+    if (isSpaceCode.test(timetableId)) {
+        const timetable = await db.select().from(timetableSchema)
+            .where(and(
+                eq(timetableSchema.spaceCode, String(timetableId)),
+                eq(timetableSchema.isDeleted, false)
+            ));
+
+        return timetable[0].id;
+    }
+    return timetableId;
+}
+
 const getTimetableById = async (req: Request, res: Response, next: NextFunction) => {
     let timetableId: string = req.params.id
 
