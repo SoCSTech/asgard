@@ -8,13 +8,13 @@
         "inb1103": 12
     },
     "colors": {
-        "default": "#ffffff",
+        "default": "#d6fffe",
         "lecture": "#ff00ff",
         "workshop": "#ffff00",
         "maintenance": "#ff0000"
     },
     "default_room": "inb1102",
-    "current_week": 32,
+    "current_week": 40,
     "current_week_start_date": "May 13 2024 00:00AM",
     "default_cell_color": "#F9844A",
     "asgard_server": "http://localhost:3000",

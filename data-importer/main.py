@@ -132,7 +132,7 @@ for item in items:
 		m = "NO"
 		print('🖍️  no colour assigned')
   
-  	# assign colours per level (CMP1 = MP1, CGP2 = GP = 2 etc...)
+  	# assign colours per level (CMP1 = MP1, CGP2 = GP2 etc...)
 	if m == 'GP1':
 		cell_colour = '#FCC05F'
 	if m == 'GP2':
