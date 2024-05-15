@@ -70,7 +70,12 @@ const getAllCarouselsAndItemsForATimetable = async (req: Request, res: Response,
                 eq(carouselItemsSchema.carousel, carousel[0].id)
             )).orderBy(carouselItemsSchema.order)
 
-    res.json({ carousel: carousel[0], items: items });
+    let totalDuration = 0
+    items.map((x) => {
+        totalDuration += x.durationMs
+    })
+
+    res.json({ carousel: carousel[0], items: items, totalDuration: totalDuration });
 }
 
 const createCarousel = async (req: Request, res: Response, next: NextFunction) => {
