@@ -1,6 +1,6 @@
 import e, { Request, Response, NextFunction } from "express";
 import { db } from '@/db';
-import { events as eventSchema, users as userSchema, timetables as timetableSchema } from '@/db/schema';
+import { carousels as carouselSchema, carouselItems as carouselItemsSchema, timetables as timetableSchema } from '@/db/schema';
 import { eq, and, or, gte, lte, lt, gt } from 'drizzle-orm';
 import { getUserIdFromJWT, getTokenFromAuthCookie } from "@/utils/auth";
 import { isUserATechnician } from "@/utils/users";
@@ -12,34 +12,56 @@ const dotenv = require('dotenv');
 dotenv.config();
 
 const getCarouselItemById = async (req: Request, res: Response, next: NextFunction) => {
-    const eventId: string = req.params.id
+    const itemId: string = req.params.itemId
 
-    const events = await db.select()
-        .from(eventSchema)
-        .where(eq(eventSchema.id, eventId))
+    const items = await db.select()
+        .from(carouselSchema)
+        .where(and(
+            eq(carouselSchema.id, itemId),
+            eq(carouselSchema.isDeleted, false)
+        ))
 
-    res.json({ events: events });
+    res.json({ carouselItems: items });
 }
 
 const getAllCarousels = async (req: Request, res: Response, next: NextFunction) => {
-    const events = await db.select()
-        .from(eventSchema)
+    const items = await db.select()
+        .from(carouselSchema)
+        .where(
+            eq(carouselSchema.isDeleted, false)
+        )
 
-    res.json({ events: events });
+    res.json({ carousels: items });
 }
 
-const getAllCarouselItemsForCarousel = async (req: Request, res: Response, next: NextFunction) => {
-    const events = await db.select()
-        .from(eventSchema)
+const getCarousel = async (req: Request, res: Response, next: NextFunction) => {
+    const carouselId: string = req.params.carouselId
 
-    res.json({ events: events });
+    const items = await db.select()
+        .from(carouselSchema)
+        .where(
+            and(
+                eq(carouselSchema.isDeleted, false),
+                eq(carouselSchema.id, carouselId)
+            ))
+
+    res.json({ carouselItems: items });
 }
 
 const getAllCarouselsAndItemsForATimetable = async (req: Request, res: Response, next: NextFunction) => {
-    const events = await db.select()
-        .from(eventSchema)
+    const timetableId: string = req.params.timetableId
 
-    res.json({ events: events });
+    const items = await db.select()
+        .from(carouselSchema)
+        .leftJoin(carouselItemsSchema, eq(carouselSchema.id, carouselItemsSchema.carousel))
+        .where(
+            and(
+                eq(carouselSchema.isDeleted, false),
+                eq(carouselItemsSchema.isDeleted, false),
+                eq(carouselSchema.timetable, timetableId)
+            ))
+
+    res.json({ carousels: items });
 }
 
 const createCarousel = async (req: Request, res: Response, next: NextFunction) => {
@@ -50,50 +72,38 @@ const createCarousel = async (req: Request, res: Response, next: NextFunction) =
         return
     }
 
-    const adjustedEndTime = new Date(req.body.end)
-    adjustedEndTime.setMinutes(adjustedEndTime.getMinutes() - 1);
-
-    const adjustedStartTime = new Date(req.body.start)
-    adjustedStartTime.setMinutes(adjustedStartTime.getMinutes() + 1);
-
-    const clashingEvents = await db.select()
-        .from(eventSchema)
+    const existingCarousels = await db.select()
+        .from(carouselSchema)
         .where(
             and(
-                eq(eventSchema.timetableId, req.body.timetableId),
-                and(
-                    gte(eventSchema.end, dateTimeToString(adjustedStartTime)),
-                    lte(eventSchema.start, dateTimeToString(adjustedEndTime))
-                )
+                eq(carouselSchema.timetable, req.body.timetable),
+                eq(carouselSchema.isDeleted, false)
             )
         );
 
-    if (clashingEvents.length !== 0) {
-        res.status(409).json({ message: "Event already exists on that timetable at that time." });
+    if (existingCarousels.length !== 0) {
+        res.status(409).json({ message: "Carousel already exists on that timetable" });
         return;
     }
 
+    if (!req.body.timetable) {
+        res.status(409).json({ message: "Timetable hasn't been provided" });
+        return;
+    }
+
+    let timetableId = await convertSpaceCodeToTimetableId(req.body.timetable)
     let currentTime: Date = new Date();
     let currentTimeStr = dateTimeToString(currentTime);
 
-    const newEvent = await db.insert(eventSchema).values({
-        name: req.body.name,
-        staff: req.body.staff || null,
-        moduleCode: req.body.moduleCode || null,
-        timetableId: req.body.timetableId,
-        type: req.body.type || 'OTHER',
-        colour: req.body.colour || "#ff0077",
-        start: req.body.start || "",
-        end: req.body.end || "",
+    const newCarousel = await db.insert(carouselSchema).values({
+        timetable: timetableId,
         lastModified: currentTimeStr,
-        modifiedBy: getUserIdFromJWT(token),
-        isCombinedSession: req.body.isCombinedSession || false,
-        group: req.body.group || null,
+        modifiedBy: getUserIdFromJWT(token)
     });
 
-    await log(`Has created event ${req.body.name} (${req.body.moduleCode || "none"}), starting ${req.body.start} and ending ${req.body.end} to Timetable ${req.body.timetableId}`, currentUserId)
+    await log(`Has created carousel for Timetable ${req.body.timetable}`, currentUserId)
 
-    res.status(201).json({ timetableId: req.body.timetableId, message: 'Event has been created' });
+    res.status(201).json({ timetable: req.body.timetable, message: 'Carousel has been created' });
 };
 
 const createCarouselItem = async (req: Request, res: Response, next: NextFunction) => {
@@ -104,216 +114,197 @@ const createCarouselItem = async (req: Request, res: Response, next: NextFunctio
         return
     }
 
-    const adjustedEndTime = new Date(req.body.end)
-    adjustedEndTime.setMinutes(adjustedEndTime.getMinutes() - 1);
-
-    const adjustedStartTime = new Date(req.body.start)
-    adjustedStartTime.setMinutes(adjustedStartTime.getMinutes() + 1);
-
-    const clashingEvents = await db.select()
-        .from(eventSchema)
+    const existingItems = await db.select()
+        .from(carouselItemsSchema)
         .where(
             and(
-                eq(eventSchema.timetableId, req.body.timetableId),
-                and(
-                    gte(eventSchema.end, dateTimeToString(adjustedStartTime)),
-                    lte(eventSchema.start, dateTimeToString(adjustedEndTime))
-                )
+                eq(carouselItemsSchema.carousel, req.body.carousel),
+                eq(carouselItemsSchema.isDeleted, false)
             )
         );
 
-    if (clashingEvents.length !== 0) {
-        res.status(409).json({ message: "Event already exists on that timetable at that time." });
-        return;
-    }
-
     let currentTime: Date = new Date();
     let currentTimeStr = dateTimeToString(currentTime);
 
-    const newEvent = await db.insert(eventSchema).values({
-        name: req.body.name,
-        staff: req.body.staff || null,
-        moduleCode: req.body.moduleCode || null,
-        timetableId: req.body.timetableId,
-        type: req.body.type || 'OTHER',
-        colour: req.body.colour || "#ff0077",
-        start: req.body.start || "",
-        end: req.body.end || "",
+    const newItem = await db.insert(carouselItemsSchema).values({
+        carousel: req.body.carousel,
         lastModified: currentTimeStr,
         modifiedBy: getUserIdFromJWT(token),
-        isCombinedSession: req.body.isCombinedSession || false,
-        group: req.body.group || null,
+        type: req.body.type || 'TIMETABLE',
+        name: req.body.name || 'Untitled',
+        durationMs: req.body.durationMs || 4500,
+        order: existingItems.length
     });
 
-    await log(`Has created event ${req.body.name} (${req.body.moduleCode || "none"}), starting ${req.body.start} and ending ${req.body.end} to Timetable ${req.body.timetableId}`, currentUserId)
+    await log(`Has created item for carousel ${req.body.carousel}`, currentUserId)
 
-    res.status(201).json({ timetableId: req.body.timetableId, message: 'Event has been created' });
+    res.status(201).json({ carousel: req.body.carousel, message: 'Carousel item has been created' });
 };
 
 
-const deleteCarousel = async (req: Request, res: Response, next: NextFunction) => {
-    const eventId: string = req.params.id
+// const deleteCarousel = async (req: Request, res: Response, next: NextFunction) => {
+//     const eventId: string = req.params.id
 
-    const token = getTokenFromAuthCookie(req, res)
-    const currentUserId = getUserIdFromJWT(token);
-    if (await isUserATechnician(currentUserId) == false) {
-        res.status(401).json({ "message": "You don't have permission to delete events" })
-        return
-    }
+//     const token = getTokenFromAuthCookie(req, res)
+//     const currentUserId = getUserIdFromJWT(token);
+//     if (await isUserATechnician(currentUserId) == false) {
+//         res.status(401).json({ "message": "You don't have permission to delete events" })
+//         return
+//     }
 
-    // Check if the event exists before trying to delete it
-    const foundEvent = await db.select()
-        .from(eventSchema)
-        .where(eq(eventSchema.id, eventId));
+//     // Check if the event exists before trying to delete it
+//     const foundEvent = await db.select()
+//         .from(eventSchema)
+//         .where(eq(eventSchema.id, eventId));
 
-    if (foundEvent.length !== 1) {
-        res.status(404).json({ message: "Could not find event to delete, has it already been deleted?" });
-        return;
-    }
+//     if (foundEvent.length !== 1) {
+//         res.status(404).json({ message: "Could not find event to delete, has it already been deleted?" });
+//         return;
+//     }
 
-    // Delete it
-    try {
-        await db.delete(eventSchema).where(eq(eventSchema.id, foundEvent[0].id));
-    } catch {
-        res.status(500).json({ "message": "Couldn't delete the event you specified" })
-    }
+//     // Delete it
+//     try {
+//         await db.delete(eventSchema).where(eq(eventSchema.id, foundEvent[0].id));
+//     } catch {
+//         res.status(500).json({ "message": "Couldn't delete the event you specified" })
+//     }
 
-    await log(`Has deleted event ${req.body.eventId}`, currentUserId)
+//     await log(`Has deleted event ${req.body.eventId}`, currentUserId)
 
-    res.status(200).json({ event: foundEvent[0].id, message: "Event has been deleted" })
-}
+//     res.status(200).json({ event: foundEvent[0].id, message: "Event has been deleted" })
+// }
 
-const deleteCarouselItem = async (req: Request, res: Response, next: NextFunction) => {
-    const eventId: string = req.params.id
+// const deleteCarouselItem = async (req: Request, res: Response, next: NextFunction) => {
+//     const eventId: string = req.params.id
 
-    const token = getTokenFromAuthCookie(req, res)
-    const currentUserId = getUserIdFromJWT(token);
-    if (await isUserATechnician(currentUserId) == false) {
-        res.status(401).json({ "message": "You don't have permission to delete events" })
-        return
-    }
+//     const token = getTokenFromAuthCookie(req, res)
+//     const currentUserId = getUserIdFromJWT(token);
+//     if (await isUserATechnician(currentUserId) == false) {
+//         res.status(401).json({ "message": "You don't have permission to delete events" })
+//         return
+//     }
 
-    // Check if the event exists before trying to delete it
-    const foundEvent = await db.select()
-        .from(eventSchema)
-        .where(eq(eventSchema.id, eventId));
+//     // Check if the event exists before trying to delete it
+//     const foundEvent = await db.select()
+//         .from(eventSchema)
+//         .where(eq(eventSchema.id, eventId));
 
-    if (foundEvent.length !== 1) {
-        res.status(404).json({ message: "Could not find event to delete, has it already been deleted?" });
-        return;
-    }
+//     if (foundEvent.length !== 1) {
+//         res.status(404).json({ message: "Could not find event to delete, has it already been deleted?" });
+//         return;
+//     }
 
-    // Delete it
-    try {
-        await db.delete(eventSchema).where(eq(eventSchema.id, foundEvent[0].id));
-    } catch {
-        res.status(500).json({ "message": "Couldn't delete the event you specified" })
-    }
+//     // Delete it
+//     try {
+//         await db.delete(eventSchema).where(eq(eventSchema.id, foundEvent[0].id));
+//     } catch {
+//         res.status(500).json({ "message": "Couldn't delete the event you specified" })
+//     }
 
-    await log(`Has deleted event ${req.body.eventId}`, currentUserId)
+//     await log(`Has deleted event ${req.body.eventId}`, currentUserId)
 
-    res.status(200).json({ event: foundEvent[0].id, message: "Event has been deleted" })
-}
+//     res.status(200).json({ event: foundEvent[0].id, message: "Event has been deleted" })
+// }
 
-const updateCarousel = async (req: Request, res: Response, next: NextFunction) => {
-    const eventId: string = req.params.id
+// const updateCarousel = async (req: Request, res: Response, next: NextFunction) => {
+//     const eventId: string = req.params.id
 
-    const token = getTokenFromAuthCookie(req, res)
-    const currentUserId = getUserIdFromJWT(token);
-    if (await isUserATechnician(currentUserId) == false) {
-        res.status(401).json({ "message": "You don't have permission to update events" })
-        return
-    }
+//     const token = getTokenFromAuthCookie(req, res)
+//     const currentUserId = getUserIdFromJWT(token);
+//     if (await isUserATechnician(currentUserId) == false) {
+//         res.status(401).json({ "message": "You don't have permission to update events" })
+//         return
+//     }
 
-    // Check if the event exists before trying to delete it
-    const event = await db.select()
-        .from(eventSchema)
-        .where(eq(eventSchema.id, eventId));
+//     // Check if the event exists before trying to delete it
+//     const event = await db.select()
+//         .from(eventSchema)
+//         .where(eq(eventSchema.id, eventId));
 
-    if (event.length !== 1) {
-        res.status(404).json({ message: "Could not find event to update." });
-        return;
-    }
+//     if (event.length !== 1) {
+//         res.status(404).json({ message: "Could not find event to update." });
+//         return;
+//     }
 
-    let currentTime: Date = new Date();
-    let currentTimeStr = dateTimeToString(currentTime);
+//     let currentTime: Date = new Date();
+//     let currentTimeStr = dateTimeToString(currentTime);
 
-    const updatedTimetable = await db.update(eventSchema)
-        .set({
-            name: req.body.name || event[0].name,
-            staff: req.body.staff || event[0].staff,
-            moduleCode: req.body.moduleCode || event[0].moduleCode,
-            timetableId: req.body.timetableId || event[0].timetableId,
-            type: req.body.type || event[0].type,
-            colour: req.body.colour || event[0].colour,
-            start: req.body.start || event[0].start,
-            end: req.body.end || event[0].end,
-            lastModified: currentTimeStr,
-            modifiedBy: currentUserId,
-            isCombinedSession: req.body.isCombinedSession || event[0].isCombinedSession,
-            group: req.body.group || event[0].group,
-        })
-        .where(eq(eventSchema.id, event[0].id));
+//     const updatedTimetable = await db.update(eventSchema)
+//         .set({
+//             name: req.body.name || event[0].name,
+//             staff: req.body.staff || event[0].staff,
+//             moduleCode: req.body.moduleCode || event[0].moduleCode,
+//             timetableId: req.body.timetableId || event[0].timetableId,
+//             type: req.body.type || event[0].type,
+//             colour: req.body.colour || event[0].colour,
+//             start: req.body.start || event[0].start,
+//             end: req.body.end || event[0].end,
+//             lastModified: currentTimeStr,
+//             modifiedBy: currentUserId,
+//             isCombinedSession: req.body.isCombinedSession || event[0].isCombinedSession,
+//             group: req.body.group || event[0].group,
+//         })
+//         .where(eq(eventSchema.id, event[0].id));
 
-    res.status(201).json({ message: `Event '${event[0].name}' has been updated`, event: event[0].id });
+//     res.status(201).json({ message: `Event '${event[0].name}' has been updated`, event: event[0].id });
 
-    await log(`Has updated event ${req.body.eventId}`, currentUserId)
-}
+//     await log(`Has updated event ${req.body.eventId}`, currentUserId)
+// }
 
-const updateCarouselItem = async (req: Request, res: Response, next: NextFunction) => {
-    const eventId: string = req.params.id
+// const updateCarouselItem = async (req: Request, res: Response, next: NextFunction) => {
+//     const eventId: string = req.params.id
 
-    const token = getTokenFromAuthCookie(req, res)
-    const currentUserId = getUserIdFromJWT(token);
-    if (await isUserATechnician(currentUserId) == false) {
-        res.status(401).json({ "message": "You don't have permission to update events" })
-        return
-    }
+//     const token = getTokenFromAuthCookie(req, res)
+//     const currentUserId = getUserIdFromJWT(token);
+//     if (await isUserATechnician(currentUserId) == false) {
+//         res.status(401).json({ "message": "You don't have permission to update events" })
+//         return
+//     }
 
-    // Check if the event exists before trying to delete it
-    const event = await db.select()
-        .from(eventSchema)
-        .where(eq(eventSchema.id, eventId));
+//     // Check if the event exists before trying to delete it
+//     const event = await db.select()
+//         .from(eventSchema)
+//         .where(eq(eventSchema.id, eventId));
 
-    if (event.length !== 1) {
-        res.status(404).json({ message: "Could not find event to update." });
-        return;
-    }
+//     if (event.length !== 1) {
+//         res.status(404).json({ message: "Could not find event to update." });
+//         return;
+//     }
 
-    let currentTime: Date = new Date();
-    let currentTimeStr = dateTimeToString(currentTime);
+//     let currentTime: Date = new Date();
+//     let currentTimeStr = dateTimeToString(currentTime);
 
-    const updatedTimetable = await db.update(eventSchema)
-        .set({
-            name: req.body.name || event[0].name,
-            staff: req.body.staff || event[0].staff,
-            moduleCode: req.body.moduleCode || event[0].moduleCode,
-            timetableId: req.body.timetableId || event[0].timetableId,
-            type: req.body.type || event[0].type,
-            colour: req.body.colour || event[0].colour,
-            start: req.body.start || event[0].start,
-            end: req.body.end || event[0].end,
-            lastModified: currentTimeStr,
-            modifiedBy: currentUserId,
-            isCombinedSession: req.body.isCombinedSession || event[0].isCombinedSession,
-            group: req.body.group || event[0].group,
-        })
-        .where(eq(eventSchema.id, event[0].id));
+//     const updatedTimetable = await db.update(eventSchema)
+//         .set({
+//             name: req.body.name || event[0].name,
+//             staff: req.body.staff || event[0].staff,
+//             moduleCode: req.body.moduleCode || event[0].moduleCode,
+//             timetableId: req.body.timetableId || event[0].timetableId,
+//             type: req.body.type || event[0].type,
+//             colour: req.body.colour || event[0].colour,
+//             start: req.body.start || event[0].start,
+//             end: req.body.end || event[0].end,
+//             lastModified: currentTimeStr,
+//             modifiedBy: currentUserId,
+//             isCombinedSession: req.body.isCombinedSession || event[0].isCombinedSession,
+//             group: req.body.group || event[0].group,
+//         })
+//         .where(eq(eventSchema.id, event[0].id));
 
-    res.status(201).json({ message: `Event '${event[0].name}' has been updated`, event: event[0].id });
+//     res.status(201).json({ message: `Event '${event[0].name}' has been updated`, event: event[0].id });
 
-    await log(`Has updated event ${req.body.eventId}`, currentUserId)
-}
+//     await log(`Has updated event ${req.body.eventId}`, currentUserId)
+// }
 
 export default {
     getCarouselItemById,
     getAllCarousels,
-    getAllCarouselItemsForCarousel,
+    getCarousel,
     getAllCarouselsAndItemsForATimetable,
     createCarousel,
     createCarouselItem,
-    deleteCarousel,
-    deleteCarouselItem,
-    updateCarousel,
-    updateCarouselItem
+    // deleteCarousel,
+    // deleteCarouselItem,
+    // updateCarousel,
+    // updateCarouselItem
 };

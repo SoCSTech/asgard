@@ -1,6 +1,6 @@
 {
     "info": {
-        "_postman_id": "4e29ed88-6443-4e8e-a11d-5586ec092cc5",
+        "_postman_id": "4cf2b539-7984-48c1-8a20-bcf985be4c54",
         "name": "Asgard2",
         "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
         "description": ""
@@ -632,6 +632,125 @@
                     }
                 }
             ]
+        },
+        {
+            "name": "Carousels",
+            "item": [
+                {
+                    "name": "Carousels - All",
+                    "request": {
+                        "method": "GET",
+                        "url": {
+                            "raw": "/v2/carousel",
+                            "path": [
+                                "carousel"
+                            ],
+                            "host": [
+                                "v2"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Carosuel - Id",
+                    "request": {
+                        "method": "GET",
+                        "url": {
+                            "raw": "/v2/carousel/wx5gidvqo30t8cabk7lwok2r",
+                            "path": [
+                                "carousel",
+                                "wx5gidvqo30t8cabk7lwok2r"
+                            ],
+                            "host": [
+                                "v2"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Carousel Item - Id",
+                    "request": {
+                        "method": "GET",
+                        "url": {
+                            "raw": "/v2/carousel/item/vwbfr6c74kqx8k31nkrjfhft",
+                            "path": [
+                                "carousel",
+                                "item",
+                                "vwbfr6c74kqx8k31nkrjfhft"
+                            ],
+                            "host": [
+                                "v2"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Carousel Items - Timetable",
+                    "request": {
+                        "method": "GET",
+                        "url": {
+                            "raw": "/v2/timetable/INB1102/carousel",
+                            "path": [
+                                "timetable",
+                                "INB1102",
+                                "carousel"
+                            ],
+                            "host": [
+                                "v2"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Create Carousel",
+                    "request": {
+                        "method": "POST",
+                        "url": {
+                            "raw": "/v2/carousel",
+                            "path": [
+                                "carousel"
+                            ],
+                            "host": [
+                                "v2"
+                            ]
+                        },
+                        "body": {
+                            "mode": "raw",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            },
+                            "raw": "{\n  \"timetable\": \"INB1102\"\n}"
+                        }
+                    }
+                },
+                {
+                    "name": "Create Carousel Item",
+                    "request": {
+                        "method": "POST",
+                        "url": {
+                            "raw": "/v2/carousel/item",
+                            "path": [
+                                "carousel",
+                                "item"
+                            ],
+                            "host": [
+                                "v2"
+                            ]
+                        },
+                        "body": {
+                            "mode": "raw",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            },
+                            "raw": "{\n  \"carousel\": \"wx5gidvqo30t8cabk7lwok2r\",\n  \"type\": \"TIMETABLE\",\n  \"name\": \"Timetable\",\n  \"durationMs\": 4500\n}"
+                        }
+                    }
+                }
+            ]
         }
     ],
     "auth": {
@@ -639,7 +758,7 @@
         "bearer": [
             {
                 "key": "token",
-                "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImFkZGQzZGYzLWQyMjctNGUxMi1hZDM1LTRlMDA2MzNkZTdiNSIsInVzZXJuYW1lIjoiam9zaGNvb3BlciIsImlhdCI6MTcxNTYwNDExNCwiZXhwIjoxNzE1NjkwNTE0fQ.J1rmr4cBHfXm34EowPShspP04ntwgv16Wz2pJ9tk9QY",
+                "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImFkZGQzZGYzLWQyMjctNGUxMi1hZDM1LTRlMDA2MzNkZTdiNSIsInVzZXJuYW1lIjoiam9zaGNvb3BlciIsImlhdCI6MTcxNTc3MjgyOCwiZXhwIjoxNzE1ODU5MjI4fQ.Z7QjK2DJsZEBeHjCIbnNAoLFlU276R-4GFNQ2EmX2-s",
                 "type": "string"
             }
         ]

@@ -90,7 +90,7 @@ export const timetableGroupMembers = mysqlTable('timetable_group_members', {
     timetableId: varchar('timetable_id', { length: 128 }).references(() => timetables.id),
 })
 
-export const carousel = mysqlTable('timetable_groups', {
+export const carousels = mysqlTable('carousels', {
     id: varchar('id', { length: 128 }).$defaultFn(() => createId()).primaryKey(),
     timetable: varchar('timetable_id', {length: 128}).references(() => timetables.id),
     lastModified: timestamp('last_modified', { mode: "string" }).defaultNow().notNull(),
@@ -98,9 +98,9 @@ export const carousel = mysqlTable('timetable_groups', {
     isDeleted: boolean('is_deleted').default(false).notNull(),
 })
 
-export const carouselItems = mysqlTable('timetable_groups', {
+export const carouselItems = mysqlTable('carousel_items', {
     id: varchar('id', { length: 128 }).$defaultFn(() => createId()).primaryKey(),
-    carousel: varchar('carousel_id', { length: 128 }).references(() => carousel.id),
+    carousel: varchar('carousel_id', { length: 128 }).references(() => carousels.id),
     lastModified: timestamp('last_modified', { mode: "string" }).defaultNow().notNull(),
     modifiedBy: varchar('modified_by_id', { length: 128 }).references(() => users.id),
     type: mysqlEnum('type', ['TIMETABLE', 'PICTURE', 'VIDEO', 'WEB']).default('TIMETABLE').notNull(),

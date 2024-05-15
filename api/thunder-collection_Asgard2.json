@@ -2,7 +2,7 @@
     "clientName": "Thunder Client",
     "collectionName": "Asgard2",
     "collectionId": "16af920c-c406-43a8-a950-9882a199132a",
-    "dateExported": "2024-05-13T16:11:07.252Z",
+    "dateExported": "2024-05-15T11:39:54.612Z",
     "version": "1.2",
     "folders": [
         {
@@ -46,6 +46,13 @@
             "containerId": "",
             "created": "2024-05-03T13:58:03.339Z",
             "sortNum": 50000
+        },
+        {
+            "_id": "c70ca72b-3be9-4d89-ade6-39c9cdf35c1a",
+            "name": "Carousels",
+            "containerId": "",
+            "created": "2024-05-15T11:25:15.447Z",
+            "sortNum": 60000
         }
     ],
     "requests": [
@@ -522,16 +529,98 @@
             "created": "2024-05-03T13:58:33.561Z",
             "modified": "2024-05-03T14:05:32.127Z",
             "headers": []
+        },
+        {
+            "_id": "919e5db6-7746-4746-8aec-febbc8758674",
+            "colId": "16af920c-c406-43a8-a950-9882a199132a",
+            "containerId": "c70ca72b-3be9-4d89-ade6-39c9cdf35c1a",
+            "name": "Carousels - All",
+            "url": "/v2/carousel",
+            "method": "GET",
+            "sortNum": 200000,
+            "created": "2024-05-15T11:25:29.664Z",
+            "modified": "2024-05-15T11:35:35.533Z",
+            "headers": []
+        },
+        {
+            "_id": "4bfb2a7a-a731-469b-8e28-6dad7ad73095",
+            "colId": "16af920c-c406-43a8-a950-9882a199132a",
+            "containerId": "c70ca72b-3be9-4d89-ade6-39c9cdf35c1a",
+            "name": "Carosuel - Id",
+            "url": "/v2/carousel/wx5gidvqo30t8cabk7lwok2r",
+            "method": "GET",
+            "sortNum": 210000,
+            "created": "2024-05-15T11:25:47.678Z",
+            "modified": "2024-05-15T11:37:50.908Z",
+            "headers": []
+        },
+        {
+            "_id": "c8580ad5-a686-4ed3-9a37-df60bfac8ef5",
+            "colId": "16af920c-c406-43a8-a950-9882a199132a",
+            "containerId": "c70ca72b-3be9-4d89-ade6-39c9cdf35c1a",
+            "name": "Carousel Item - Id",
+            "url": "/v2/carousel/item/vwbfr6c74kqx8k31nkrjfhft",
+            "method": "GET",
+            "sortNum": 220000,
+            "created": "2024-05-15T11:26:27.996Z",
+            "modified": "2024-05-15T11:39:03.608Z",
+            "headers": []
+        },
+        {
+            "_id": "4be926a7-fc04-4134-b79b-d933013419a6",
+            "colId": "16af920c-c406-43a8-a950-9882a199132a",
+            "containerId": "c70ca72b-3be9-4d89-ade6-39c9cdf35c1a",
+            "name": "Carousel Items - Timetable",
+            "url": "/v2/timetable/INB1102/carousel",
+            "method": "GET",
+            "sortNum": 230000,
+            "created": "2024-05-15T11:26:38.382Z",
+            "modified": "2024-05-15T11:39:31.631Z",
+            "headers": []
+        },
+        {
+            "_id": "23f481d5-9b55-444f-a4d5-3326bc5360f6",
+            "colId": "16af920c-c406-43a8-a950-9882a199132a",
+            "containerId": "c70ca72b-3be9-4d89-ade6-39c9cdf35c1a",
+            "name": "Create Carousel",
+            "url": "/v2/carousel",
+            "method": "POST",
+            "sortNum": 240000,
+            "created": "2024-05-15T11:29:24.592Z",
+            "modified": "2024-05-15T11:33:40.357Z",
+            "headers": [],
+            "body": {
+                "type": "json",
+                "raw": "{\n  \"timetable\": \"INB1102\"\n}",
+                "form": []
+            }
+        },
+        {
+            "_id": "32c34c80-60fe-4e29-b05c-f0987b5d06f6",
+            "colId": "16af920c-c406-43a8-a950-9882a199132a",
+            "containerId": "c70ca72b-3be9-4d89-ade6-39c9cdf35c1a",
+            "name": "Create Carousel Item",
+            "url": "/v2/carousel/item",
+            "method": "POST",
+            "sortNum": 250000,
+            "created": "2024-05-15T11:29:33.616Z",
+            "modified": "2024-05-15T11:37:01.157Z",
+            "headers": [],
+            "body": {
+                "type": "json",
+                "raw": "{\n  \"carousel\": \"wx5gidvqo30t8cabk7lwok2r\",\n  \"type\": \"TIMETABLE\",\n  \"name\": \"Timetable\",\n  \"durationMs\": 4500\n}",
+                "form": []
+            }
         }
     ],
     "settings": {
         "auth": {
             "type": "bearer",
-            "bearer": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImFkZGQzZGYzLWQyMjctNGUxMi1hZDM1LTRlMDA2MzNkZTdiNSIsInVzZXJuYW1lIjoiam9zaGNvb3BlciIsImlhdCI6MTcxNTYwNDExNCwiZXhwIjoxNzE1NjkwNTE0fQ.J1rmr4cBHfXm34EowPShspP04ntwgv16Wz2pJ9tk9QY"
+            "bearer": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImFkZGQzZGYzLWQyMjctNGUxMi1hZDM1LTRlMDA2MzNkZTdiNSIsInVzZXJuYW1lIjoiam9zaGNvb3BlciIsImlhdCI6MTcxNTc3MjgyOCwiZXhwIjoxNzE1ODU5MjI4fQ.Z7QjK2DJsZEBeHjCIbnNAoLFlU276R-4GFNQ2EmX2-s"
         },
         "options": {
             "baseUrl": "http://localhost:3000"
         }
     },
-    "ref": "lt2hf922xqBCls_rICskbP79EpVDTjsmW5wqIh4sLWSUEQzcPfrET5r_L_OLb2zHL-aIDKKpMhm1i-_xlQeHMQ"
+    "ref": "lt2hf922xqBCls_rICskbOadOZdKHKhkrhvvUOXQTGaEBBvTsgHmuncBnfZ7C7DY8iejrWQgra1zoyGQCjI_rA"
 }
