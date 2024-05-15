@@ -40,6 +40,7 @@ app.use('/v2', require('./routes/events'));
 app.use('/v2', require('./routes/timetableGroups'));
 app.use('/v2', require('./routes/tests'));
 app.use('/v2', require('./routes/logs'));
+app.use('/v2', require('./routes/carousels'));
 
 /* Error handling */
 app.use((req, res, next) => {

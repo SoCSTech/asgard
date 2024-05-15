@@ -12,6 +12,7 @@ import {
 } from 'drizzle-orm/mysql-core';
 import { relations } from 'drizzle-orm';
 import { createId } from '@paralleldrive/cuid2';
+import { duration } from 'moment';
 
 export const logs = mysqlTable('logs', {
     id: varchar('id', { length: 128 }).$defaultFn(() => createId()).primaryKey(),
@@ -87,4 +88,24 @@ export const timetableGroups = mysqlTable('timetable_groups', {
 export const timetableGroupMembers = mysqlTable('timetable_group_members', {
     groupId: varchar('group_id', { length: 128 }).references(() => timetableGroups.id),
     timetableId: varchar('timetable_id', { length: 128 }).references(() => timetables.id),
+})
+
+export const carousel = mysqlTable('timetable_groups', {
+    id: varchar('id', { length: 128 }).$defaultFn(() => createId()).primaryKey(),
+    timetable: varchar('timetable_id', {length: 128}).references(() => timetables.id),
+    lastModified: timestamp('last_modified', { mode: "string" }).defaultNow().notNull(),
+    modifiedBy: varchar('modified_by_id', { length: 128 }).references(() => users.id),
+    isDeleted: boolean('is_deleted').default(false).notNull(),
+})
+
+export const carouselItems = mysqlTable('timetable_groups', {
+    id: varchar('id', { length: 128 }).$defaultFn(() => createId()).primaryKey(),
+    carousel: varchar('carousel_id', { length: 128 }).references(() => carousel.id),
+    lastModified: timestamp('last_modified', { mode: "string" }).defaultNow().notNull(),
+    modifiedBy: varchar('modified_by_id', { length: 128 }).references(() => users.id),
+    type: mysqlEnum('type', ['TIMETABLE', 'PICTURE', 'VIDEO', 'WEB']).default('TIMETABLE').notNull(),
+    name: varchar('name', { length: 128 }).notNull(),
+    isDeleted: boolean('is_deleted').default(false).notNull(),
+    durationMs: int('duration_milliseconds').default(4500).notNull(),
+    order: int('order').default(0)
 })
