@@ -104,6 +104,7 @@ export const carouselItems = mysqlTable('carousel_items', {
     lastModified: timestamp('last_modified', { mode: "string" }).defaultNow().notNull(),
     modifiedBy: varchar('modified_by_id', { length: 128 }).references(() => users.id),
     type: mysqlEnum('type', ['TIMETABLE', 'PICTURE', 'VIDEO', 'WEB']).default('TIMETABLE').notNull(),
+    contentUrl: varchar('content_url', { length: 2000 }),
     name: varchar('name', { length: 128 }).notNull(),
     isDeleted: boolean('is_deleted').default(false).notNull(),
     durationMs: int('duration_milliseconds').default(4500).notNull(),

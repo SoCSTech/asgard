@@ -1,0 +1,1 @@
+ALTER TABLE `carousel_items` ADD `content_url` varchar(2000);

@@ -49,19 +49,26 @@ const getCarousel = async (req: Request, res: Response, next: NextFunction) => {
 }
 
 const getAllCarouselsAndItemsForATimetable = async (req: Request, res: Response, next: NextFunction) => {
-    const timetableId: string = req.params.timetableId
+    const timetableId: string = await convertSpaceCodeToTimetableId(req.params.timetableId)
 
-    const items = await db.select()
+    const carousel = await db.select()
         .from(carouselSchema)
-        .leftJoin(carouselItemsSchema, eq(carouselSchema.id, carouselItemsSchema.carousel))
         .where(
             and(
-                eq(carouselSchema.isDeleted, false),
-                eq(carouselItemsSchema.isDeleted, false),
-                eq(carouselSchema.timetable, timetableId)
-            ))
+                eq(carouselSchema.timetable, timetableId),
+                eq(carouselSchema.isDeleted, false)
+            )
+        )
 
-    res.json({ carousels: items });
+    const items = await db.select()
+        .from(carouselItemsSchema)
+        .where(
+            and(
+                eq(carouselItemsSchema.isDeleted, false),
+                eq(carouselItemsSchema.carousel, carousel[0].id)
+            )).orderBy(carouselItemsSchema.order)
+
+    res.json({ carousel: carousel[0], items: items });
 }
 
 const createCarousel = async (req: Request, res: Response, next: NextFunction) => {
@@ -72,11 +79,18 @@ const createCarousel = async (req: Request, res: Response, next: NextFunction) =
         return
     }
 
+    if (!req.body.timetable) {
+        res.status(409).json({ message: "Timetable hasn't been provided" });
+        return;
+    }
+
+    let timetableId = await convertSpaceCodeToTimetableId(req.body.timetable)
+
     const existingCarousels = await db.select()
         .from(carouselSchema)
         .where(
             and(
-                eq(carouselSchema.timetable, req.body.timetable),
+                eq(carouselSchema.timetable, timetableId),
                 eq(carouselSchema.isDeleted, false)
             )
         );
@@ -86,12 +100,6 @@ const createCarousel = async (req: Request, res: Response, next: NextFunction) =
         return;
     }
 
-    if (!req.body.timetable) {
-        res.status(409).json({ message: "Timetable hasn't been provided" });
-        return;
-    }
-
-    let timetableId = await convertSpaceCodeToTimetableId(req.body.timetable)
     let currentTime: Date = new Date();
     let currentTimeStr = dateTimeToString(currentTime);
 
@@ -133,7 +141,8 @@ const createCarouselItem = async (req: Request, res: Response, next: NextFunctio
         type: req.body.type || 'TIMETABLE',
         name: req.body.name || 'Untitled',
         durationMs: req.body.durationMs || 4500,
-        order: existingItems.length
+        order: existingItems.length,
+        contentUrl: req.body.contentUrl || null
     });
 
     await log(`Has created item for carousel ${req.body.carousel}`, currentUserId)
