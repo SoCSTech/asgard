@@ -27,11 +27,12 @@ const getCarouselItemById = async (req: Request, res: Response, next: NextFuncti
 const getAllCarousels = async (req: Request, res: Response, next: NextFunction) => {
     const items = await db.select()
         .from(carouselSchema)
+        .leftJoin(timetableSchema, eq(carouselSchema.timetable, timetableSchema.id))
         .where(
             eq(carouselSchema.isDeleted, false)
         )
 
-    res.json({ carousels: items });
+    res.json({ items });
 }
 
 const getCarousel = async (req: Request, res: Response, next: NextFunction) => {
@@ -39,6 +40,7 @@ const getCarousel = async (req: Request, res: Response, next: NextFunction) => {
 
     const items = await db.select()
         .from(carouselSchema)
+        .leftJoin(timetableSchema, eq(carouselSchema.timetable, timetableSchema.id))
         .where(
             and(
                 eq(carouselSchema.isDeleted, false),
