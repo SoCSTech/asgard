@@ -112,10 +112,22 @@ for item in items:
 		event = "EXAM"
 		eventName = "Exam"
 
+	elif event == "VIVA":
+		event = "EXAM"
+		eventName = "Viva"
+
+	elif event == "ICT":
+		event = "EXAM"
+		eventName = "ICT"
+  
 	elif event == "TEST":
 		event = "EXAM"
 		eventName = "Test"
   
+	elif event == "TCA":
+		event = "EXAM"
+		eventName = "TCA"
+
 	else:
 		event = "OTHER"
     

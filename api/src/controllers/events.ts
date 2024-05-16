@@ -36,6 +36,8 @@ const createEvent = async (req: Request, res: Response, next: NextFunction) => {
         return
     }
 
+    const timetableId: string = await convertSpaceCodeToTimetableId(req.body.timetableId);
+
     const adjustedEndTime = new Date(req.body.end)
     adjustedEndTime.setMinutes(adjustedEndTime.getMinutes() - 1);
 
@@ -46,7 +48,7 @@ const createEvent = async (req: Request, res: Response, next: NextFunction) => {
         .from(eventSchema)
         .where(
             and(
-                eq(eventSchema.timetableId, req.body.timetableId),
+                eq(eventSchema.timetableId, timetableId),
                 and(
                     gte(eventSchema.end, dateTimeToString(adjustedStartTime)),
                     lte(eventSchema.start, dateTimeToString(adjustedEndTime))
@@ -66,7 +68,7 @@ const createEvent = async (req: Request, res: Response, next: NextFunction) => {
         name: req.body.name,
         staff: req.body.staff || null,
         moduleCode: req.body.moduleCode || null,
-        timetableId: req.body.timetableId,
+        timetableId: timetableId,
         type: req.body.type || 'OTHER',
         colour: req.body.colour || "#ff0077",
         start: req.body.start || "",
@@ -77,7 +79,7 @@ const createEvent = async (req: Request, res: Response, next: NextFunction) => {
         group: req.body.group || null,
     });
 
-    await log(`Has created event ${req.body.name} (${req.body.moduleCode || "none"}), starting ${req.body.start} and ending ${req.body.end} to Timetable ${req.body.timetableId}`, currentUserId)
+    await log(`Has created event ${req.body.name} (${req.body.moduleCode || "none"}), starting ${req.body.start} and ending ${req.body.end} to Timetable ${timetableId}`, currentUserId)
 
     res.status(201).json({ timetableId: req.body.timetableId, message: 'Event has been created' });
 };

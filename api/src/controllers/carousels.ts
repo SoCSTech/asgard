@@ -158,69 +158,63 @@ const createCarouselItem = async (req: Request, res: Response, next: NextFunctio
 };
 
 
-// const deleteCarousel = async (req: Request, res: Response, next: NextFunction) => {
-//     const eventId: string = req.params.id
+const deleteCarousel = async (req: Request, res: Response, next: NextFunction) => {
+    const carouselId: string = req.params.carouselId;
 
-//     const token = getTokenFromAuthCookie(req, res)
-//     const currentUserId = getUserIdFromJWT(token);
-//     if (await isUserATechnician(currentUserId) == false) {
-//         res.status(401).json({ "message": "You don't have permission to delete events" })
-//         return
-//     }
+    const token = getTokenFromAuthCookie(req, res)
+    const currentUserId = getUserIdFromJWT(token);
+    if (await isUserATechnician(currentUserId) == false) {
+        res.status(401).json({ "message": "You don't have permission to delete events" })
+        return
+    }
 
-//     // Check if the event exists before trying to delete it
-//     const foundEvent = await db.select()
-//         .from(eventSchema)
-//         .where(eq(eventSchema.id, eventId));
+    // Check if the event exists before trying to delete it
+    const foundCarousel = await db.select()
+        .from(carouselSchema)
+        .where(eq(carouselSchema.id, carouselId));
 
-//     if (foundEvent.length !== 1) {
-//         res.status(404).json({ message: "Could not find event to delete, has it already been deleted?" });
-//         return;
-//     }
+    if (foundCarousel.length !== 1) {
+        res.status(404).json({ message: "Could not find carousel to delete, has it already been deleted?" });
+        return;
+    }
 
-//     // Delete it
-//     try {
-//         await db.delete(eventSchema).where(eq(eventSchema.id, foundEvent[0].id));
-//     } catch {
-//         res.status(500).json({ "message": "Couldn't delete the event you specified" })
-//     }
+    const updatedCarousel = await db.update(carouselSchema)
+        .set({ isDeleted: true })
+        .where(eq(carouselSchema.id, foundCarousel[0].id));
 
-//     await log(`Has deleted event ${req.body.eventId}`, currentUserId)
+    await log(`Has deleted carousel ${foundCarousel[0].id}`, currentUserId)
 
-//     res.status(200).json({ event: foundEvent[0].id, message: "Event has been deleted" })
-// }
+    res.status(200).json({ carousel: foundCarousel[0].id, message: "Carousel has been deleted" })
+}
 
-// const deleteCarouselItem = async (req: Request, res: Response, next: NextFunction) => {
-//     const eventId: string = req.params.id
+const deleteCarouselItem = async (req: Request, res: Response, next: NextFunction) => {
+    const itemId: string = req.params.itemId;
 
-//     const token = getTokenFromAuthCookie(req, res)
-//     const currentUserId = getUserIdFromJWT(token);
-//     if (await isUserATechnician(currentUserId) == false) {
-//         res.status(401).json({ "message": "You don't have permission to delete events" })
-//         return
-//     }
+    const token = getTokenFromAuthCookie(req, res)
+    const currentUserId = getUserIdFromJWT(token);
+    if (await isUserATechnician(currentUserId) == false) {
+        res.status(401).json({ "message": "You don't have permission to delete events" })
+        return
+    }
 
-//     // Check if the event exists before trying to delete it
-//     const foundEvent = await db.select()
-//         .from(eventSchema)
-//         .where(eq(eventSchema.id, eventId));
+    // Check if the event exists before trying to delete it
+    const foundItem = await db.select()
+        .from(carouselItemsSchema)
+        .where(eq(carouselItemsSchema.id, itemId));
 
-//     if (foundEvent.length !== 1) {
-//         res.status(404).json({ message: "Could not find event to delete, has it already been deleted?" });
-//         return;
-//     }
+    if (foundItem.length !== 1) {
+        res.status(404).json({ message: "Could not find carousel item to delete, has it already been deleted?" });
+        return;
+    }
 
-//     // Delete it
-//     try {
-//         await db.delete(eventSchema).where(eq(eventSchema.id, foundEvent[0].id));
-//     } catch {
-//         res.status(500).json({ "message": "Couldn't delete the event you specified" })
-//     }
+    const updatedItem = await db.update(carouselItemsSchema)
+        .set({ isDeleted: true })
+        .where(eq(carouselItemsSchema.id, foundItem[0].id));
 
-//     await log(`Has deleted event ${req.body.eventId}`, currentUserId)
+    await log(`Has deleted carousel ${foundItem[0].id}`, currentUserId)
 
-//     res.status(200).json({ event: foundEvent[0].id, message: "Event has been deleted" })
-// }
+    res.status(200).json({ carouseItem: foundItem[0].id, message: "Carousel item has been deleted" })
+}
 
 // const updateCarousel = async (req: Request, res: Response, next: NextFunction) => {
 //     const eventId: string = req.params.id
@@ -319,8 +313,8 @@ export default {
     getAllCarouselsAndItemsForATimetable,
     createCarousel,
     createCarouselItem,
-    // deleteCarousel,
-    // deleteCarouselItem,
+    deleteCarousel,
+    deleteCarouselItem,
     // updateCarousel,
     // updateCarouselItem
 };
