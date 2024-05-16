@@ -11,10 +11,10 @@ router.get('/timetable/:timetableId/carousel', controller.getAllCarouselsAndItem
 router.post('/carousel', authenticate, controller.createCarousel);
 router.post('/carousel/item', authenticate, controller.createCarouselItem);
 
-router.delete('/carousel/:carouselId', authenticate, controller.deleteCarousel);
 router.delete('/carousel/item/:itemId', authenticate, controller.deleteCarouselItem);
+router.delete('/carousel/:carouselId', authenticate, controller.deleteCarousel);
 
-// router.put('/carousel/item/:itemId', authenticate, controller.updateCarousel);
-// router.put('/carousel/:timetableId', authenticate, controller.updateCarouselItem);
+router.put('/carousel/item/:itemId', authenticate, controller.updateCarouselItem);
+router.put('/carousel/:carouselId', authenticate, controller.updateCarousel);
 
 export = router;

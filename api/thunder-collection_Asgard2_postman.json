@@ -1,6 +1,6 @@
 {
     "info": {
-        "_postman_id": "4cf2b539-7984-48c1-8a20-bcf985be4c54",
+        "_postman_id": "5ebf3f15-5fac-4825-b3f3-c2e4d4c36f58",
         "name": "Asgard2",
         "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
         "description": ""
@@ -456,7 +456,7 @@
                                     "language": "json"
                                 }
                             },
-                            "raw": "{\n  \"name\": \"Social: Computer Science for Noobs\",\n  \"staff\": \"Bob Smith, Derek Jones\",\n  \"moduleCode\": \"CMP0004\",\n  \"timetableId\": \"a02e6de1-187b-4cd8-8729-1002c6bdc5a1\",\n  \"type\": \"SOCIAL\",\n  \"colour\": \"#ff0077\",\n  \"start\": \"2024-05-10 17:00:00\",\n  \"end\": \"2024-05-10 18:00:00\",\n  \"isCombinedSession\": false,\n  \"group\": \"A\"\n}"
+                            "raw": "{\n  \"name\": \"Social: Computer Science for Noobs\",\n  \"staff\": \"Bob Smith, Derek Jones\",\n  \"moduleCode\": \"CMP0004\",\n  \"timetableId\": \"INB1308\",\n  \"type\": \"SOCIAL\",\n  \"colour\": \"#ff0077\",\n  \"start\": \"2024-05-16 10:00:00\",\n  \"end\": \"2024-05-16 12:00:00\",\n  \"isCombinedSession\": false,\n  \"group\": \"P\"\n}"
                         }
                     }
                 },
@@ -465,10 +465,10 @@
                     "request": {
                         "method": "DELETE",
                         "url": {
-                            "raw": "/v2/event/44047224-bac1-4a15-9672-071453a26dbe",
+                            "raw": "/v2/event/taguwl437sgtwfqy2uakwjjz",
                             "path": [
                                 "event",
-                                "44047224-bac1-4a15-9672-071453a26dbe"
+                                "taguwl437sgtwfqy2uakwjjz"
                             ],
                             "host": [
                                 "v2"
@@ -481,10 +481,10 @@
                     "request": {
                         "method": "PUT",
                         "url": {
-                            "raw": "/v2/event/3b4cfed0-231e-4bf6-9ce6-e2cccc922a28",
+                            "raw": "/v2/event/98ced14b-596b-4e75-a4d1-755a5b2cc919",
                             "path": [
                                 "event",
-                                "3b4cfed0-231e-4bf6-9ce6-e2cccc922a28"
+                                "98ced14b-596b-4e75-a4d1-755a5b2cc919"
                             ],
                             "host": [
                                 "v2"
@@ -497,7 +497,7 @@
                                     "language": "json"
                                 }
                             },
-                            "raw": "{\n  \"name\": \"Computer Science for Pros\",\n  \"staff\": \"Florence Noble\",\n  \"moduleCode\": \"CMP1234\",\n  \"timetableId\": \"365c3cc1-2086-4d0f-9261-4d0cf68bfa47\",\n  \"type\": \"LECTURE\",\n  \"colour\": \"#59d5d9\",\n  \"start\": \"2024-04-04 12:00:00\",\n  \"end\": \"2024-04-04 14:00:00\",\n  \"isCombinedSession\": false,\n  \"group\": \"B\"\n}"
+                            "raw": "{\n  \"type\": \"PROJECT\"\n}"
                         }
                     }
                 },
@@ -721,7 +721,7 @@
                                     "language": "json"
                                 }
                             },
-                            "raw": "{\n  \"timetable\": \"INB1102\"\n}"
+                            "raw": "{\n  \"timetable\": \"INB1308\"\n}"
                         }
                     }
                 },
@@ -746,7 +746,91 @@
                                     "language": "json"
                                 }
                             },
-                            "raw": "{\n  \"carousel\": \"wx5gidvqo30t8cabk7lwok2r\",\n  \"type\": \"TIMETABLE\",\n  \"name\": \"Timetable\",\n  \"durationMs\": 4500\n}"
+                            "raw": "{\n  \"carousel\": \"wx5gidvqo30t8cabk7lwok2r\",\n  \"type\": \"PICTURE\",\n  \"name\": \"Cat\",\n  \"contentUrl\": \"https://cataas.com/cat?=2\",\n  \"durationMs\": 3000\n}"
+                        }
+                    }
+                },
+                {
+                    "name": "Delete Carousel Item",
+                    "request": {
+                        "method": "DELETE",
+                        "url": {
+                            "raw": "/v2/carousel/item/txxy61320y0pw5m6g3c040q5",
+                            "path": [
+                                "carousel",
+                                "item",
+                                "txxy61320y0pw5m6g3c040q5"
+                            ],
+                            "host": [
+                                "v2"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Delete Carousel",
+                    "request": {
+                        "method": "DELETE",
+                        "url": {
+                            "raw": "/v2/carousel/n0tqc78b7m2jjmcfav0ipvxf",
+                            "path": [
+                                "carousel",
+                                "n0tqc78b7m2jjmcfav0ipvxf"
+                            ],
+                            "host": [
+                                "v2"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Update Carousel Item",
+                    "request": {
+                        "method": "PUT",
+                        "url": {
+                            "raw": "/v2/carousel/item/jf0mgya068ijpt3vsx8rmr8n",
+                            "path": [
+                                "carousel",
+                                "item",
+                                "jf0mgya068ijpt3vsx8rmr8n"
+                            ],
+                            "host": [
+                                "v2"
+                            ]
+                        },
+                        "body": {
+                            "mode": "raw",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            },
+                            "raw": "{\n  \"isDeleted\": true\n}"
+                        }
+                    }
+                },
+                {
+                    "name": "Update Carousel",
+                    "request": {
+                        "method": "PUT",
+                        "url": {
+                            "raw": "/v2/carousel/wx5gidvqo30t8cabk7lwok2r",
+                            "path": [
+                                "carousel",
+                                "wx5gidvqo30t8cabk7lwok2r"
+                            ],
+                            "host": [
+                                "v2"
+                            ]
+                        },
+                        "body": {
+                            "mode": "raw",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            },
+                            "raw": "{\n  \"timetable\": \"a02e6de1-187b-4cd8-8729-1002c6bdc5a1\",\n  \"isDeleted\": false\n}"
                         }
                     }
                 }

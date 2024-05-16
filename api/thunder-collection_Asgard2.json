@@ -2,7 +2,7 @@
     "clientName": "Thunder Client",
     "collectionName": "Asgard2",
     "collectionId": "16af920c-c406-43a8-a950-9882a199132a",
-    "dateExported": "2024-05-15T11:39:54.612Z",
+    "dateExported": "2024-05-16T09:58:00.105Z",
     "version": "1.2",
     "folders": [
         {
@@ -375,11 +375,11 @@
             "method": "POST",
             "sortNum": 100000,
             "created": "2024-05-02T11:01:54.399Z",
-            "modified": "2024-05-10T14:47:09.598Z",
+            "modified": "2024-05-16T08:41:36.083Z",
             "headers": [],
             "body": {
                 "type": "json",
-                "raw": "{\n  \"name\": \"Social: Computer Science for Noobs\",\n  \"staff\": \"Bob Smith, Derek Jones\",\n  \"moduleCode\": \"CMP0004\",\n  \"timetableId\": \"a02e6de1-187b-4cd8-8729-1002c6bdc5a1\",\n  \"type\": \"SOCIAL\",\n  \"colour\": \"#ff0077\",\n  \"start\": \"2024-05-10 17:00:00\",\n  \"end\": \"2024-05-10 18:00:00\",\n  \"isCombinedSession\": false,\n  \"group\": \"A\"\n}",
+                "raw": "{\n  \"name\": \"Social: Computer Science for Noobs\",\n  \"staff\": \"Bob Smith, Derek Jones\",\n  \"moduleCode\": \"CMP0004\",\n  \"timetableId\": \"INB1308\",\n  \"type\": \"SOCIAL\",\n  \"colour\": \"#ff0077\",\n  \"start\": \"2024-05-16 10:00:00\",\n  \"end\": \"2024-05-16 12:00:00\",\n  \"isCombinedSession\": false,\n  \"group\": \"P\"\n}",
                 "form": []
             }
         },
@@ -402,14 +402,12 @@
             "colId": "16af920c-c406-43a8-a950-9882a199132a",
             "containerId": "edcc0835-8982-4267-bbf0-baf32698678b",
             "name": "Delete Event",
-            "url": "/v2/event/44047224-bac1-4a15-9672-071453a26dbe",
+            "url": "/v2/event/taguwl437sgtwfqy2uakwjjz",
             "method": "DELETE",
             "sortNum": 110000,
             "created": "2024-05-02T11:01:54.400Z",
-            "modified": "2024-05-02T11:01:54.400Z",
-            "headers": [],
-            "params": [],
-            "tests": []
+            "modified": "2024-05-16T08:06:49.111Z",
+            "headers": []
         },
         {
             "_id": "c8105287-075a-4928-9a8a-10f80fd6148e",
@@ -447,15 +445,15 @@
             "colId": "16af920c-c406-43a8-a950-9882a199132a",
             "containerId": "edcc0835-8982-4267-bbf0-baf32698678b",
             "name": "Update Event",
-            "url": "/v2/event/3b4cfed0-231e-4bf6-9ce6-e2cccc922a28",
+            "url": "/v2/event/98ced14b-596b-4e75-a4d1-755a5b2cc919",
             "method": "PUT",
             "sortNum": 130000,
             "created": "2024-05-02T11:01:54.401Z",
-            "modified": "2024-05-13T12:42:23.447Z",
+            "modified": "2024-05-16T09:17:24.992Z",
             "headers": [],
             "body": {
                 "type": "json",
-                "raw": "{\n  \"name\": \"Computer Science for Pros\",\n  \"staff\": \"Florence Noble\",\n  \"moduleCode\": \"CMP1234\",\n  \"timetableId\": \"365c3cc1-2086-4d0f-9261-4d0cf68bfa47\",\n  \"type\": \"LECTURE\",\n  \"colour\": \"#59d5d9\",\n  \"start\": \"2024-04-04 12:00:00\",\n  \"end\": \"2024-04-04 14:00:00\",\n  \"isCombinedSession\": false,\n  \"group\": \"B\"\n}",
+                "raw": "{\n  \"type\": \"PROJECT\"\n}",
                 "form": []
             }
         },
@@ -587,11 +585,11 @@
             "method": "POST",
             "sortNum": 240000,
             "created": "2024-05-15T11:29:24.592Z",
-            "modified": "2024-05-15T11:33:40.357Z",
+            "modified": "2024-05-15T13:46:19.159Z",
             "headers": [],
             "body": {
                 "type": "json",
-                "raw": "{\n  \"timetable\": \"INB1102\"\n}",
+                "raw": "{\n  \"timetable\": \"INB1308\"\n}",
                 "form": []
             }
         },
@@ -604,11 +602,69 @@
             "method": "POST",
             "sortNum": 250000,
             "created": "2024-05-15T11:29:33.616Z",
-            "modified": "2024-05-15T11:37:01.157Z",
+            "modified": "2024-05-16T08:31:47.320Z",
             "headers": [],
             "body": {
                 "type": "json",
-                "raw": "{\n  \"carousel\": \"wx5gidvqo30t8cabk7lwok2r\",\n  \"type\": \"TIMETABLE\",\n  \"name\": \"Timetable\",\n  \"durationMs\": 4500\n}",
+                "raw": "{\n  \"carousel\": \"wx5gidvqo30t8cabk7lwok2r\",\n  \"type\": \"PICTURE\",\n  \"name\": \"Cat\",\n  \"contentUrl\": \"https://cataas.com/cat?=2\",\n  \"durationMs\": 3000\n}",
+                "form": []
+            }
+        },
+        {
+            "_id": "21a65232-b1a5-45c6-97fc-a0c8d5015ffc",
+            "colId": "16af920c-c406-43a8-a950-9882a199132a",
+            "containerId": "c70ca72b-3be9-4d89-ade6-39c9cdf35c1a",
+            "name": "Delete Carousel Item",
+            "url": "/v2/carousel/item/txxy61320y0pw5m6g3c040q5",
+            "method": "DELETE",
+            "sortNum": 260000,
+            "created": "2024-05-16T09:37:07.844Z",
+            "modified": "2024-05-16T09:37:29.523Z",
+            "headers": []
+        },
+        {
+            "_id": "0de73acc-45e3-4b4a-a942-b2eb41167f38",
+            "colId": "16af920c-c406-43a8-a950-9882a199132a",
+            "containerId": "c70ca72b-3be9-4d89-ade6-39c9cdf35c1a",
+            "name": "Delete Carousel",
+            "url": "/v2/carousel/n0tqc78b7m2jjmcfav0ipvxf",
+            "method": "DELETE",
+            "sortNum": 270000,
+            "created": "2024-05-16T09:37:35.904Z",
+            "modified": "2024-05-16T09:38:14.553Z",
+            "headers": []
+        },
+        {
+            "_id": "c0e92a69-fd02-46d2-ab18-e7294c82d0a8",
+            "colId": "16af920c-c406-43a8-a950-9882a199132a",
+            "containerId": "c70ca72b-3be9-4d89-ade6-39c9cdf35c1a",
+            "name": "Update Carousel Item",
+            "url": "/v2/carousel/item/jf0mgya068ijpt3vsx8rmr8n",
+            "method": "PUT",
+            "sortNum": 270000,
+            "created": "2024-05-16T09:49:36.728Z",
+            "modified": "2024-05-16T09:50:39.248Z",
+            "headers": [],
+            "body": {
+                "type": "json",
+                "raw": "{\n  \"isDeleted\": true\n}",
+                "form": []
+            }
+        },
+        {
+            "_id": "cbe4ff34-8294-4e62-b2a5-a6acbfaa8d1e",
+            "colId": "16af920c-c406-43a8-a950-9882a199132a",
+            "containerId": "c70ca72b-3be9-4d89-ade6-39c9cdf35c1a",
+            "name": "Update Carousel",
+            "url": "/v2/carousel/wx5gidvqo30t8cabk7lwok2r",
+            "method": "PUT",
+            "sortNum": 280000,
+            "created": "2024-05-16T09:56:00.993Z",
+            "modified": "2024-05-16T09:57:37.734Z",
+            "headers": [],
+            "body": {
+                "type": "json",
+                "raw": "{\n  \"timetable\": \"a02e6de1-187b-4cd8-8729-1002c6bdc5a1\",\n  \"isDeleted\": false\n}",
                 "form": []
             }
         }
@@ -622,5 +678,5 @@
             "baseUrl": "http://localhost:3000"
         }
     },
-    "ref": "lt2hf922xqBCls_rICskbOadOZdKHKhkrhvvUOXQTGaEBBvTsgHmuncBnfZ7C7DY8iejrWQgra1zoyGQCjI_rA"
+    "ref": "lt2hf922xqBCls_rICskbKxsaaG9oasupfMZ5NMoIlRFvr-XwXK6u1ZAlJXP_T9hEhvxR0R5HfREoJGFbhWm4A"
 }

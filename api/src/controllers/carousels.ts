@@ -1,12 +1,13 @@
 import e, { Request, Response, NextFunction } from "express";
 import { db } from '@/db';
 import { carousels as carouselSchema, carouselItems as carouselItemsSchema, timetables as timetableSchema } from '@/db/schema';
-import { eq, and, or, gte, lte, lt, gt } from 'drizzle-orm';
+import { eq, and, or, gte, lte, lt, gt, ConsoleLogWriter } from 'drizzle-orm';
 import { getUserIdFromJWT, getTokenFromAuthCookie } from "@/utils/auth";
 import { isUserATechnician } from "@/utils/users";
 import { dateToString, dateTimeToString } from "@/utils/date";
 import { log } from "@/utils/log";
 import { convertSpaceCodeToTimetableId } from "@/controllers/timetables"
+import { it } from "node:test";
 const moment = require('moment');
 const dotenv = require('dotenv');
 dotenv.config();
@@ -216,95 +217,84 @@ const deleteCarouselItem = async (req: Request, res: Response, next: NextFunctio
     res.status(200).json({ carouseItem: foundItem[0].id, message: "Carousel item has been deleted" })
 }
 
-// const updateCarousel = async (req: Request, res: Response, next: NextFunction) => {
-//     const eventId: string = req.params.id
+const updateCarousel = async (req: Request, res: Response, next: NextFunction) => {
+    const carouselId: string = req.params.carouselId
 
-//     const token = getTokenFromAuthCookie(req, res)
-//     const currentUserId = getUserIdFromJWT(token);
-//     if (await isUserATechnician(currentUserId) == false) {
-//         res.status(401).json({ "message": "You don't have permission to update events" })
-//         return
-//     }
+    const token = getTokenFromAuthCookie(req, res)
+    const currentUserId = getUserIdFromJWT(token);
+    if (await isUserATechnician(currentUserId) == false) {
+        res.status(401).json({ "message": "You don't have permission to update events" })
+        return
+    }
 
-//     // Check if the event exists before trying to delete it
-//     const event = await db.select()
-//         .from(eventSchema)
-//         .where(eq(eventSchema.id, eventId));
+    // Check if the event exists before trying to delete it
+    const carousel = await db.select()
+        .from(carouselSchema)
+        .where(eq(carouselSchema.id, carouselId));
 
-//     if (event.length !== 1) {
-//         res.status(404).json({ message: "Could not find event to update." });
-//         return;
-//     }
+    if (carousel.length !== 1) {
+        res.status(404).json({ message: "Could not find carousel to update." });
+        return;
+    }
 
-//     let currentTime: Date = new Date();
-//     let currentTimeStr = dateTimeToString(currentTime);
+    let currentTime: Date = new Date();
+    let currentTimeStr = dateTimeToString(currentTime);
 
-//     const updatedTimetable = await db.update(eventSchema)
-//         .set({
-//             name: req.body.name || event[0].name,
-//             staff: req.body.staff || event[0].staff,
-//             moduleCode: req.body.moduleCode || event[0].moduleCode,
-//             timetableId: req.body.timetableId || event[0].timetableId,
-//             type: req.body.type || event[0].type,
-//             colour: req.body.colour || event[0].colour,
-//             start: req.body.start || event[0].start,
-//             end: req.body.end || event[0].end,
-//             lastModified: currentTimeStr,
-//             modifiedBy: currentUserId,
-//             isCombinedSession: req.body.isCombinedSession || event[0].isCombinedSession,
-//             group: req.body.group || event[0].group,
-//         })
-//         .where(eq(eventSchema.id, event[0].id));
+    const updatedCarousel = await db.update(carouselSchema)
+        .set({
+            timetable: req.body.timetable || carousel[0].timetable,
+            lastModified: currentTimeStr,
+            modifiedBy: currentUserId,
+            isDeleted: req.body.isDeleted || carousel[0].isDeleted,
+        })
+        .where(eq(carouselSchema.id, carousel[0].id));
 
-//     res.status(201).json({ message: `Event '${event[0].name}' has been updated`, event: event[0].id });
+    res.status(201).json({ message: `Carousel has been updated`, carousel: carousel[0].id });
 
-//     await log(`Has updated event ${req.body.eventId}`, currentUserId)
-// }
+    await log(`Has updated carousel ${carousel[0].id}`, currentUserId)
+}
 
-// const updateCarouselItem = async (req: Request, res: Response, next: NextFunction) => {
-//     const eventId: string = req.params.id
+const updateCarouselItem = async (req: Request, res: Response, next: NextFunction) => {
+    const itemId: string = req.params.itemId
 
-//     const token = getTokenFromAuthCookie(req, res)
-//     const currentUserId = getUserIdFromJWT(token);
-//     if (await isUserATechnician(currentUserId) == false) {
-//         res.status(401).json({ "message": "You don't have permission to update events" })
-//         return
-//     }
+    const token = getTokenFromAuthCookie(req, res)
+    const currentUserId = getUserIdFromJWT(token);
+    if (await isUserATechnician(currentUserId) == false) {
+        res.status(401).json({ "message": "You don't have permission to update events" })
+        return
+    }
 
-//     // Check if the event exists before trying to delete it
-//     const event = await db.select()
-//         .from(eventSchema)
-//         .where(eq(eventSchema.id, eventId));
+    // Check if the event exists before trying to delete it
+    const item = await db.select()
+        .from(carouselItemsSchema)
+        .where(eq(carouselItemsSchema.id, itemId));
 
-//     if (event.length !== 1) {
-//         res.status(404).json({ message: "Could not find event to update." });
-//         return;
-//     }
+    if (item.length !== 1) {
+        res.status(404).json({ message: "Could not find carousel item to update." });
+        return;
+    }
 
-//     let currentTime: Date = new Date();
-//     let currentTimeStr = dateTimeToString(currentTime);
+    let currentTime: Date = new Date();
+    let currentTimeStr = dateTimeToString(currentTime);
 
-//     const updatedTimetable = await db.update(eventSchema)
-//         .set({
-//             name: req.body.name || event[0].name,
-//             staff: req.body.staff || event[0].staff,
-//             moduleCode: req.body.moduleCode || event[0].moduleCode,
-//             timetableId: req.body.timetableId || event[0].timetableId,
-//             type: req.body.type || event[0].type,
-//             colour: req.body.colour || event[0].colour,
-//             start: req.body.start || event[0].start,
-//             end: req.body.end || event[0].end,
-//             lastModified: currentTimeStr,
-//             modifiedBy: currentUserId,
-//             isCombinedSession: req.body.isCombinedSession || event[0].isCombinedSession,
-//             group: req.body.group || event[0].group,
-//         })
-//         .where(eq(eventSchema.id, event[0].id));
+    const updatedItem = await db.update(carouselItemsSchema)
+        .set({
+            carousel: req.body.carousel || item[0].carousel,
+            lastModified: currentTimeStr,
+            modifiedBy: currentUserId,
+            type: req.body.type || item[0].type,
+            contentUrl: req.body.contentUrl || item[0].contentUrl,
+            name: req.body.name || item[0].name,
+            isDeleted: req.body.isDeleted || item[0].isDeleted,
+            durationMs: req.body.durationMs || item[0].durationMs,
+            order: req.body.order || item[0].order
+        })
+        .where(eq(carouselItemsSchema.id, item[0].id));
 
-//     res.status(201).json({ message: `Event '${event[0].name}' has been updated`, event: event[0].id });
+    res.status(201).json({ message: `Carousel item '${item[0].name}' has been updated`, carousel: item[0].id });
 
-//     await log(`Has updated event ${req.body.eventId}`, currentUserId)
-// }
+    await log(`Has updated carousel item '${item[0].name}' (${item[0].id})`, currentUserId)
+}
 
 export default {
     getCarouselItemById,
@@ -315,6 +305,6 @@ export default {
     createCarouselItem,
     deleteCarousel,
     deleteCarouselItem,
-    // updateCarousel,
-    // updateCarouselItem
+    updateCarousel,
+    updateCarouselItem
 };
