@@ -4,6 +4,8 @@ import morgan from "morgan";
 import helmet from "helmet";
 const cors = require('cors');
 const app: Express = express();
+const glf = require("generate-license-file");
+const showdown = require('showdown');
 
 app.use(morgan("dev"));
 app.use(express.urlencoded({ extended: false }));
@@ -27,9 +29,21 @@ app.use((req, res, next) => {
     next();
 });
 
-/* default endpoint */
+/* default endpoints */
 app.get('/', (req: Request, res: Response) => {
     res.json({ message: '👋💻👾🏎️ Hello from SoCS Tech' });
+});
+app.get('/v2', (req: Request, res: Response) => {
+    res.json({ name: "asgard2" });
+});
+
+/* License File */
+app.get('/v2/opensource.txt', async (req: Request, res: Response) => {
+    const lic: string = await glf.getLicenseFileText("./package.json", { "omitVersion": true })
+    const sd = new showdown.Converter();
+    sd.setOption('simplifiedAutoLink', true);    
+    res.set('Content-Type', 'text/html');
+    res.send(Buffer.from(sd.makeHtml("# Asgard<sup>2</sup> Open Source Licenses\n\n" + lic)));
 });
 
 /* Routes */
