@@ -16,7 +16,7 @@ import { duration } from 'moment';
 
 export const logs = mysqlTable('logs', {
     id: varchar('id', { length: 128 }).$defaultFn(() => createId()).primaryKey(),
-    user: varchar('user', { length: 128 }).notNull().references(() => users.id),
+    user: varchar('user', { length: 128 }).references(() => users.id),
     message: text('message').notNull(),
     time: timestamp('time').defaultNow().notNull()
 });

@@ -122,7 +122,7 @@ const createUser = async (req: Request, res: Response, next: NextFunction) => {
 
     // Push to DB new user
     const user = await db.insert(userSchema).values({
-        username: req.body.username,
+        username: (req.body.username).toLowerCase(),
         shortName: req.body.shortName,
         fullName: req.body.fullName,
         role: req.body.role,

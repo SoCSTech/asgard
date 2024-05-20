@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import { db } from '@/db';
 import { logs as logSchema, users as userSchema } from '@/db/schema';
-import { eq,  gte } from 'drizzle-orm';
+import { desc, eq,  gte } from 'drizzle-orm';
 
 const dotenv = require('dotenv');
 dotenv.config();
@@ -36,6 +36,7 @@ const getAllLogs = async (req: Request, res: Response, next: NextFunction) => {
         .from(logSchema)
         .where(gte(logSchema.time, new Date(Date.now() - 48 * 60 * 60 * 1000)))
         .leftJoin(userSchema, eq(logSchema.user, userSchema.id))
+        .orderBy(desc(logSchema.time))
 
     res.json({ logs: logs });
 }
