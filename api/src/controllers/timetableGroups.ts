@@ -70,14 +70,20 @@ const updateTimetableGroup = async (req: Request, res: Response, next: NextFunct
     let currentTime: Date = new Date();
     let currentTimeStr = dateToString(currentTime);
 
-    const updatedGroups = await db.update(groupsSchema)
+    const updatedGroup = await db.update(groupsSchema)
         .set({
+            internalName: req.body.internalName || groups[0].internalName,
             name: req.body.name || groups[0].name,
             subtitle: req.body.subtitle || groups[0].subtitle,
-            lastModified: currentTimeStr,
             modifiedBy: currentUserId,
+            lastModified: currentTimeStr,
+            displayInfoPane: req.body.displayInfoPane || groups[0].displayInfoPane,
+            infoPaneText: req.body.infoPaneText || groups[0].infoPaneText,
+            infoPaneQR: req.body.infoPaneQR || groups[0].infoPaneQR,
+            infoPaneQRUrl: req.body.infoPaneQRUrl || groups[0].infoPaneQRUrl,
+            isDeleted: req.body.isDeleted || groups[0].isDeleted
         })
-        .where(eq(timetableSchema.id, groups[0].id));
+        .where(eq(groupsSchema.id, groups[0].id));
 
     await log(`Has updated timetable group with id ${groupId}`, currentUserId)
 
@@ -92,30 +98,28 @@ const deleteTimetableGroup = async (req: Request, res: Response, next: NextFunct
         return
     }
 
-    // let timetableId: string = req.params.id
-    // const timetables = await db.select().from(timetableSchema)
-    //     .where(
-    //         and(
-    //             or(
-    //                 eq(timetableSchema.id, String(timetableId)),
-    //                 eq(timetableSchema.spaceCode, String(timetableId)),
-    //             ),
-    //             eq(timetableSchema.isDeleted, false))
-    //     );
+    let groupId: string = req.params.id
+    const groups = await db.select().from(groupsSchema)
+        .where(
+            and(
+                or(
+                    eq(groupsSchema.id, String(groupId)),
+                ),
+                eq(groupsSchema.isDeleted, false))
+        );
 
-    // if (timetables.length !== 1) {
-    //     res.status(404).json({ "message": "Cannot find timetable to delete" })
-    //     return
-    // }
+    if (groups.length !== 1) {
+        res.status(404).json({ "message": "Cannot find timetable group to delete" })
+        return
+    }
 
-    // const updatedTimetable = await db.update(timetableSchema)
-    //     .set({ isDeleted: true })
-    //     .where(eq(timetableSchema.id, timetables[0].id));
+    const updatedGroup = await db.update(groupsSchema)
+        .set({ isDeleted: true })
+        .where(eq(groupsSchema.id, groups[0].id));
 
-    // // await log(`Has updated timetable group with id ${groupId}`, currentUserId)
+    await log(`Has deleted timetable group with id ${groupId}`, currentUserId)
 
-    // res.status(201).json({ message: "Timetable has been deleted", timetable: timetableId });
-    res.status(420)
+    res.status(201).json({ message: "Timetable group has been deleted", group: groupId });
 };
 
 const addTimetableToGroup = async (req: Request, res: Response, next: NextFunction) => {
@@ -226,4 +230,4 @@ const getTimetableGroupById = async (req: Request, res: Response, next: NextFunc
 
 
 
-export default { getAllTimetableGroups, createTimetableGroup };
+export default { getAllTimetableGroups, createTimetableGroup, updateTimetableGroup, deleteTimetableGroup };

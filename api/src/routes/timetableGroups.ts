@@ -5,10 +5,10 @@ const router = express.Router();
 
 router.get('/timetable-group', controller.getAllTimetableGroups);
 router.post('/timetable-group', authenticate, controller.createTimetableGroup);
-// router.get('/timetable-groups/:id', controller.getTimetableGroupById);
-// router.put('/timetable-groups/:id', authenticate, controller.updateTimetableGroup);
-// router.delete('/timetable-groups/:id', authenticate, controller.deleteTimetableGroup);
-// router.put('/timetable-groups/:groupId/:timetableId', authenticate, controller.addTimetableToGroup);
-// router.delete('/timetable-groups/:groupId/:timetableId', authenticate, controller.removeTimetableToGroup);
+router.put('/timetable-group/:id', authenticate, controller.updateTimetableGroup);
+router.delete('/timetable-group/:id', authenticate, controller.deleteTimetableGroup);
+// router.put('/timetable-group/:groupId/:timetableId', authenticate, controller.addTimetableToGroup);
+// router.delete('/timetable-group/:groupId/:timetableId', authenticate, controller.removeTimetableToGroup);
+// router.get('/timetable-group/:id', controller.getTimetableGroupById);
 
 export = router;
