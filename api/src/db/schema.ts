@@ -115,4 +115,5 @@ export const timetableGroups = mysqlTable('timetable_groups', {
 export const timetableGroupMembers = mysqlTable('timetable_group_members', {
     groupId: varchar('group_id', { length: 128 }).references(() => timetableGroups.id),
     timetableId: varchar('timetable_id', { length: 128 }).references(() => timetables.id),
+    order: int('order').default(0)
 })

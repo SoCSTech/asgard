@@ -160,7 +160,7 @@ const addTimetableToGroup = async (req: Request, res: Response, next: NextFuncti
         return
     }
 
-    const oldMembers = await db.select().from(groupMembersSchema)
+    const sameMemberWeAreAdding = await db.select().from(groupMembersSchema)
         .where(
             and(
                 eq(groupMembersSchema.groupId, String(group[0].id)),
@@ -168,15 +168,21 @@ const addTimetableToGroup = async (req: Request, res: Response, next: NextFuncti
             )
         );
 
-    if (oldMembers.length !== 0) {
+    if (sameMemberWeAreAdding.length !== 0) {
         res.status(409).json({ "message": "Timetable is already added to group" })
         return
     }
 
+    const oldMembers = await db.select().from(groupMembersSchema)
+        .where(
+            eq(groupMembersSchema.groupId, String(group[0].id))
+        );
+
     const newMember = await db.insert(groupMembersSchema)
         .values({
             groupId: group[0].id,
-            timetableId: timetable[0].id
+            timetableId: timetable[0].id,
+            order: oldMembers.length
         })
 
     await log(`Has added timetable ${timetable[0].id} to group ${group[0].id}`, currentUserId)
@@ -185,7 +191,6 @@ const addTimetableToGroup = async (req: Request, res: Response, next: NextFuncti
 };
 
 const removeTimetableFromGroup = async (req: Request, res: Response, next: NextFunction) => {
-
     const token = getTokenFromAuthCookie(req, res)
     const currentUserId = getUserIdFromJWT(token);
     if (await isUserATechnician(currentUserId) == false) {
@@ -204,34 +209,38 @@ const removeTimetableFromGroup = async (req: Request, res: Response, next: NextF
             )
         );
 
+    if (timetable.length !== 1) {
+        res.status(404).json({ "message": "Cannot find timetable" })
+        return
+    }
+
     const group = await db.select().from(groupsSchema)
-        .where(
-            and(
-                eq(groupsSchema.id, String(req.body.timetableId)),
-                eq(groupsSchema.isDeleted, false)
-            )
-        );
+    .where(
+        and(
+            eq(groupsSchema.id, String(req.body.groupId)),
+            eq(groupsSchema.isDeleted, false)
+        )
+    );
+    
+    if (group.length !== 1) {
+        res.status(404).json({ "message": "Cannot find timetable group" })
+        return
+    }
 
-    // if (timetable.length !== 1) {
-    //     res.status(404).json({ "message": "Cannot find timetable" })
-    //     return
-    // }
+    try {
+        const deletedMembership = await db.delete(groupMembersSchema)
+            .where(and(
+                eq(groupMembersSchema.timetableId, timetable[0].id),
+                eq(groupMembersSchema.groupId, group[0].id)
+            ))
+    } catch (error) {
+        res.status(500).json({ message: "Something went wrong when trying to remove timetable from group." })
+        return
+    }
+    
+    await log(`Has removed timetable ${timetable[0].spaceCode} from group with id ${group[0].id}`, currentUserId)
 
-    // const updatedTimetable = await db.update(timetableSchema)
-    //     .set({
-    //         name: req.body.name || timetable[0].name,
-    //         spaceCode: req.body.spaceCode || timetable[0].spaceCode,
-    //         capacity: req.body.capacity || timetable[0].capacity,
-    //         canCombine: req.body.canCombine || timetable[0].canCombine,
-    //         combinedPartnerId: req.body.combinedPartnerId || timetable[0].combinedPartnerId,
-    //         isDeleted: req.body.isDeleted || timetable[0].isDeleted
-    //     })
-    //     .where(eq(timetableSchema.id, timetable[0].id));
-
-    // // await log(`Has updated timetable group with id ${groupId}`, currentUserId)
-
-    // res.status(201).json({ message: `Timetable for ${timetable[0].spaceCode} has been updated`, timetable: timetable[0].id });
-    res.status(420)
+    res.status(201).json({ message: `Timetable ${timetable[0].spaceCode} has been removed from group ${group[0].internalName}`, group: group[0].id });
 };
 
 
