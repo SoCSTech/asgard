@@ -1,0 +1,1 @@
+ALTER TABLE `timetable_groups` ADD `is_deleted` boolean DEFAULT false;

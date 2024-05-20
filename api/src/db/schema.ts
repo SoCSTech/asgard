@@ -77,19 +77,6 @@ export const events = mysqlTable('events', {
     group: varchar('group', { length: 10 }),
 })
 
-export const timetableGroups = mysqlTable('timetable_groups', {
-    id: varchar('id', { length: 128 }).$defaultFn(() => createId()).primaryKey(),
-    name: varchar('name', { length: 128 }).notNull(),
-    subtitle: varchar('subtitle', { length: 128 }).notNull(),
-    lastModified: timestamp('last_modified', { mode: "string" }).defaultNow().notNull(),
-    modifiedBy: varchar('modified_by_id', { length: 128 }).references(() => users.id)
-})
-
-export const timetableGroupMembers = mysqlTable('timetable_group_members', {
-    groupId: varchar('group_id', { length: 128 }).references(() => timetableGroups.id),
-    timetableId: varchar('timetable_id', { length: 128 }).references(() => timetables.id),
-})
-
 export const carousels = mysqlTable('carousels', {
     id: varchar('id', { length: 128 }).$defaultFn(() => createId()).primaryKey(),
     timetable: varchar('timetable_id', {length: 128}).references(() => timetables.id),
@@ -109,4 +96,23 @@ export const carouselItems = mysqlTable('carousel_items', {
     isDeleted: boolean('is_deleted').default(false).notNull(),
     durationMs: int('duration_milliseconds').default(4500).notNull(),
     order: int('order').default(0)
+})
+
+export const timetableGroups = mysqlTable('timetable_groups', {
+    id: varchar('id', { length: 128 }).$defaultFn(() => createId()).primaryKey(),
+    internalName: varchar('internal_name', { length: 128 }).notNull(),
+    name: varchar('name', { length: 128 }).notNull(),
+    subtitle: varchar('subtitle', { length: 128 }).notNull(),
+    lastModified: timestamp('last_modified', { mode: "string" }).defaultNow().notNull(),
+    modifiedBy: varchar('modified_by_id', { length: 128 }).references(() => users.id),
+    isDeleted: boolean('is_deleted').default(false),
+    displayInfoPane: boolean('display_info_pane').default(false),
+    infoPaneText: text('info_pane_text'),
+    infoPaneQR: boolean('info_pane_qr').default(false),
+    infoPaneQRUrl: varchar('info_pane_qr_url', { length: 256 }),
+})
+
+export const timetableGroupMembers = mysqlTable('timetable_group_members', {
+    groupId: varchar('group_id', { length: 128 }).references(() => timetableGroups.id),
+    timetableId: varchar('timetable_id', { length: 128 }).references(() => timetables.id),
 })
