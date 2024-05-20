@@ -12,7 +12,7 @@ import { AuthProvider } from "@/auth";
 import "@/index.css";
 
 // Routes
-import Home from "@/routes/home";
+import Home from "@/routes/Home";
 import Login from "@/routes/login";
 import Layout from "./layout";
 
