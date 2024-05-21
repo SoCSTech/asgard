@@ -1,16 +1,16 @@
 import e, { Request, Response, NextFunction } from "express";
 import { db } from '@/db';
-import { timetables as timetableSchema, timetableGroups as groupsSchema, timetableGroupMembers as groupMembersSchema } from '@/db/schema';
+import { timetables as timetableSchema, timetableGroups as groupsSchema, timetableGroupMembers as groupMembersSchema, events as eventsSchema } from '@/db/schema';
 import { eq, and, or } from 'drizzle-orm';
 import { getUserIdFromJWT, getTokenFromAuthCookie } from "@/utils/auth";
 import { isUserATechnician } from "@/utils/users";
 import { dateToString } from "@/utils/date";
 import { log } from "@/utils/log";
-import { convertSpaceCodeToTimetableId } from "./timetables";
 import { defaultBoolean } from "@/utils/defaultValues";
 const dotenv = require('dotenv');
 dotenv.config();
 
+// > CRUD Ops \/
 const getAllTimetableGroups = async (req: Request, res: Response, next: NextFunction) => {
     const groups = await db.select().from(groupsSchema)
         .where(eq(groupsSchema.isDeleted, false))
@@ -34,9 +34,9 @@ const createTimetableGroup = async (req: Request, res: Response, next: NextFunct
             name: req.body.name,
             subtitle: req.body.subtitle,
             modifiedBy: currentUserId,
-            displayInfoPane: req.body.displayInfoPane || false,
+            displayInfoPane: defaultBoolean(req.body.displayInfoPane, false),
             infoPaneText: req.body.infoPaneText || null,
-            infoPaneQR: req.body.infoPaneQR || false,
+            displayInfoPaneQR: defaultBoolean(req.body.displayInfoPaneQR, false),
             infoPaneQRUrl: req.body.infoPaneQRUrl || ""
         })
     } catch (error) {
@@ -81,7 +81,7 @@ const updateTimetableGroup = async (req: Request, res: Response, next: NextFunct
             lastModified: currentTimeStr,
             displayInfoPane: defaultBoolean(req.body.displayInfoPane, groups[0].displayInfoPane),
             infoPaneText: req.body.infoPaneText || groups[0].infoPaneText,
-            infoPaneQR: defaultBoolean(req.body.infoPaneQR, groups[0].infoPaneQR),
+            displayInfoPaneQR: defaultBoolean(req.body.displayInfoPaneQR, groups[0].displayInfoPaneQR),
             infoPaneQRUrl: req.body.infoPaneQRUrl || groups[0].infoPaneQRUrl,
             isDeleted: defaultBoolean(req.body.isDeleted, groups[0].isDeleted)
         })
@@ -123,7 +123,13 @@ const deleteTimetableGroup = async (req: Request, res: Response, next: NextFunct
 
     res.status(201).json({ message: "Timetable group has been deleted", group: groupId });
 };
+// > CRUD Ops /\
 
+/*
+Checks if timetable and group exist
+Check if the match already exists...
+If exist separately then add to group list
+*/
 const addTimetableToGroup = async (req: Request, res: Response, next: NextFunction) => {
     let timetableId: string = req.body.timetableId
     let groupId: string = req.body.groupId
@@ -190,6 +196,9 @@ const addTimetableToGroup = async (req: Request, res: Response, next: NextFuncti
     res.status(201).json({ message: `Timetable ${timetable[0].spaceCode} has been added to group ${group[0].id}`, group: group[0].id });
 };
 
+/*
+Deletes timetable from group
+*/
 const removeTimetableFromGroup = async (req: Request, res: Response, next: NextFunction) => {
     const token = getTokenFromAuthCookie(req, res)
     const currentUserId = getUserIdFromJWT(token);
@@ -215,13 +224,13 @@ const removeTimetableFromGroup = async (req: Request, res: Response, next: NextF
     }
 
     const group = await db.select().from(groupsSchema)
-    .where(
-        and(
-            eq(groupsSchema.id, String(req.body.groupId)),
-            eq(groupsSchema.isDeleted, false)
-        )
-    );
-    
+        .where(
+            and(
+                eq(groupsSchema.id, String(req.body.groupId)),
+                eq(groupsSchema.isDeleted, false)
+            )
+        );
+
     if (group.length !== 1) {
         res.status(404).json({ "message": "Cannot find timetable group" })
         return
@@ -237,38 +246,98 @@ const removeTimetableFromGroup = async (req: Request, res: Response, next: NextF
         res.status(500).json({ message: "Something went wrong when trying to remove timetable from group." })
         return
     }
-    
+
     await log(`Has removed timetable ${timetable[0].spaceCode} from group with id ${group[0].id}`, currentUserId)
 
     res.status(201).json({ message: `Timetable ${timetable[0].spaceCode} has been removed from group ${group[0].internalName}`, group: group[0].id });
 };
 
 
+/*
+Gets a in a single requests all the data needed to make a multi-room overview timetable screen,
+This is useful for a building lobby or outside a bookable room with booths.
+This will remove the need to hard code multi-views... And allow for quick changes.
+*/
 const getTimetableGroupById = async (req: Request, res: Response, next: NextFunction) => {
-    //     let groupId: string = req.params.id
+    let groupId: string = req.params.id
 
-    //     const groups = await db.select().from(groupsSchema)
-    //         .leftJoin(groupMembersSchema, eq(groupsSchema.id, groupMembersSchema.groupId))
-    //         .leftJoin(timetableSchema, eq(groupMembersSchema.timetableId, timetableSchema.id))
-    //         .where(
-    //             and(
-    //                 eq(groupsSchema.id, String(groupId)),
-    //                 eq(timetableSchema.isDeleted, false)
-    //             )
-    //         )
-    //     res.json({ groups: groups });
-    // };
+    /*
+    I am doing this in three queries:
+        1. get the group and its meta data
+        2. get all the timetables that are in that group.
+        3. for all the timetables, get their events
 
-    // const getAllTimetableGroups = async (req: Request, res: Response, next: NextFunction) => {
-    //     const groups = await db.select().from(groupsSchema)
-    //         .leftJoin(groupMembersSchema, eq(groupsSchema.id, groupMembersSchema.groupId))
-    //         .leftJoin(timetableSchema, eq(groupMembersSchema.timetableId, timetableSchema.id))
-    //         .where(eq(timetableSchema.isDeleted, false))
+    This is because I am wanting the data to look like:
+    {
+        id: blah,
+        internalName: "INB 1st Floor Landing",
+        name: "Today's timetable",
+        subtitle: "school of computer science",
+        timetables: [
+            {
+                spaceCode: "INB1102",
+                events: [
+                    { name: "Workshop: Programming Fundamentals" },
+                    { name: "Workshop: Maths for Computer Science" }
+                ]
+            },
+            {
+                spaceCode: "INB1301",
+                events: [
+                    { name: "Workshop: Programming Fundamentals" },
+                    { name: "Workshop: Maths for Computer Science" }
+                ]
+            }
+        ]
+    }
 
-    //     res.json({ groups: groups });
-    res.status(420)
+    If I was going to do this as a huge join I was looking at getting repeated data, 
+    which would have been a huge pain in the ass when working with Y
+    */
+    const groups = await db.select().from(groupsSchema)
+        .where(
+            and(
+                eq(groupsSchema.id, String(groupId)),
+                eq(groupsSchema.isDeleted, false)
+            )
+        )
+
+    const timetables = await db.select().from(timetableSchema)
+        .innerJoin(groupMembersSchema, eq(groupMembersSchema.timetableId, timetableSchema.id))
+        .where(
+            eq(groupMembersSchema.groupId, String(groupId))
+        )
+    
+    /* 
+        Go through all the timetables 
+        and then add the events on to it 
+    */
+    const newTimetables = await Promise.all(timetables.map(async (tt) => {
+        const events = await db.select()
+            .from(eventsSchema)
+            .where(eq(eventsSchema.timetableId, tt.timetables.id))
+
+        return {
+            timetable: tt.timetables,
+            events: events
+        }
+    }))
+
+    // Structure the JSON Response nicely - otherwise it becomes painful to use.
+    res.json({
+        id: groups[0].id,
+        internalName: groups[0].internalName,
+        name: groups[0].name,
+        subtitle: groups[0].subtitle,
+        lastModified: groups[0].lastModified,
+        isDeleted: groups[0].isDeleted,
+        displayInfoPane: groups[0].displayInfoPane,
+        infoPaneText: groups[0].infoPaneText,
+        displayInfoPaneQR: groups[0].displayInfoPaneQR,
+        infoPaneQRUrl: groups[0].infoPaneQRUrl,
+        order: timetables[0].timetable_group_members.order,
+        timetables: newTimetables
+    });
 };
 
-
-
-export default { getAllTimetableGroups, createTimetableGroup, updateTimetableGroup, deleteTimetableGroup, addTimetableToGroup, removeTimetableFromGroup };
+export default { getAllTimetableGroups, createTimetableGroup, updateTimetableGroup, deleteTimetableGroup, addTimetableToGroup, removeTimetableFromGroup, getTimetableGroupById };

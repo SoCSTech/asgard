@@ -108,7 +108,7 @@ export const timetableGroups = mysqlTable('timetable_groups', {
     isDeleted: boolean('is_deleted').default(false),
     displayInfoPane: boolean('display_info_pane').default(false),
     infoPaneText: text('info_pane_text'),
-    infoPaneQR: boolean('info_pane_qr').default(false),
+    displayInfoPaneQR: boolean('display_info_pane_qr').default(false),
     infoPaneQRUrl: varchar('info_pane_qr_url', { length: 256 }),
 })
 

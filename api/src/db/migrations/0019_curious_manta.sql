@@ -1,0 +1,1 @@
+ALTER TABLE `timetable_groups` RENAME COLUMN `info_pane_qr` TO `display_info_pane_qr`;

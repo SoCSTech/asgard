@@ -134,6 +134,13 @@
       "when": 1716224254319,
       "tag": "0018_rainy_jocasta",
       "breakpoints": true
+    },
+    {
+      "idx": 19,
+      "version": "5",
+      "when": 1716303783030,
+      "tag": "0019_curious_manta",
+      "breakpoints": true
     }
   ]
 }

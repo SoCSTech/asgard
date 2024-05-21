@@ -9,6 +9,6 @@ router.get('/timetable-group', controller.getAllTimetableGroups);
 router.post('/timetable-group', authenticate, controller.createTimetableGroup);
 router.put('/timetable-group/:id', authenticate, controller.updateTimetableGroup);
 router.delete('/timetable-group/:id', authenticate, controller.deleteTimetableGroup);
-// router.get('/timetable-group/:id', controller.getTimetableGroupById);
+router.get('/timetable-group/:id', controller.getTimetableGroupById);
 
 export = router;

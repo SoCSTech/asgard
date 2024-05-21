@@ -1,6 +1,6 @@
 {
     "info": {
-        "_postman_id": "5ebf3f15-5fac-4825-b3f3-c2e4d4c36f58",
+        "_postman_id": "787feda7-daa4-4a4c-b644-dc800918bc92",
         "name": "Asgard2",
         "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
         "description": ""
@@ -221,7 +221,7 @@
                                     "language": "json"
                                 }
                             },
-                            "raw": "{\n  \"username\": \"svc-dataimporter\"\n}"
+                            "raw": "{\n  \"username\": \"svc-dataimporter1\"\n}"
                         }
                     }
                 },
@@ -545,10 +545,10 @@
                     "request": {
                         "method": "GET",
                         "url": {
-                            "raw": "/v2/timetable-groups/guid",
+                            "raw": "/v2/timetable-group/dthyuvt9mnwnufo4393po5qi",
                             "path": [
-                                "timetable-groups",
-                                "guid"
+                                "timetable-group",
+                                "dthyuvt9mnwnufo4393po5qi"
                             ],
                             "host": [
                                 "v2"
@@ -561,9 +561,9 @@
                     "request": {
                         "method": "GET",
                         "url": {
-                            "raw": "/v2/timetable-groups",
+                            "raw": "/v2/timetable-group",
                             "path": [
-                                "timetable-groups"
+                                "timetable-group"
                             ],
                             "host": [
                                 "v2"
@@ -576,9 +576,9 @@
                     "request": {
                         "method": "POST",
                         "url": {
-                            "raw": "/v2/timetable-groups",
+                            "raw": "/v2/timetable-group",
                             "path": [
-                                "timetable-groups"
+                                "timetable-group"
                             ],
                             "host": [
                                 "v2"
@@ -591,7 +591,98 @@
                                     "language": "json"
                                 }
                             },
-                            "raw": "{\n  \"name\": \"Today's Timetable\",\n  \"subtitle\": \"School of Computer Science\"\n}"
+                            "raw": "{\n  \"internalName\": \"INB 1st Floor Landing\",\n  \"name\": \"Today's Timetable\",\n  \"subtitle\": \"School of Computer Science\",\n  \"displayInfoPane\": true,\n  \"infoPaneText\": \"# Contactie a Techie \\nPlease OMG **__do not__** do that. \\nPlease leave me alone for goodness sake \\nOkay i guess you can open a ticket\",\n  \"infoPaneQR\": true,\n  \"infoPaneQRUrl\": \"https://lncn.ac/socssupport\"\n}"
+                        }
+                    }
+                },
+                {
+                    "name": "Update Timetable Group",
+                    "request": {
+                        "method": "PUT",
+                        "url": {
+                            "raw": "/v2/timetable-group/dthyuvt9mnwnufo4393po5qi",
+                            "path": [
+                                "timetable-group",
+                                "dthyuvt9mnwnufo4393po5qi"
+                            ],
+                            "host": [
+                                "v2"
+                            ]
+                        },
+                        "body": {
+                            "mode": "raw",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            },
+                            "raw": "{\n  \"internalName\": \"INB 1st Floor Landing\",\n  \"name\": \"Today's Timetable\",\n  \"subtitle\": \"School of Computer Science\",\n  \"displayInfoPane\": true,\n  \"infoPaneText\": \"# Contactie a Techie \\nPlease OMG **__do not__** do that. \\nPlease leave me alone for goodness sake \\nOkay i guess you can open a ticket\",\n  \"infoPaneQR\": true,\n  \"infoPaneQRUrl\": \"https://lncn.ac/socssupport\",\n  \"isDeleted\": false\n}"
+                        }
+                    }
+                },
+                {
+                    "name": "Delete Timetable Group",
+                    "request": {
+                        "method": "DELETE",
+                        "url": {
+                            "raw": "/v2/timetable-group/dthyuvt9mnwnufo4393po5qi",
+                            "path": [
+                                "timetable-group",
+                                "dthyuvt9mnwnufo4393po5qi"
+                            ],
+                            "host": [
+                                "v2"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Add Timetable to Timetable Group",
+                    "request": {
+                        "method": "POST",
+                        "url": {
+                            "raw": "/v2/timetable-group/add",
+                            "path": [
+                                "timetable-group",
+                                "add"
+                            ],
+                            "host": [
+                                "v2"
+                            ]
+                        },
+                        "body": {
+                            "mode": "raw",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            },
+                            "raw": "{\n  \"timetableId\": \"INB1308\",\n  \"groupId\": \"dthyuvt9mnwnufo4393po5qi\"\n}"
+                        }
+                    }
+                },
+                {
+                    "name": "Remove Timetable to Timetable Group",
+                    "request": {
+                        "method": "DELETE",
+                        "url": {
+                            "raw": "/v2/timetable-group/remove",
+                            "path": [
+                                "timetable-group",
+                                "remove"
+                            ],
+                            "host": [
+                                "v2"
+                            ]
+                        },
+                        "body": {
+                            "mode": "raw",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            },
+                            "raw": "{\n  \"timetableId\": \"INB1102\",\n  \"groupId\": \"dthyuvt9mnwnufo4393po5qi\"\n}"
                         }
                     }
                 }
@@ -842,7 +933,7 @@
         "bearer": [
             {
                 "key": "token",
-                "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImFkZGQzZGYzLWQyMjctNGUxMi1hZDM1LTRlMDA2MzNkZTdiNSIsInVzZXJuYW1lIjoiam9zaGNvb3BlciIsImlhdCI6MTcxNTc3MjgyOCwiZXhwIjoxNzE1ODU5MjI4fQ.Z7QjK2DJsZEBeHjCIbnNAoLFlU276R-4GFNQ2EmX2-s",
+                "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImFkZGQzZGYzLWQyMjctNGUxMi1hZDM1LTRlMDA2MzNkZTdiNSIsInVzZXJuYW1lIjoiam9zaGNvb3BlciIsImlhdCI6MTcxNjIxNDc4NywiZXhwIjoxNzE2MzAxMTg3fQ.FT6JV_j-OWbxIuEkAy9gI6a4XCiR7Zpgyr-LZ6mTQBw",
                 "type": "string"
             }
         ]
