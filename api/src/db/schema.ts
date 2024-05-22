@@ -110,6 +110,9 @@ export const timetableGroups = mysqlTable('timetable_groups', {
     infoPaneText: text('info_pane_text'),
     displayInfoPaneQR: boolean('display_info_pane_qr').default(false),
     infoPaneQRUrl: varchar('info_pane_qr_url', { length: 256 }),
+    object: varchar('object', {length: 30}).notNull().default('room'),
+    verbAvailable: varchar('verb_available', { length: 30 }).notNull().default('free'),
+    verbUnavailable: varchar('verb_unavailable', { length: 30 }).notNull().default('in use')
 })
 
 export const timetableGroupMembers = mysqlTable('timetable_group_members', {

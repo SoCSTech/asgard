@@ -1,10 +1,10 @@
 import e, { Request, Response, NextFunction } from "express";
 import { db } from '@/db';
 import { timetables as timetableSchema, timetableGroups as groupsSchema, timetableGroupMembers as groupMembersSchema, events as eventsSchema } from '@/db/schema';
-import { eq, and, or } from 'drizzle-orm';
+import { eq, and, or, lt, gt } from 'drizzle-orm';
 import { getUserIdFromJWT, getTokenFromAuthCookie } from "@/utils/auth";
 import { isUserATechnician } from "@/utils/users";
-import { dateToString } from "@/utils/date";
+import { dateTimeToStringUtc, dateToString } from "@/utils/date";
 import { log } from "@/utils/log";
 import { defaultBoolean } from "@/utils/defaultValues";
 const dotenv = require('dotenv');
@@ -37,7 +37,10 @@ const createTimetableGroup = async (req: Request, res: Response, next: NextFunct
             displayInfoPane: defaultBoolean(req.body.displayInfoPane, false),
             infoPaneText: req.body.infoPaneText || null,
             displayInfoPaneQR: defaultBoolean(req.body.displayInfoPaneQR, false),
-            infoPaneQRUrl: req.body.infoPaneQRUrl || ""
+            infoPaneQRUrl: req.body.infoPaneQRUrl || "",
+            verbAvailable: req.body.verbAvailable || null,
+            verbUnavailable: req.body.verbUnavailable || null,
+            object: req.body.object || null
         })
     } catch (error) {
         res.status(406).json({ "message": "Timetable group could not be added - check the data and try again." });
@@ -83,7 +86,10 @@ const updateTimetableGroup = async (req: Request, res: Response, next: NextFunct
             infoPaneText: req.body.infoPaneText || groups[0].infoPaneText,
             displayInfoPaneQR: defaultBoolean(req.body.displayInfoPaneQR, groups[0].displayInfoPaneQR),
             infoPaneQRUrl: req.body.infoPaneQRUrl || groups[0].infoPaneQRUrl,
-            isDeleted: defaultBoolean(req.body.isDeleted, groups[0].isDeleted)
+            isDeleted: defaultBoolean(req.body.isDeleted, groups[0].isDeleted),
+            verbAvailable: req.body.verbAvailable || groups[0].verbAvailable,
+            verbUnavailable: req.body.verbUnavailable || groups[0].verbUnavailable,
+            object: req.body.object || groups[0].object
         })
         .where(eq(groupsSchema.id, groups[0].id));
 
@@ -310,12 +316,22 @@ const getTimetableGroupById = async (req: Request, res: Response, next: NextFunc
     
     /* 
         Go through all the timetables 
-        and then add the events on to it 
+        and then add the events on to it for today
     */
+    const today = new Date();
+    const startOfToday = new Date(today); 
+    startOfToday.setHours(0, 0, 0);
+    const endOfToday = new Date(today);
+    endOfToday.setHours(23, 59);
+    
     const newTimetables = await Promise.all(timetables.map(async (tt) => {
         const events = await db.select()
             .from(eventsSchema)
-            .where(eq(eventsSchema.timetableId, tt.timetables.id))
+            .where(and(
+                eq(eventsSchema.timetableId, tt.timetables.id),
+                gt(eventsSchema.start, dateTimeToStringUtc(startOfToday)),
+                lt(eventsSchema.start, dateTimeToStringUtc(endOfToday))
+            ))
 
         return {
             timetable: tt.timetables,
@@ -336,6 +352,9 @@ const getTimetableGroupById = async (req: Request, res: Response, next: NextFunc
         displayInfoPaneQR: groups[0].displayInfoPaneQR,
         infoPaneQRUrl: groups[0].infoPaneQRUrl,
         order: timetables[0].timetable_group_members.order,
+        verbAvailable: groups[0].verbAvailable,
+        verbUnavailable: groups[0].verbUnavailable,
+        object: groups[0].object,
         timetables: newTimetables
     });
 };
