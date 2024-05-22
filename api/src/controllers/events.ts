@@ -4,7 +4,7 @@ import { events as eventSchema, users as userSchema, timetables as timetableSche
 import { eq, and, or, gte, lte, lt, gt } from 'drizzle-orm';
 import { getUserIdFromJWT, getTokenFromAuthCookie } from "@/utils/auth";
 import { isUserATechnician } from "@/utils/users";
-import { dateToString, dateTimeToString } from "@/utils/date";
+import { dateToString, dateTimeToString, dateTimeToStringUtc } from "@/utils/date";
 import { log } from "@/utils/log";
 import { convertSpaceCodeToTimetableId } from "@/controllers/timetables"
 const moment = require('moment');
@@ -44,19 +44,24 @@ const createEvent = async (req: Request, res: Response, next: NextFunction) => {
     const adjustedStartTime = new Date(req.body.start)
     adjustedStartTime.setMinutes(adjustedStartTime.getMinutes() + 1);
 
+    console.log(adjustedEndTime)
+    console.log(adjustedStartTime)
+
+
     const clashingEvents = await db.select()
         .from(eventSchema)
         .where(
             and(
                 eq(eventSchema.timetableId, timetableId),
                 and(
-                    gte(eventSchema.end, dateTimeToString(adjustedStartTime)),
-                    lte(eventSchema.start, dateTimeToString(adjustedEndTime))
+                    gte(eventSchema.end, dateTimeToStringUtc(adjustedStartTime)),
+                    lte(eventSchema.start, dateTimeToStringUtc(adjustedEndTime))
                 )
             )
         );
 
     if (clashingEvents.length !== 0) {
+        console.log(clashingEvents)
         res.status(409).json({ message: "Event already exists on that timetable at that time." });
         return;
     }
@@ -195,11 +200,17 @@ const getNowAndNextEventsForTimetable = async (req: Request, res: Response, next
         ).orderBy(eventSchema.start)
         .limit(1)
 
+    // Handle if nothing is running right now
+    let possibleNextStartTime = dateTimeToString(new Date());
+    if (currentEvent.length === 1) {
+        possibleNextStartTime = currentEvent[0].end
+    }
+
     const nextEvent = await db.select()
         .from(eventSchema)
         .where(
             and(
-                gt(eventSchema.start, currentEvent[0].end),
+                gt(eventSchema.start, possibleNextStartTime),
                 eq(eventSchema.timetableId, timetableId),
                 lt(eventSchema.start, dateTimeToString(tomorrow))
             )

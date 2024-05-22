@@ -2,7 +2,7 @@
     "clientName": "Thunder Client",
     "collectionName": "Asgard2",
     "collectionId": "61af6853-526f-4897-b0fb-7fdc62b75e89",
-    "dateExported": "2024-05-21T15:53:06.821Z",
+    "dateExported": "2024-05-22T14:05:29.836Z",
     "version": "1.2",
     "folders": [
         {
@@ -519,11 +519,11 @@
             "method": "PUT",
             "sortNum": 180000,
             "created": "2024-05-20T14:20:29.017Z",
-            "modified": "2024-05-20T14:26:19.675Z",
+            "modified": "2024-05-22T14:03:32.961Z",
             "headers": [],
             "body": {
                 "type": "json",
-                "raw": "{\n  \"internalName\": \"INB 1st Floor Landing\",\n  \"name\": \"Today's Timetable\",\n  \"subtitle\": \"School of Computer Science\",\n  \"displayInfoPane\": true,\n  \"infoPaneText\": \"# Contactie a Techie \\nPlease OMG **__do not__** do that. \\nPlease leave me alone for goodness sake \\nOkay i guess you can open a ticket\",\n  \"infoPaneQR\": true,\n  \"infoPaneQRUrl\": \"https://lncn.ac/socssupport\",\n  \"isDeleted\": false\n}",
+                "raw": "{\n  \"internalName\": \"INB 1st Floor Landing\",\n  \"name\": \"Today's Timetable\",\n  \"subtitle\": \"School of Computer Science\",\n  \"displayInfoPane\": true,\n  \"infoPaneText\": \"# Contactie a Techie \\nPlease OMG **__do not__** do that. \\n\\nPlease leave me alone for goodness sake \\n\\nOkay i guess you can open a ticket\",\n  \"displayInfoPaneQR\": true,\n  \"infoPaneQRUrl\": \"https://lncn.ac/socssupport\",\n  \"isDeleted\": false\n}",
                 "form": []
             }
         },
@@ -729,11 +729,11 @@
     "settings": {
         "auth": {
             "type": "bearer",
-            "bearer": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImFkZGQzZGYzLWQyMjctNGUxMi1hZDM1LTRlMDA2MzNkZTdiNSIsInVzZXJuYW1lIjoiam9zaGNvb3BlciIsImlhdCI6MTcxNjIxNDc4NywiZXhwIjoxNzE2MzAxMTg3fQ.FT6JV_j-OWbxIuEkAy9gI6a4XCiR7Zpgyr-LZ6mTQBw"
+            "bearer": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImFkZGQzZGYzLWQyMjctNGUxMi1hZDM1LTRlMDA2MzNkZTdiNSIsInVzZXJuYW1lIjoiam9zaGNvb3BlciIsImlhdCI6MTcxNjM3MzUwOSwiZXhwIjoxNzE2NDU5OTA5fQ.I-HsXDfXNBzit6sWxK5zKaOTPqYnJvOSwJYUA72NR2c"
         },
         "options": {
             "baseUrl": "http://localhost:3000"
         }
     },
-    "ref": "-SlRu9fJtAP24SptLlLAEUF0yi0DHU5LRkPgGTZwLOK0xZHPJjXxTAL9RGPSfbs9rHWIoSuxt7gus4mKSD31Qg"
+    "ref": "-SlRu9fJtAP24SptLlLAEchXPewod2UhI3qHeIWyBCW8dXSz05hTrNK6B3xgbDwm1VPP7BmpN2FZVVQ2vickJg"
 }

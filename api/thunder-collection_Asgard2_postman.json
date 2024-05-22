@@ -1,6 +1,6 @@
 {
     "info": {
-        "_postman_id": "787feda7-daa4-4a4c-b644-dc800918bc92",
+        "_postman_id": "693ff6f4-fe1e-49ce-a411-da8d84e3c1c0",
         "name": "Asgard2",
         "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
         "description": ""
@@ -616,7 +616,7 @@
                                     "language": "json"
                                 }
                             },
-                            "raw": "{\n  \"internalName\": \"INB 1st Floor Landing\",\n  \"name\": \"Today's Timetable\",\n  \"subtitle\": \"School of Computer Science\",\n  \"displayInfoPane\": true,\n  \"infoPaneText\": \"# Contactie a Techie \\nPlease OMG **__do not__** do that. \\nPlease leave me alone for goodness sake \\nOkay i guess you can open a ticket\",\n  \"infoPaneQR\": true,\n  \"infoPaneQRUrl\": \"https://lncn.ac/socssupport\",\n  \"isDeleted\": false\n}"
+                            "raw": "{\n  \"internalName\": \"INB 1st Floor Landing\",\n  \"name\": \"Today's Timetable\",\n  \"subtitle\": \"School of Computer Science\",\n  \"displayInfoPane\": true,\n  \"infoPaneText\": \"# Contactie a Techie \\nPlease OMG **__do not__** do that. \\n\\nPlease leave me alone for goodness sake \\n\\nOkay i guess you can open a ticket\",\n  \"displayInfoPaneQR\": true,\n  \"infoPaneQRUrl\": \"https://lncn.ac/socssupport\",\n  \"isDeleted\": false\n}"
                         }
                     }
                 },
@@ -933,7 +933,7 @@
         "bearer": [
             {
                 "key": "token",
-                "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImFkZGQzZGYzLWQyMjctNGUxMi1hZDM1LTRlMDA2MzNkZTdiNSIsInVzZXJuYW1lIjoiam9zaGNvb3BlciIsImlhdCI6MTcxNjIxNDc4NywiZXhwIjoxNzE2MzAxMTg3fQ.FT6JV_j-OWbxIuEkAy9gI6a4XCiR7Zpgyr-LZ6mTQBw",
+                "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImFkZGQzZGYzLWQyMjctNGUxMi1hZDM1LTRlMDA2MzNkZTdiNSIsInVzZXJuYW1lIjoiam9zaGNvb3BlciIsImlhdCI6MTcxNjM3MzUwOSwiZXhwIjoxNzE2NDU5OTA5fQ.I-HsXDfXNBzit6sWxK5zKaOTPqYnJvOSwJYUA72NR2c",
                 "type": "string"
             }
         ]
