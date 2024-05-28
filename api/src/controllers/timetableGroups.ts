@@ -194,7 +194,8 @@ const addTimetableToGroup = async (req: Request, res: Response, next: NextFuncti
         .values({
             groupId: group[0].id,
             timetableId: timetable[0].id,
-            order: oldMembers.length
+            order: oldMembers.length,
+            location: req.body.location || null
         })
 
     await log(`Has added timetable ${timetable[0].id} to group ${group[0].id}`, currentUserId)
@@ -258,6 +259,46 @@ const removeTimetableFromGroup = async (req: Request, res: Response, next: NextF
     res.status(201).json({ message: `Timetable ${timetable[0].spaceCode} has been removed from group ${group[0].internalName}`, group: group[0].id });
 };
 
+const updateTimetableGroupMember = async (req: Request, res: Response, next: NextFunction) => {
+    let timetableId: string = req.body.timetableId
+    let groupId: string = req.body.groupId
+
+    const token = getTokenFromAuthCookie(req, res)
+    const currentUserId = getUserIdFromJWT(token);
+    if (await isUserATechnician(currentUserId) == false) {
+        res.status(401).json({ "message": "You don't have permission to update timetable groups" })
+        return
+    }
+
+    try {
+        const oldGrouping = await db.select().from(groupMembersSchema)
+            .where(and(
+                eq(groupMembersSchema.groupId, groupId),
+                eq(groupMembersSchema.timetableId, timetableId)
+            ))
+
+        if (oldGrouping.length !== 1) {
+            res.status(400).json({ message: "Couldn't find matching group combination" })
+            return
+        }
+
+        const updatedGroup = await db.update(groupMembersSchema)
+            .set({
+                order: req.body.order || oldGrouping[0].order,
+                location: req.body.location || oldGrouping[0].location
+            })
+            .where(and(
+                eq(groupMembersSchema.timetableId, timetableId),
+                eq(groupMembersSchema.groupId, groupId),
+            ));
+
+        res.status(201).json({ message: "Updated timetable grouping" })
+        return
+    } catch (error) {
+        res.status(500).json({ message: "Couldn't update timetable grouping" })
+        return
+    }
+}
 
 /*
 Gets a in a single requests all the data needed to make a multi-room overview timetable screen,
@@ -314,17 +355,17 @@ const getTimetableGroupById = async (req: Request, res: Response, next: NextFunc
             eq(groupMembersSchema.groupId, String(groupId))
         )
         .orderBy(groupMembersSchema.order)
-    
+
     /* 
         Go through all the timetables 
         and then add the events on to it for today
     */
     const today = new Date();
-    const startOfToday = new Date(today); 
+    const startOfToday = new Date(today);
     startOfToday.setHours(0, 0, 0);
     const endOfToday = new Date(today);
     endOfToday.setHours(23, 59);
-    
+
     const newTimetables = await Promise.all(timetables.map(async (tt) => {
         const events = await db.select()
             .from(eventsSchema)
@@ -336,6 +377,8 @@ const getTimetableGroupById = async (req: Request, res: Response, next: NextFunc
 
         return {
             timetable: tt.timetables,
+            order: tt.timetable_group_members.order,
+            location: tt.timetable_group_members.location,
             events: events
         }
     }))
@@ -359,4 +402,4 @@ const getTimetableGroupById = async (req: Request, res: Response, next: NextFunc
     });
 };
 
-export default { getAllTimetableGroups, createTimetableGroup, updateTimetableGroup, deleteTimetableGroup, addTimetableToGroup, removeTimetableFromGroup, getTimetableGroupById };
+export default { getAllTimetableGroups, createTimetableGroup, updateTimetableGroup, deleteTimetableGroup, addTimetableToGroup, removeTimetableFromGroup, updateTimetableGroupMember, getTimetableGroupById };

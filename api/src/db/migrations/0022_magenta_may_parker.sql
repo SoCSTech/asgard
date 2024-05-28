@@ -1,0 +1,1 @@
+ALTER TABLE `timetable_group_members` ADD `location` enum('UPSTAIRS','DOWNSTAIRS','LEFT','RIGHT','FORWARD','BACKWARDS');
