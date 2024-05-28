@@ -313,6 +313,7 @@ const getTimetableGroupById = async (req: Request, res: Response, next: NextFunc
         .where(
             eq(groupMembersSchema.groupId, String(groupId))
         )
+        .orderBy(groupMembersSchema.order)
     
     /* 
         Go through all the timetables 
@@ -351,7 +352,6 @@ const getTimetableGroupById = async (req: Request, res: Response, next: NextFunc
         infoPaneText: groups[0].infoPaneText,
         displayInfoPaneQR: groups[0].displayInfoPaneQR,
         infoPaneQRUrl: groups[0].infoPaneQRUrl,
-        order: timetables[0].timetable_group_members.order,
         verbAvailable: groups[0].verbAvailable,
         verbUnavailable: groups[0].verbUnavailable,
         object: groups[0].object,
