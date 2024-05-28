@@ -1,6 +1,6 @@
 {
     "info": {
-        "_postman_id": "693ff6f4-fe1e-49ce-a411-da8d84e3c1c0",
+        "_postman_id": "8ca8c5a6-724c-4474-bf61-4bace6931c38",
         "name": "Asgard2",
         "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
         "description": ""
@@ -322,7 +322,7 @@
                                     "language": "json"
                                 }
                             },
-                            "raw": "{\n  \"spaceCode\": \"INB1102\",\n  \"name\": \"Compter Lab 1A\",\n  \"capacity\": 77\n}"
+                            "raw": "{\n  \"spaceCode\": \"INB1111\",\n  \"name\": \"Compter Lab 1D\",\n  \"capacity\": 10\n}"
                         }
                     }
                 },
@@ -616,7 +616,7 @@
                                     "language": "json"
                                 }
                             },
-                            "raw": "{\n  \"internalName\": \"INB 1st Floor Landing\",\n  \"name\": \"Today's Timetable\",\n  \"subtitle\": \"School of Computer Science\",\n  \"displayInfoPane\": true,\n  \"infoPaneText\": \"# Contactie a Techie \\nPlease OMG **__do not__** do that. \\n\\nPlease leave me alone for goodness sake \\n\\nOkay i guess you can open a ticket\",\n  \"displayInfoPaneQR\": true,\n  \"infoPaneQRUrl\": \"https://lncn.ac/socssupport\",\n  \"isDeleted\": false\n}"
+                            "raw": "{\n  \"internalName\": \"INB 1st Floor Landing\",\n  \"name\": \"Today's Timetable\",\n  \"subtitle\": \"School of Compy Scie\",\n  \"displayInfoPane\": false,\n  \"infoPaneText\": \"# Contactie a Techie \\nPlease OMG **__do not__** do that. \\n\\nPlease leave me alone for goodness sake \\n\\nOkay i guess you can open a ticket\",\n  \"displayInfoPaneQR\": true,\n  \"infoPaneQRUrl\": \"https://lncn.ac/socssupport\",\n  \"isDeleted\": false,\n  \"verbAvailable\": \"free\",\n  \"verbUnavailable\": \"in use\",\n  \"object\": \"lab\"\n}"
                         }
                     }
                 },
@@ -657,7 +657,7 @@
                                     "language": "json"
                                 }
                             },
-                            "raw": "{\n  \"timetableId\": \"INB1308\",\n  \"groupId\": \"dthyuvt9mnwnufo4393po5qi\"\n}"
+                            "raw": "{\n  \"timetableId\": \"INB1101\",\n  \"groupId\": \"dthyuvt9mnwnufo4393po5qi\",\n  \"location\": \"DOWNSTAIRS\"\n}"
                         }
                     }
                 },
@@ -683,6 +683,31 @@
                                 }
                             },
                             "raw": "{\n  \"timetableId\": \"INB1102\",\n  \"groupId\": \"dthyuvt9mnwnufo4393po5qi\"\n}"
+                        }
+                    }
+                },
+                {
+                    "name": "Update Timetable Group Member",
+                    "request": {
+                        "method": "PUT",
+                        "url": {
+                            "raw": "/v2/timetable-group/member",
+                            "path": [
+                                "timetable-group",
+                                "member"
+                            ],
+                            "host": [
+                                "v2"
+                            ]
+                        },
+                        "body": {
+                            "mode": "raw",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            },
+                            "raw": "{\n  \"timetableId\": \"INB1307\",\n  \"groupId\": \"dthyuvt9mnwnufo4393po5qi\",\n  \"location\": \"LEFT\"\n}"
                         }
                     }
                 }
@@ -747,10 +772,10 @@
                     "request": {
                         "method": "GET",
                         "url": {
-                            "raw": "/v2/carousel/wx5gidvqo30t8cabk7lwok2r",
+                            "raw": "/v2/carousel/o7yl0dlfj1obknjobknju6kj",
                             "path": [
                                 "carousel",
-                                "wx5gidvqo30t8cabk7lwok2r"
+                                "o7yl0dlfj1obknjobknju6kj"
                             ],
                             "host": [
                                 "v2"
@@ -780,10 +805,10 @@
                     "request": {
                         "method": "GET",
                         "url": {
-                            "raw": "/v2/timetable/INB1102/carousel",
+                            "raw": "/v2/timetable/INB1301/carousel",
                             "path": [
                                 "timetable",
-                                "INB1102",
+                                "INB1301",
                                 "carousel"
                             ],
                             "host": [
@@ -812,7 +837,7 @@
                                     "language": "json"
                                 }
                             },
-                            "raw": "{\n  \"timetable\": \"INB1308\"\n}"
+                            "raw": "{\n  \"timetable\": \"INB1301\"\n}"
                         }
                     }
                 },
@@ -933,7 +958,7 @@
         "bearer": [
             {
                 "key": "token",
-                "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImFkZGQzZGYzLWQyMjctNGUxMi1hZDM1LTRlMDA2MzNkZTdiNSIsInVzZXJuYW1lIjoiam9zaGNvb3BlciIsImlhdCI6MTcxNjM3MzUwOSwiZXhwIjoxNzE2NDU5OTA5fQ.I-HsXDfXNBzit6sWxK5zKaOTPqYnJvOSwJYUA72NR2c",
+                "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImFkZGQzZGYzLWQyMjctNGUxMi1hZDM1LTRlMDA2MzNkZTdiNSIsInVzZXJuYW1lIjoiam9zaGNvb3BlciIsImlhdCI6MTcxNjkwNjg5MCwiZXhwIjoxNzE2OTkzMjkwfQ.yBZeLyRr4m70aJpEE5g6YQQ3XyJ1oOy2fB9j1112lTU",
                 "type": "string"
             }
         ]
