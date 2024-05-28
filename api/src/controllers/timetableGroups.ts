@@ -7,6 +7,7 @@ import { isUserATechnician } from "@/utils/users";
 import { dateTimeToStringUtc, dateToString } from "@/utils/date";
 import { log } from "@/utils/log";
 import { defaultBoolean } from "@/utils/defaultValues";
+import { convertSpaceCodeToTimetableId } from "@/controllers/timetables";
 const dotenv = require('dotenv');
 dotenv.config();
 
@@ -73,8 +74,6 @@ const updateTimetableGroup = async (req: Request, res: Response, next: NextFunct
     let currentTime: Date = new Date();
     let currentTimeStr = dateToString(currentTime);
 
-    console.log(defaultBoolean(req.body.isDeleted, groups[0].isDeleted))
-
     const updatedGroup = await db.update(groupsSchema)
         .set({
             internalName: req.body.internalName || groups[0].internalName,
@@ -137,7 +136,7 @@ Check if the match already exists...
 If exist separately then add to group list
 */
 const addTimetableToGroup = async (req: Request, res: Response, next: NextFunction) => {
-    let timetableId: string = req.body.timetableId
+    let timetableId: string = await convertSpaceCodeToTimetableId(req.body.timetableId)
     let groupId: string = req.body.groupId
 
     const token = getTokenFromAuthCookie(req, res)
@@ -260,7 +259,7 @@ const removeTimetableFromGroup = async (req: Request, res: Response, next: NextF
 };
 
 const updateTimetableGroupMember = async (req: Request, res: Response, next: NextFunction) => {
-    let timetableId: string = req.body.timetableId
+    let timetableId: string = await convertSpaceCodeToTimetableId(req.body.timetableId)
     let groupId: string = req.body.groupId
 
     const token = getTokenFromAuthCookie(req, res)
