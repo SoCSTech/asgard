@@ -1,7 +1,7 @@
 {
   "version": "5",
   "dialect": "mysql",
-  "id": "b60d17cf-16df-4b7c-befc-129d2ddec96b",
+  "id": "0ece60f2-64ba-4b9d-b7f7-27a82536f50a",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
     "carousel_items": {

@@ -1,6 +1,6 @@
 import e, { Request, Response, NextFunction } from "express";
 import { db } from '@/db';
-import { timetables as timetableSchema, users as userSchema } from '@/db/schema';
+import { timetables as timetableSchema, users as userSchema, carousels as carouselSchema, carouselItems as carouselItemsSchema } from '@/db/schema';
 import { eq, and, or, asc } from 'drizzle-orm';
 import { getUserIdFromJWT, getTokenFromAuthCookie } from "@/utils/auth";
 import { isUserATechnician } from "@/utils/users";
@@ -25,6 +25,11 @@ export const convertSpaceCodeToTimetableId = async (timetableId: string) => {
                 eq(timetableSchema.spaceCode, String(timetableId)),
                 eq(timetableSchema.isDeleted, false)
             ));
+
+        if (timetable.length !== 1){
+            console.error("Couldn't find timetable for that Id???")
+            return "null";
+        }
 
         return timetable[0].id;
     }
@@ -116,7 +121,28 @@ const createTimetable = async (req: Request, res: Response, next: NextFunction) 
 
     await log(`Has created timetable with name ${req.body.name} (${req.body.spaceCode})`, currentUserId)
     
-    res.status(201).json({ "message": "Timetable has been added", "spaceCode": req.body.spaceCode });
+    const newTimetablesId = await convertSpaceCodeToTimetableId(req.body.spaceCode)
+    console.log(newTimetablesId)
+
+    const newCarousel = await db.insert(carouselSchema).values({
+        timetable: newTimetablesId,
+        modifiedBy: getUserIdFromJWT(token)
+    });
+
+    const theCarousel = await db.select().from(carouselSchema).where(
+        eq(carouselSchema.timetable, newTimetablesId),
+    )
+
+    const newItem = await db.insert(carouselItemsSchema).values({
+        carousel: theCarousel[0].id,
+        modifiedBy: getUserIdFromJWT(token),
+        type: 'TIMETABLE',
+        name: "Timetable",
+        durationMs: 10000,
+        order: 0
+    });
+
+    res.status(201).json({ "message": "Timetable has been added", "spaceCode": req.body.spaceCode, "timetableId": newTimetablesId });
 };
 
 const deleteTimetable = async (req: Request, res: Response, next: NextFunction) => {

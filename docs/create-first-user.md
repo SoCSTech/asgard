@@ -33,7 +33,7 @@ You will get a response like `'ius7qbrzxncdwo5zcddhakgy'` copy it.
 INSERT INTO `users` 
 (`id`, `username`, `short_name`, `full_name`, `role`, `email`, `password`, `creation_date`, `reset_token`, `reset_token_expiry`, `profile_picture_url`, `is_deleted`, `initials`) 
 VALUES 
-('ius7qbrzxncdwo5zcddhakgy', 'joshcooper', 'Josh', 'Josh Cooper', 'TECHNICIAN', 'joshcooper@lincoln.ac.uk', '$2a$12$l5YP7j9UcVujD9NBzfwlk.j9f85A4Kigml24K2mhZpka2STgjZmOa', NOW(), NULL, NULL, NULL, 0, 'JC');
+('ius7qbrzxncdwo5zcddhakgy', 'joshcooper', 'Josh', 'Josh Cooper', 'TECHNICIAN', 'joshcooper@lincoln.ac.uk', '$2a$12$l5YP7j9UcVujD9NBzfwlk.j9f85A4Kigml24K2mhZpka2STgjZmOa', NOW(), NULL, NULL, "https://github.com/cooperj.png", 0, 'JC');
 ```
 
 This will create you a `joshcooper` user with the password `computing`... feel free to substitute in your own information...
