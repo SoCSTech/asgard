@@ -45,6 +45,7 @@ const createTimetableGroup = async (req: Request, res: Response, next: NextFunct
         })
     } catch (error) {
         res.status(406).json({ "message": "Timetable group could not be added - check the data and try again." });
+        return
     }
 
     await log(`Has created timetable group with name ${req.body.internalName}`, currentUserId)
