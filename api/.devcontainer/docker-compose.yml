@@ -2,6 +2,7 @@ version: "3.8"
 
 services:
   app:
+    container_name: asgard-api
     build:
       context: .
       dockerfile: Dockerfile
@@ -21,7 +22,8 @@ services:
     network_mode: service:db
 
   db:
-    image: mysql:8
+    image: mysql:8.0
+    container_name: asgard-db
     command: --default-authentication-plugin=mysql_native_password --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
     restart: unless-stopped
     # network_mode: service:db
@@ -33,5 +35,20 @@ services:
       MYSQL_USER: asgard
       MYSQL_PASSWORD: computing
 
+  mqtt:
+    image: eclipse-mosquitto
+    container_name: asgard-mqtt
+    volumes:
+      - ../../mosquitto.conf:/mosquitto/config/mosquitto.conf
+      - mqtt-data:/mosquitto/data
+      - mqtt-log:/mosquitto/log
+    stdin_open: true 
+    tty: true
+    ports:
+      - 1883:1883
+      - 9001:9001
+
 volumes:
   mysql-data:
+  mqtt-data:
+  mqtt-log:

@@ -1,1 +1,0 @@
-ALTER TABLE `timetable_groups` MODIFY COLUMN `object` varchar(30) NOT NULL DEFAULT 'room';

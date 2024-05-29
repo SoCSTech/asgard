@@ -1,1 +1,0 @@
-ALTER TABLE `users` ADD `can_login` boolean DEFAULT true NOT NULL;

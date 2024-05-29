@@ -1,25 +1,26 @@
 import {
     uniqueIndex,
+    index,
     boolean,
     varchar,
     char,
     text,
     timestamp,
     int,
-    decimal,
     mysqlTable,
     mysqlEnum,
 } from 'drizzle-orm/mysql-core';
 import { relations } from 'drizzle-orm';
 import { createId } from '@paralleldrive/cuid2';
-import { duration } from 'moment';
 
 export const logs = mysqlTable('logs', {
     id: varchar('id', { length: 128 }).$defaultFn(() => createId()).primaryKey(),
     user: varchar('user', { length: 128 }).references(() => users.id),
     message: text('message').notNull(),
     time: timestamp('time').defaultNow().notNull()
-});
+}, (logs) => ({
+    userIndex: index('user_idx').on(logs.user),
+}));
 
 export const users = mysqlTable('users', {
     id: varchar('id', { length: 128 }).$defaultFn(() => createId()).primaryKey(),
@@ -75,7 +76,11 @@ export const events = mysqlTable('events', {
     modifiedBy: varchar('modified_by_id', { length: 128 }).references(() => users.id),
     isCombinedSession: boolean('is_combined_session').default(false),
     group: varchar('group', { length: 10 }),
-})
+}, (events) => ({
+    timetableIndex: index('timetable_idx').on(events.timetableId),
+    startIndex: index('start_idx').on(events.start),
+    endIndex: index('end_idx').on(events.end),
+}));
 
 export const carousels = mysqlTable('carousels', {
     id: varchar('id', { length: 128 }).$defaultFn(() => createId()).primaryKey(),
@@ -83,7 +88,9 @@ export const carousels = mysqlTable('carousels', {
     lastModified: timestamp('last_modified', { mode: "string" }).defaultNow().notNull(),
     modifiedBy: varchar('modified_by_id', { length: 128 }).references(() => users.id),
     isDeleted: boolean('is_deleted').default(false).notNull(),
-})
+}, (carousels) => ({
+    timetableIndex: index('timetable_idx').on(carousels.timetable)
+}));
 
 export const carouselItems = mysqlTable('carousel_items', {
     id: varchar('id', { length: 128 }).$defaultFn(() => createId()).primaryKey(),
@@ -96,7 +103,9 @@ export const carouselItems = mysqlTable('carousel_items', {
     isDeleted: boolean('is_deleted').default(false).notNull(),
     durationMs: int('duration_milliseconds').default(4500).notNull(),
     order: int('order').default(0)
-})
+}, (carouselItems) => ({
+    carouselIndex: index('carousel_idx').on(carouselItems.carousel)
+}));
 
 export const timetableGroups = mysqlTable('timetable_groups', {
     id: varchar('id', { length: 128 }).$defaultFn(() => createId()).primaryKey(),
@@ -120,4 +129,7 @@ export const timetableGroupMembers = mysqlTable('timetable_group_members', {
     timetableId: varchar('timetable_id', { length: 128 }).references(() => timetables.id),
     order: int('order').default(0),
     location: mysqlEnum('location', ['UPSTAIRS', 'DOWNSTAIRS', 'LEFT', 'RIGHT', 'FORWARD', 'BACKWARD']),
-})
+}, (timetableGroupMembers) => ({
+    timetableIndex: index('timetable_idx').on(timetableGroupMembers.timetableId),
+    groupIndex: index('group_idx').on(timetableGroupMembers.groupId)
+}));

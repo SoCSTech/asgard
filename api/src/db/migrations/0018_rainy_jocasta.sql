@@ -1,1 +1,0 @@
-ALTER TABLE `timetable_group_members` ADD `order` int DEFAULT 0;
