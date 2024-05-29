@@ -54,6 +54,21 @@ services:
       MYSQL_USER: ${DB_USERNAME}
       MYSQL_PASSWORD: ${DB_PASSWORD}
 
+  mqtt:
+    image: eclipse-mosquitto:2
+    container_name: asgard-mqtt
+    volumes:
+      - ../../mosquitto.conf:/mosquitto/config/mosquitto.conf
+      - mqtt-data:/mosquitto/data
+      - mqtt-log:/mosquitto/log
+    stdin_open: true 
+    tty: true
+    networks:
+      - asgard_internal
+    ports:
+      - 1883:1883
+      - 9001:9001
+
 volumes:
   mysql-data:
 
