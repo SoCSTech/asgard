@@ -10,7 +10,7 @@ services:
     env_file:
       - .env
     ports:
-     - 9001:3000
+     - 8008:3000
     depends_on:
      - db
 
@@ -32,7 +32,7 @@ services:
     networks:
       - asgard_internal
     environment:
-    - VITE_API_BASE_URL=http://localhost:9001
+    - VITE_API_BASE_URL=http://localhost:8008
     ports:
      - 1337:80
     depends_on:
@@ -58,7 +58,7 @@ services:
     image: eclipse-mosquitto:2
     container_name: asgard-mqtt
     volumes:
-      - ../../mosquitto.conf:/mosquitto/config/mosquitto.conf
+      - ./mosquitto.conf:/mosquitto/config/mosquitto.conf
       - mqtt-data:/mosquitto/data
       - mqtt-log:/mosquitto/log
     stdin_open: true 
@@ -71,6 +71,8 @@ services:
 
 volumes:
   mysql-data:
+  mqtt-data:
+  mqtt-log:
 
 networks:
   asgard_internal:

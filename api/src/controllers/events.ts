@@ -11,6 +11,9 @@ const moment = require('moment');
 const dotenv = require('dotenv');
 dotenv.config();
 
+import { MqttCommunicator } from "@/communication/mqtt";
+const mqtt = MqttCommunicator.instance
+
 const getEventById = async (req: Request, res: Response, next: NextFunction) => {
     const eventId: string = req.params.id
 
@@ -86,7 +89,8 @@ const createEvent = async (req: Request, res: Response, next: NextFunction) => {
 
     await log(`Has created event ${req.body.name} (${req.body.moduleCode || "none"}), starting ${req.body.start} and ending ${req.body.end} to Timetable ${timetableId}`, currentUserId)
 
-    res.status(201).json({ timetableId: req.body.timetableId, message: 'Event has been created' });
+    mqtt.SendTimetableRefresh(timetableId)
+    res.status(201).json({ timetableId: timetableId, message: 'Event has been created' });
 };
 
 
@@ -118,6 +122,7 @@ const deleteEvent = async (req: Request, res: Response, next: NextFunction) => {
     }
 
     await log(`Has deleted event ${req.body.eventId}`, currentUserId)
+    mqtt.SendTimetableRefresh(String(foundEvent[0].timetableId))
 
     res.status(200).json({ event: foundEvent[0].id, message: "Event has been deleted" })
 }
@@ -163,6 +168,7 @@ const updateEvent = async (req: Request, res: Response, next: NextFunction) => {
         .where(eq(eventSchema.id, event[0].id));
 
     res.status(201).json({ message: `Event '${event[0].name}' has been updated`, event: event[0].id });
+    mqtt.SendTimetableRefresh(String(event[0].timetableId))
 
     await log(`Has updated event ${req.body.eventId}`, currentUserId)
 }
