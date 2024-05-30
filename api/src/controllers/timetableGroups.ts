@@ -39,9 +39,9 @@ const createTimetableGroup = async (req: Request, res: Response, next: NextFunct
             infoPaneText: req.body.infoPaneText || null,
             displayInfoPaneQR: defaultBoolean(req.body.displayInfoPaneQR, false),
             infoPaneQRUrl: req.body.infoPaneQRUrl || "",
-            verbAvailable: req.body.verbAvailable || null,
-            verbUnavailable: req.body.verbUnavailable || null,
-            object: req.body.object || null
+            verbAvailable: req.body.verbAvailable || "free",
+            verbUnavailable: req.body.verbUnavailable || "in use",
+            object: req.body.object || "room"
         })
     } catch (error) {
         res.status(406).json({ "message": "Timetable group could not be added - check the data and try again." });

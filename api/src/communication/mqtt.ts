@@ -1,3 +1,7 @@
+import { db } from "@/db";
+import { timetables as timetableSchema } from "@/db/schema";
+import { eq, and } from 'drizzle-orm';
+
 const mqtt = require('mqtt')
 const dotenv = require('dotenv');
 dotenv.config();
@@ -28,7 +32,20 @@ export class MqttCommunicator {
         this.client.publish(topic, payload);
     }
 
-    SendTimetableRefresh(timetableId: string) {
-        this.SendMqttMessage(`asgard/timetable/refresh/${timetableId}`, "refresh")
+    async SendTimetableRefresh(timetableId: string) {
+        
+        try{
+            const timetable = await db.select().from(timetableSchema)
+            .where(and(
+                eq(timetableSchema.spaceCode, String(timetableId)),
+                eq(timetableSchema.isDeleted, false)
+            ));
+            
+            this.SendMqttMessage(`asgard/timetable/refresh/${timetableId}`, "refresh")
+            this.SendMqttMessage(`asgard/timetable/refresh/${timetable[0].spaceCode}`, "refresh")
+        } catch {
+            console.error("⚠️ couldn't get timetable to figure out its space code or failed to send the message")
+        }
+            
     }
 }
