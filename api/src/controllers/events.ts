@@ -170,7 +170,7 @@ const updateEvent = async (req: Request, res: Response, next: NextFunction) => {
     res.status(201).json({ message: `Event '${event[0].name}' has been updated`, event: event[0].id });
     await mqtt.SendTimetableRefresh(String(event[0].timetableId))
 
-    await log(`Has updated event ${req.body.eventId}`, currentUserId)
+    await log(`Has updated event ${event[0].id}`, currentUserId)
 }
 
 const getEventsForTimetable = async (req: Request, res: Response, next: NextFunction) => {

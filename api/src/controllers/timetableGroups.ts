@@ -11,6 +11,10 @@ import { convertSpaceCodeToTimetableId } from "@/controllers/timetables";
 const dotenv = require('dotenv');
 dotenv.config();
 
+import { MqttCommunicator } from "@/communication/mqtt";
+const mqtt = MqttCommunicator.instance
+
+
 // > CRUD Ops \/
 const getAllTimetableGroups = async (req: Request, res: Response, next: NextFunction) => {
     const groups = await db.select().from(groupsSchema)
@@ -94,6 +98,7 @@ const updateTimetableGroup = async (req: Request, res: Response, next: NextFunct
         .where(eq(groupsSchema.id, groups[0].id));
 
     await log(`Has updated timetable group with id ${groupId}`, currentUserId)
+    mqtt.SendMqttMessage(`asgard/timetable-group/refresh/${groupId}`, "refresh")
 
     res.status(201).json({ message: "Timetable group has been updated", group: groups[0].id });
 };
@@ -126,6 +131,7 @@ const deleteTimetableGroup = async (req: Request, res: Response, next: NextFunct
         .where(eq(groupsSchema.id, groups[0].id));
 
     await log(`Has deleted timetable group with id ${groupId}`, currentUserId)
+    mqtt.SendMqttMessage(`asgard/timetable-group/refresh/${groupId}`, "refresh")
 
     res.status(201).json({ message: "Timetable group has been deleted", group: groupId });
 };
@@ -199,6 +205,7 @@ const addTimetableToGroup = async (req: Request, res: Response, next: NextFuncti
         })
 
     await log(`Has added timetable ${timetable[0].id} to group ${group[0].id}`, currentUserId)
+    mqtt.SendMqttMessage(`asgard/timetable-group/refresh/${groupId}`, "refresh")
 
     res.status(201).json({ message: `Timetable ${timetable[0].spaceCode} has been added to group ${group[0].id}`, group: group[0].id });
 };
@@ -255,6 +262,7 @@ const removeTimetableFromGroup = async (req: Request, res: Response, next: NextF
     }
 
     await log(`Has removed timetable ${timetable[0].spaceCode} from group with id ${group[0].id}`, currentUserId)
+    mqtt.SendMqttMessage(`asgard/timetable-group/refresh/${group[0].id}`, "refresh")
 
     res.status(201).json({ message: `Timetable ${timetable[0].spaceCode} has been removed from group ${group[0].internalName}`, group: group[0].id });
 };
@@ -291,6 +299,9 @@ const updateTimetableGroupMember = async (req: Request, res: Response, next: Nex
                 eq(groupMembersSchema.timetableId, timetableId),
                 eq(groupMembersSchema.groupId, groupId),
             ));
+
+        mqtt.SendMqttMessage(`asgard/timetable-group/refresh/${groupId}`, "refresh")
+        await log(`Has updated timetable group ${oldGrouping[0].groupId} for timetable ${oldGrouping[0].timetableId}`, currentUserId)
 
         res.status(201).json({ message: "Updated timetable grouping" })
         return
