@@ -360,6 +360,11 @@ const getTimetableGroupById = async (req: Request, res: Response, next: NextFunc
             )
         )
 
+    if (groups.length !== 1) {
+        res.status(404).json({ "message": "Couldn't find group" })
+        return
+    }
+
     const timetables = await db.select().from(timetableSchema)
         .innerJoin(groupMembersSchema, eq(groupMembersSchema.timetableId, timetableSchema.id))
         .where(
