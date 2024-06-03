@@ -1,0 +1,13 @@
+---
+interface Props {
+  title: string;
+}
+
+const { title } = Astro.props;
+import BaseLayout from "./BaseLayout.astro";
+---
+
+<BaseLayout title={title}>
+	<h1>ASGARD^2</h1>
+  <slot />
+</BaseLayout>
