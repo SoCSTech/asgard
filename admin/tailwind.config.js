@@ -4,12 +4,15 @@ module.exports = {
   content: ["./src/**/*.{astro,html,js,jsx,md,mdx,svelte,ts,tsx,vue}"],
   prefix: "",
   theme: {
+    screens: {
+      tablet: '640px',
+      laptop: '1024px',
+      desktop: '1280px',
+      ultra: '3000px'
+    },
     container: {
       center: true,
       padding: "2rem",
-      screens: {
-        "2xl": "1400px",
-      },
     },
     extend: {
       colors: {

@@ -4,9 +4,20 @@ import { Button } from "@/components/ui/button";
 export default function LoginForm() {
   return (
     <div>
-      <Input type="text" placeholder="Username" />
-      <Input type="password" placeholder="Password" />
-      <Button>Login</Button>
+      <form>
+        <Input type="text" placeholder="Username" autoComplete="username" />
+        <Input
+          type="password"
+          placeholder="Password"
+          autoComplete="current-password"
+        />
+        <Button type="submit" variant={"secondary"}>
+          Login
+        </Button>
+      </form>
+      <p className="text-white pt-5 text-center">
+        <a href="#">Forgot password?</a>
+      </p>
     </div>
   );
 }

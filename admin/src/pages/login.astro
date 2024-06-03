@@ -4,11 +4,14 @@ import LoginForm from "@/components/auth/loginForm.jsx";
 ---
 
 <BaseLayout title="Login">
-  <div class="flex justify-end h-screen w-screen bg-contain" id="bg">
+  <div
+    class="flex justify-center align-middle tablet:items-center h-screen w-screen bg-cover bg-no-repeat"
+    id="bg"
+  >
     <main
-      class="bg-black opacity-95 w-1/3 p-5 py-10 m-5 rounded-2xl flex flex-col shadow-2xl"
+      class="bg-black tablet:h-auto tablet:opacity-85 w-full tablet:w-1/2 desktop:w-1/3 ultra:1/4 p-5 py-10 tablet:m-5 tablet:rounded-xl flex flex-col tablet:shadow-3xl"
     >
-      <h1 class="text-5xl text-center mb-10">asgard</h1>
+      <h1 class="text-5xl text-center mb-10 text-white font-extrabold">asgard</h1>
       <LoginForm client:load />
     </main>
   </div>
@@ -22,6 +25,8 @@ import LoginForm from "@/components/auth/loginForm.jsx";
     "/images/bg4.webp",
     "/images/bg5.webp",
     "/images/bg6.webp",
+    "/images/bg7.webp",
+    "/images/bg8.webp",
   ];
 
   const myImage: string =
