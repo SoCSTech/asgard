@@ -5,7 +5,7 @@ export default {
     schema: "./src/db/schema.ts",
     out: "./src/db/migrations/",
     breakpoints: true,
-    driver: 'mysql2',
+    dialect: 'mysql',
     dbCredentials: {
         user: process.env.DB_USERNAME as string,
         password: process.env.DB_PASSWORD as string,

@@ -1,0 +1,1 @@
+ALTER TABLE `timetables` ADD `data_source` enum('MANUAL','UOL_TIMETABLE','ICAL','MS_BOOKINGS') DEFAULT 'MANUAL' NOT NULL;

@@ -8,6 +8,20 @@
       "when": 1716995267742,
       "tag": "0000_cold_vulcan",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "5",
+      "when": 1717402147506,
+      "tag": "0001_bored_roxanne_simpson",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "5",
+      "when": 1717402712265,
+      "tag": "0002_rare_mariko_yashida",
+      "breakpoints": true
     }
   ]
 }

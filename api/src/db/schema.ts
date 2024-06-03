@@ -49,7 +49,8 @@ export const timetables = mysqlTable('timetables', {
     capacity: int('capacity'),
     canCombine: boolean('can_combine').default(false).notNull(),
     combinedPartnerId: varchar('combined_partner_id', { length: 128 }),
-    isDeleted: boolean('is_deleted').default(false).notNull()
+    isDeleted: boolean('is_deleted').default(false).notNull(),
+    dataSource: mysqlEnum('data_source', ['MANUAL', "UOL_TIMETABLE", "ICAL", "MS_BOOKINGS"]).default('MANUAL').notNull()
 }, (timetables) => ({
     spaceCodeIndex: uniqueIndex('space_code_idx').on(timetables.spaceCode)
 }));
@@ -59,7 +60,9 @@ export const timetablesRelations = relations(timetables, ({ one, many }) => ({
         fields: [timetables.combinedPartnerId],
         references: [timetables.id]
     }),
-    events: many(events)
+    events: many(events, {
+        relationName: "timetableEvents"
+    })
 }))
 
 export const events = mysqlTable('events', {
@@ -76,10 +79,12 @@ export const events = mysqlTable('events', {
     modifiedBy: varchar('modified_by_id', { length: 128 }).references(() => users.id),
     isCombinedSession: boolean('is_combined_session').default(false),
     group: varchar('group', { length: 10 }),
+    externalId: varchar('external_id', {length: 128})
 }, (events) => ({
     timetableIndex: index('timetable_idx').on(events.timetableId),
     startIndex: index('start_idx').on(events.start),
     endIndex: index('end_idx').on(events.end),
+    externalIdIndex: index('external_idx').on(events.externalId)
 }));
 
 export const carousels = mysqlTable('carousels', {

@@ -14,7 +14,8 @@ const newTimetable = {
     name: timetableSchema.name,
     capacity: timetableSchema.capacity,
     canCombine: timetableSchema.canCombine || false,
-    combinedPartnerId: timetableSchema.combinedPartnerId || null
+    combinedPartnerId: timetableSchema.combinedPartnerId || null,
+    dataSource: timetableSchema.dataSource || null,
 }
 
 export const convertSpaceCodeToTimetableId = async (timetableId: string) => {
@@ -116,7 +117,8 @@ const createTimetable = async (req: Request, res: Response, next: NextFunction) 
         name: req.body.name,
         capacity: req.body.capacity,
         canCombine: req.body.canCombine || false,
-        combinedPartnerId: req.body.combinedPartnerId || null
+        combinedPartnerId: req.body.combinedPartnerId || null,
+        dataSource: req.body.dataSource || null,
     })
 
     await log(`Has created timetable with name ${req.body.name} (${req.body.spaceCode})`, currentUserId)
@@ -241,7 +243,8 @@ const updateTimetable = async (req: Request, res: Response, next: NextFunction) 
             capacity: req.body.capacity || timetable[0].capacity,
             canCombine: req.body.canCombine || timetable[0].canCombine,
             combinedPartnerId: req.body.combinedPartnerId || timetable[0].combinedPartnerId,
-            isDeleted: req.body.isDeleted || timetable[0].isDeleted
+            isDeleted: req.body.isDeleted || timetable[0].isDeleted,
+            dataSource: req.body.dataSource || timetable[0].dataSource
         })
         .where(eq(timetableSchema.id, timetable[0].id));
 
