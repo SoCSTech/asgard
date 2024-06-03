@@ -4,6 +4,11 @@ module.exports = {
   content: ["./src/**/*.{astro,html,js,jsx,md,mdx,svelte,ts,tsx,vue}"],
   prefix: "",
   theme: {
+    fontFamily: {
+      'sans': ['Inter', 'ui-sans-serif', 'system-ui'],
+      'mono': ['Ubuntu Mono', 'ui-monospace', 'SFMono-Regular'],
+      'serif': ['Libre Baskerville', 'ui-serif', 'Georgia'],
+    },
     screens: {
       tablet: '640px',
       laptop: '1024px',

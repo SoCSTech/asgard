@@ -5,9 +5,44 @@ interface Props {
 
 const { title } = Astro.props;
 import BaseLayout from "./BaseLayout.astro";
+import UserTest from "@/components/auth/userTest";
 ---
 
+<script>
+  import { getCookie } from "@/lib/cookie";
+  import { verifyToken } from "@/lib/auth";
+
+  const expectedUrl = encodeURI(
+    window.location.pathname + window.location.search
+  );
+
+  const token = getCookie("token");
+  let user = null;
+
+  if (token) {
+    try {
+      const result = await verifyToken(token);
+      console.log(user);
+
+      if (result.valid && result.user) {
+        user = result.user;
+        console.log(user);
+      }
+    } catch (error) {
+      console.error("Token verification failed:", error);
+      window.location.href = "/login?redirect=" + expectedUrl;
+    }
+  } else {
+    console.log("No token found");
+    window.location.href = "/login?redirect=" + expectedUrl;
+  }
+</script>
+
 <BaseLayout title={title}>
-	<h1>ASGARD^2</h1>
-  <slot />
+  <h1>ASGARD^2</h1>
+  <p>Logged in as...</p>
+  <UserTest client:only="react" />
+  <div class="bg-teal-400 m-10 p-5 rounded">
+    <slot />
+  </div>
 </BaseLayout>
