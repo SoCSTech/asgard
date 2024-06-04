@@ -14,6 +14,8 @@ const transporter = nodemailer.createTransport({
     },
 });
 
+console.log(transporter)
+
 // Creates a HTML email from a template
 function formatMailTextAsHTML(rawText: string): string {
     rawText = rawText.replace(
@@ -109,13 +111,15 @@ University of Lincoln
 
         // Logs out the msg id for debugging
         console.log("📫 Message sent: " + info.messageId);
+        return { info: info, success: true }
     } catch (error) {
         console.warn("📭 Message failed to send: " + error);
+        return { info: error, success: false }
     }
 }
 
 export async function SendPasswordResetEmail(to: string, name: string, code: string) {
-    await SendEmail(
+    return await SendEmail(
         to,
         `Your account verification code is ${code}`,
         `Hi ${name}, 
@@ -128,7 +132,7 @@ If this wasn't you - please ignore this email.`)
 }
 
 export async function SendPasswordUpdatedEmail(to: string, name: string) {
-    await SendEmail(
+    return await SendEmail(
         to,
         `Your account password has been updated`,
         `Hi ${name}, 
@@ -139,7 +143,7 @@ If this wasn't you - please contact a technician urgently.`)
 }
 
 export async function SendWelcomeEmail(to: string, name: string, username: string) {
-    await SendEmail(
+    return await SendEmail(
         to,
         `Welcome to Asgard`,
         `Hi ${name}, 

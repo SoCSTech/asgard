@@ -5,7 +5,7 @@ import axios from "axios";
 import { API_URL } from "@/constants";
 import { setJwtCookie } from "@/lib/cookie";
 
-export default function LoginForm() {
+export default function ChangePasswordForm() {
   const [errorMessage, setErrorMessage] = React.useState("");
 
   const handleLogin = (event: React.FormEvent<HTMLFormElement>): void => {
@@ -21,8 +21,9 @@ export default function LoginForm() {
         password: password.value,
       })
       .then(function (response) {
+        console.log(response);
         setErrorMessage("");
-        setJwtCookie(response.data.TOKEN);
+        setJwtCookie(response.data.TOKEN)
         window.location.href = redirect || "/";
       })
       .catch(function (error) {
@@ -50,6 +51,10 @@ export default function LoginForm() {
           Login
         </Button>
       </form>
+      <p className="text-white pt-5 text-center">
+        <a href="#">Forgot password?</a>
+      </p>
+
       <p className="text-salmon pt-5 text-center">{errorMessage}</p>
     </div>
   );

@@ -131,7 +131,12 @@ const createUser = async (req: Request, res: Response, next: NextFunction) => {
         profilePictureUrl: await getGravatarUrl(req.body.email)
     })
 
-    email.SendWelcomeEmail(req.body.email, req.body.shortName, req.body.username);
+    const emailResponse = await email.SendWelcomeEmail(req.body.email, req.body.shortName, req.body.username);
+
+    if (emailResponse.success == false) {
+        res.status(201).json({ username: req.body.username, message: "Something went wrong while sending the email. The user's account was created - Please manually send them an invite." })
+        return
+    }
 
     res.status(201).json({ username: req.body.username, message: 'User has been created' });
 };

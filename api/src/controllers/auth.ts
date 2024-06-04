@@ -54,6 +54,15 @@ const forgotPassword = async (req: Request, res: Response, next: NextFunction) =
     const { username } = req.body;
     const ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress 
 
+    // Check for idiots
+    if (username.length === 0) {
+        await log(`Failed password recovery from IP ${ip}`)
+        return res.status(400).json({
+            message: "Username cannot be empty",
+        });
+    }
+
+
     // Search for user by username
     const users = await db.select().from(userSchema)
         .where(and(
@@ -84,9 +93,14 @@ const forgotPassword = async (req: Request, res: Response, next: NextFunction) =
         .where(eq(userSchema.id, users[0].id));
 
     // Send Password Email
-    await email.SendPasswordResetEmail(users[0].email, users[0].shortName, _resetToken)
+    const emailResponse = await email.SendPasswordResetEmail(users[0].email, users[0].shortName, _resetToken)
 
     await log(`Requested password reset email with IP ${ip}`, users[0].id)
+
+    if (emailResponse.success == false) {
+        res.status(500).json({ message: "Something went wrong while sending the email, please try again and if it still persists contact the technicians." })
+        return
+    }
 
     // Send 201
     res.status(201).json({ message: "Please check your email for the verification code" })
@@ -119,9 +133,14 @@ const changePassword = async (req: Request, res: Response, next: NextFunction) =
         .where(eq(userSchema.id, users[0].id));
 
     // Send Password Email
-    await email.SendPasswordUpdatedEmail(users[0].email, users[0].shortName)
+    const emailResponse = await email.SendPasswordUpdatedEmail(users[0].email, users[0].shortName)
 
     await log("Has changed password from IP " + ip, users[0].id)
+
+    if (emailResponse.success == false) {
+        res.status(500).json({ message: "Something went wrong while sending the email, please try again and if it still persists contact the technicians." })
+        return
+    }
 
     // Send 201
     res.status(201).json({ message: "Password Updated" })

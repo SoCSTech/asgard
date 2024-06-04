@@ -7,8 +7,11 @@ import { setJwtCookie } from "@/lib/cookie";
 
 export default function LoginForm() {
   const [errorMessage, setErrorMessage] = React.useState("");
+  const [successMessage, setSuccessMessage] = React.useState("");
 
-  const handleLogin = (event: React.FormEvent<HTMLFormElement>): void => {
+  const handleForm = (
+    event: React.FormEvent<HTMLFormElement>
+  ): void => {
     // Prevent page reload
     event.preventDefault();
     const { username, password } = document.forms[0];
@@ -16,41 +19,35 @@ export default function LoginForm() {
     const redirect = queryParameters.get("redirect");
 
     axios
-      .post(API_URL + "/v2/auth/login", {
+      .post(API_URL + "/v2/auth/forgot-password", {
         username: username.value,
-        password: password.value,
       })
       .then(function (response) {
         setErrorMessage("");
-        setJwtCookie(response.data.TOKEN);
-        window.location.href = redirect || "/";
+        setSuccessMessage(response.data.message);
       })
       .catch(function (error) {
         console.log(error);
         setErrorMessage(error.response.data.message);
+        setSuccessMessage("");
       });
   };
 
   return (
     <div>
-      <form onSubmit={handleLogin}>
+      <form onSubmit={handleForm}>
         <Input
           type="text"
           placeholder="Username"
           autoComplete="username"
           name="username"
         />
-        <Input
-          type="password"
-          placeholder="Password"
-          autoComplete="current-password"
-          name="password"
-        />
         <Button type="submit" variant={"secondary"}>
-          Login
+          Send recovery email
         </Button>
       </form>
       <p className="text-salmon pt-5 text-center">{errorMessage}</p>
+      <p className="text-white pt-5 text-center">{successMessage}</p>
     </div>
   );
 }
