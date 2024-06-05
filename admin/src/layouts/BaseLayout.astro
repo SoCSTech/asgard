@@ -4,6 +4,7 @@ interface Props {
 }
 
 const { title } = Astro.props;
+import { ViewTransitions } from "astro:transitions";
 import "@/styles/globals.css";
 ---
 
@@ -15,7 +16,8 @@ import "@/styles/globals.css";
     <meta name="viewport" content="width=device-width" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="generator" content={Astro.generator} />
-    <title>{title} - Asgard </title>
+    <title>{title} - Asgard</title>
+    <ViewTransitions />
   </head>
   <body>
     <slot />
