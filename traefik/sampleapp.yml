@@ -1,0 +1,29 @@
+version: '3.8'
+services:
+  frontend:
+    container_name: frontend
+    image: nginxdemos/nginx-hello
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.frontend-app.rule=Host(`test.localhost`)"
+      - "traefik.http.routers.frontend-app.entrypoints=https"
+      - "traefik.http.routers.frontend-app.tls=true"
+      - "traefik.http.services.frontend-app.loadbalancer.server.port=8080"
+    networks:
+      - proxy
+
+  api:
+    container_name: api
+    image: nginxdemos/nginx-hello
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.backend-app.rule=Host(`test.localhost`) && PathPrefix(`/api`)"
+      - "traefik.http.routers.backend-app.entrypoints=https"
+      - "traefik.http.routers.backend-app.tls=true"
+      - "traefik.http.services.backend-app.loadbalancer.server.port=8080"
+    networks:
+      - proxy
+
+networks:
+  proxy:
+    external: true
