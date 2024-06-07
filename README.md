@@ -9,6 +9,10 @@ This project is deployed to the SoCS internal web server using Docker. There is 
 
 The server is expected to be running Ubuntu Server and have Docker and Docker Compose installed. With future versions (after [#18](https://github.com/SoCSTech/asgard2/issues/18) is closed) we may require the server to be configured with Traefik which will be documented here.
 
+### Migrations on the Server
+
+You need to exec into the container - and run the command `npm run db:push` to ensure the data base is in sync with the schema.
+
 
 ## Documentation
 

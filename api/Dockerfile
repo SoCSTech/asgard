@@ -1,6 +1,9 @@
 ## Building
 FROM node:20-alpine as base
 
+# Make things run as node user
+USER node
+
 # Create app directory
 WORKDIR /app
 
@@ -19,8 +22,8 @@ RUN npm run build
 
 ENV NODE_PATH=./dist
 
-# Add a healthcheck and a port forward
-HEALTHCHECK CMD curl --fail http://localhost:3000/ || exit 1
+# # Add a healthcheck and a port forward
+# HEALTHCHECK CMD curl --fail http://localhost:3000/ || exit 1
 EXPOSE 3000
 
 CMD [ "node", "dist/server.js" ]

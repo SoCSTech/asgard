@@ -11,7 +11,19 @@ app.use(morgan("dev"));
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 app.use(helmet());
-app.use(cors());
+
+const corsOptions = {
+    origin: '*',
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
+    credentials: true, // if your request includes cookies
+    optionsSuccessStatus: 204
+};
+
+app.use(cors(corsOptions));
+app.options('*', cors(corsOptions)); // handle preflight requests for all routes
+
+// Trust all proxies
+app.set('trust proxy', true);
 
 app.use((req, res, next) => {
     // set the CORS policy
@@ -66,7 +78,6 @@ app.use((req, res, next) => {
 
 /* Server */
 const PORT: any = process.env.PORT || 3000;
-const httpServer = http.createServer(app);
-httpServer.listen(PORT, () =>
+app.listen(PORT, () => {
     console.log(`The api server listening at on Port ${PORT}. If you're working locally you can access it via http://localhost:${PORT}`)
-);
+});

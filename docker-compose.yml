@@ -1,49 +1,67 @@
 version: "3"
 
 services:
-  api:
+  asgard-api:
     build: ./api
-    container_name: asgard-api
+    container_name: a2-asgard-api
     restart: always
     networks:
       - asgard_internal
+      - proxy
     env_file:
       - .env
-    ports:
-     - 8008:3000
     depends_on:
-     - db
+      - db
+      - mqtt
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.asgard-api.rule=Host(`asgard.localhost`) && PathPrefix(`/v2`)"
+      - "traefik.http.routers.asgard-api.entrypoints=https"
+      - "traefik.http.routers.asgard-api.tls=true"
+      - "traefik.http.services.asgard-api.loadbalancer.server.port=3000"
+
 
   yggdrasil-web:
     build: ./yggdrasil-web
-    container_name: yggdrasil-web
+    container_name: a2-yggdrasil-web
     restart: always
     networks:
       - asgard_internal
+      - proxy
     env_file:
       - .env
-    ports:
-     - 4444:80
+    depends_on:
+      - asgard-api
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.yggdrasil-web.rule=Host(`yggdrasil.localhost`)"
+      - "traefik.http.routers.yggdrasil-web.entrypoints=https"
+      - "traefik.http.routers.yggdrasil-web.tls=true"
+      - "traefik.http.services.yggdrasil-web.loadbalancer.server.scheme=http"
+      - "traefik.http.services.yggdrasil-web.loadbalancer.server.port=80"
 
-  admin-web:
-    build: ./admin-web
-    container_name: admin-web
+  asgard-admin:
+    build: ./admin
+    container_name: a2-asgard-admin
     restart: always
     networks:
       - asgard_internal
-    environment:
-    - VITE_API_BASE_URL=http://localhost:8008
-    ports:
-     - 1337:80
+      - proxy
     depends_on:
-     - api
+      - asgard-api
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.asgard-admin.rule=Host(`asgard.localhost`)"
+      - "traefik.http.routers.asgard-admin.entrypoints=https"
+      - "traefik.http.routers.asgard-admin.tls=true"
+      - "traefik.http.services.asgard-admin.loadbalancer.server.scheme=http"
+      - "traefik.http.services.asgard-admin.loadbalancer.server.port=80"
 
   db:
-    container_name: asgard-db
-    image: mysql:8
+    container_name: a2-asgard-db
+    image: mysql:8.0
     command: --default-authentication-plugin=mysql_native_password --character-set-server=utf8 --collation-server=utf8_general_ci
     restart: unless-stopped
-    # network_mode: service:db
     volumes:
       - mysql-data:/var/lib/mysql
     networks:
@@ -56,12 +74,12 @@ services:
 
   mqtt:
     image: eclipse-mosquitto:2
-    container_name: asgard-mqtt
+    container_name: a2-asgard-mqtt
     volumes:
       - ./mosquitto.conf:/mosquitto/config/mosquitto.conf
       - mqtt-data:/mosquitto/data
       - mqtt-log:/mosquitto/log
-    stdin_open: true 
+    stdin_open: true
     tty: true
     networks:
       - asgard_internal
@@ -76,3 +94,5 @@ volumes:
 
 networks:
   asgard_internal:
+  proxy:
+    external: true

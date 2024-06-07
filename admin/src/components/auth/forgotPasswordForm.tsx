@@ -3,9 +3,8 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import axios from "axios";
 import { API_URL } from "@/constants";
-import { setJwtCookie } from "@/lib/cookie";
 
-export default function LoginForm() {
+export default function ForgotPasswordForm() {
   const [errorMessage, setErrorMessage] = React.useState("");
   const [successMessage, setSuccessMessage] = React.useState("");
 
@@ -14,9 +13,7 @@ export default function LoginForm() {
   ): void => {
     // Prevent page reload
     event.preventDefault();
-    const { username, password } = document.forms[0];
-    const queryParameters = new URLSearchParams(window.location.search);
-    const redirect = queryParameters.get("redirect");
+    const { username } = document.forms[0];
 
     axios
       .post(API_URL + "/v2/auth/forgot-password", {

@@ -1,6 +1,4 @@
 import * as React from "react";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
 import axios from "axios";
 import { API_URL } from "@/constants";
 import { getCookie } from "@/lib/cookie";
@@ -16,7 +14,8 @@ export default function UserTest() {
         },
       })
       .then((response) => {
-        setUser(response.data.users[0]);
+        setUser(response.data.users[0] as any);
+        console.log(user)
       })
       .catch((error) => {
         console.error("There was an error!", error);
@@ -29,7 +28,9 @@ export default function UserTest() {
 
   return (
     <ul className="list-disc pl-5">
-      <li>{user.id}</li>
+      <li>Didnt get stuff done</li>
+
+      {/* <li>{user.id}</li>
       <li>{user.username}</li>
       <li>{user.shortName}</li>
       <li>{user.fullName}</li>
@@ -41,7 +42,7 @@ export default function UserTest() {
         <a href={user.profilePictureUrl} target="_blank">
           {user.profilePictureUrl}
         </a>
-      </li>
+      </li> */}
     </ul>
   );
 }

@@ -14,8 +14,6 @@ const transporter = nodemailer.createTransport({
     },
 });
 
-console.log(transporter)
-
 // Creates a HTML email from a template
 function formatMailTextAsHTML(rawText: string): string {
     rawText = rawText.replace(
