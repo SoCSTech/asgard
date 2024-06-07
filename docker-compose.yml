@@ -83,9 +83,16 @@ services:
     tty: true
     networks:
       - asgard_internal
+      - proxy
     ports:
       - 1883:1883
       - 9001:9001
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.mqtt.rule=Host(`mqtt.localhost`)"
+      - "traefik.http.routers.mqtt.entrypoints=https"
+      - "traefik.http.routers.mqtt.tls.certresolver=letsencrypt"
+      - "traefik.http.services.mqtt.loadbalancer.server.port=9001"
 
 volumes:
   mysql-data:
