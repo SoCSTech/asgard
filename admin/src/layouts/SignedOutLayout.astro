@@ -1,42 +1,24 @@
 ---
 import BaseLayout from "@/layouts/BaseLayout.astro";
+import SignedOutBackgroundLayer from "@/components/auth/signedOutBackgroundLayer";
+
+const { title } = Astro.props;
 ---
 
-<BaseLayout title="Login">
-  <div
-    class="flex justify-center align-middle tablet:items-center h-screen w-screen bg-cover bg-no-repeat"
-    id="bg"
+<BaseLayout title={title} />
+<SignedOutBackgroundLayer client:only="react" />
+<div
+  class="flex justify-center align-middle tablet:items-center h-screen w-screen"
+>
+  <main
+    class="bg-black tablet:h-auto tablet:opacity-95 w-full tablet:w-1/2 desktop:w-1/3 ultra:w-1/4 p-5 py-10 tablet:m-5 tablet:rounded-xl flex flex-col tablet:shadow-3xl"
   >
-    <main
-      class="bg-black tablet:h-auto tablet:opacity-95 w-full tablet:w-1/2 desktop:w-1/3 ultra:w-1/4 p-5 py-10 tablet:m-5 tablet:rounded-xl flex flex-col tablet:shadow-3xl"
-    >
-      <img
-        src="/images/logos/uol-white-text.svg"
-        draggable="false"
-        class="w-1/4 self-center"
-      />
-      <h1 class="text-5xl text-center mb-10 text-white font-bold">asgard</h1>
-      <slot />
-    </main>
-  </div>
-</BaseLayout>
-
-<script>
-  const backgroundImages = [
-    "/images/bg1.webp",
-    "/images/bg2.webp",
-    "/images/bg3.webp",
-    "/images/bg4.webp",
-    "/images/bg5.webp",
-    "/images/bg6.webp",
-    "/images/bg7.webp",
-    "/images/bg8.webp",
-  ];
-
-  const myImage =
-    backgroundImages[Math.floor(Math.random() * backgroundImages.length)];
-
-  const style = document.createElement("style");
-  style.innerHTML = `#bg { background-image: url(${myImage}) }`;
-  document.head.appendChild(style);
-</script>
+    <img
+      src="/images/logos/uol-white-text.svg"
+      draggable="false"
+      class="w-1/4 self-center"
+    />
+    <h1 class="text-5xl text-center mb-10 text-white font-bold">asgard</h1>
+    <slot />
+  </main>
+</div>

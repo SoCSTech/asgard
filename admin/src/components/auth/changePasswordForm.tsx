@@ -27,75 +27,91 @@ export default function ChangePasswordForm() {
     }
   }, []);
 
-  const handleLogin = (event: React.FormEvent<HTMLFormElement>): void => {
+  const handleSubmit = (event: React.FormEvent<HTMLFormElement>): void => {
     // Prevent page reload
     event.preventDefault();
-    const { username, password } = document.forms[0];
-    const redirect = queryParameters.get("redirect");
+    setErrorMessage("");
+    // const redirect = queryParameters.get("redirect") || "";
 
-    axios
-      .post(API_URL + "/v2/auth/login", {
-        username: username.value,
-        password: password.value,
-      })
-      .then(function (response) {
-        console.log(response);
-        setErrorMessage("");
-        setJwtCookie(response.data.TOKEN);
-        window.location.href = redirect || "/";
-      })
-      .catch(function (error) {
-        console.log(error);
-        setErrorMessage(error.response.data.message);
-      });
+    const { password, confirmPassword } = document.forms[0];
+    console.log("hi")
+    console.log(password.value)
+    console.log(confirmPassword.value);
+
+    if (password.value.length > 13) {
+      setErrorMessage("The passwords you have entered is too short.");
+      return;
+    }
+
+    if (password.value !== confirmPassword.value) {
+      setErrorMessage("The passwords you have entered do not match.");
+      return;
+    }
+    
+
+    // axios
+    //   .post(API_URL + "/v2/auth/change-password", {
+    //     resetToken: code.value,
+    //     password: password.value,
+    //   })
+    //   .then(function (response) {
+    //     console.log(response);
+    //     setErrorMessage("");
+    //     // window.location.href = redirect || "/";
+    //   })
+    //   .catch(function (error) {
+    //     console.log(error);
+    //     setErrorMessage(error.response.data.message);
+    //   });
   };
 
   return (
-    <div className="flex text-center align-middle justify-center">
-      <form onSubmit={handleLogin}>
-        <InputOTP
-          maxLength={8}
-          pattern={REGEXP_ASGARD_SECURE_CODE}
-          disabled={code.provided}
-          value={code.value}
-          onChange={(x) => setCode({ provided: false, value: x })}
-        >
-          <InputOTPGroup>
-            <InputOTPSlot index={0} />
-            <InputOTPSlot index={1} />
-            <InputOTPSlot index={2} />
-            <InputOTPSlot index={3} />
-          </InputOTPGroup>
-          <InputOTPSeparator />
-          <InputOTPGroup>
-            <InputOTPSlot index={4} />
-            <InputOTPSlot index={5} />
-            <InputOTPSlot index={6} />
-            <InputOTPSlot index={7} />
-          </InputOTPGroup>
-        </InputOTP>
-        <Input
-          type="password"
-          placeholder="New password"
-          autoComplete="new-password"
-          name="new-password"
-          id="new-password"
-          className="mt-5"
-        />
-        <Input
-          type="password"
-          placeholder="Confirm new password"
-          autoComplete="new-password"
-          name="confirm-password"
-          id="confirm-password"
-        />
+    <>
+      <div className="flex text-center align-middle justify-center">
+        <form onSubmit={handleSubmit}>
+          <InputOTP
+            maxLength={8}
+            pattern={REGEXP_ASGARD_SECURE_CODE}
+            disabled={code.provided}
+            value={code.value}
+            onChange={(x) => setCode({ provided: false, value: x })}
+          >
+            <InputOTPGroup>
+              <InputOTPSlot index={0} />
+              <InputOTPSlot index={1} />
+              <InputOTPSlot index={2} />
+              <InputOTPSlot index={3} />
+            </InputOTPGroup>
+            <InputOTPSeparator />
+            <InputOTPGroup>
+              <InputOTPSlot index={4} />
+              <InputOTPSlot index={5} />
+              <InputOTPSlot index={6} />
+              <InputOTPSlot index={7} />
+            </InputOTPGroup>
+          </InputOTP>
+          <Input
+            type="password"
+            placeholder="New password"
+            autoComplete="new-password"
+            name="password"
+            id="password"
+            className="mt-5"
+          />
+          <Input
+            type="password"
+            placeholder="Confirm new password"
+            autoComplete="new-password"
+            name="confirmPassword"
+            id="confirmPassword"
+          />
 
-        <Button type="submit" variant={"secondary"} className="mt-5">
-          Change password
-        </Button>
-      </form>
-
+          <Button type="submit" variant={"secondary"} className="mt-5">
+            Change password
+          </Button>
+        </form>
+      </div>
       <p className="text-salmon pt-5 text-center">{errorMessage}</p>
-    </div>
+    </>
   );
 }

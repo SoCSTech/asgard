@@ -3,7 +3,7 @@ import LoginForm from "@/components/auth/loginForm.tsx";
 import SignedOutLayout from "@/layouts/SignedOutLayout.astro";
 ---
 
-<SignedOutLayout>
+<SignedOutLayout title="Login">
   <LoginForm client:load />
   <p class="text-white pt-5 text-center cursor-pointer">
     <a href="/forgot-password">Forgot password?</a>
