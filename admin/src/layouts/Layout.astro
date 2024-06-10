@@ -4,8 +4,9 @@ interface Props {
 }
 
 const { title } = Astro.props;
-import BaseLayout from "./BaseLayout.astro";
-import UserTest from "@/components/auth/userTest";
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import Header from "@/components/theme/header";
+import Footer from "@/components/theme/footer.astro";
 ---
 
 <script>
@@ -38,11 +39,12 @@ import UserTest from "@/components/auth/userTest";
   }
 </script>
 
-<BaseLayout title={title}>
-  <h1>ASGARD^2</h1>
-  <p>Logged in as...</p>
-  <UserTest client:only="react" />
-  <div class="bg-teal-400 m-10 p-5 rounded">
+<BaseLayout title={title} class="flex flex-col min-h-screen justify-between">
+  <Header client:only="react" />
+  <div
+    class="mb-auto tablet:mx-20 w-auto max-w-[1140px] border-red-400 border-2"
+  >
     <slot />
   </div>
+  <Footer />
 </BaseLayout>
