@@ -1,18 +1,12 @@
 ---
 import { Button } from "@/components/ui/button";
 import Layout from "@/layouts/Layout.astro";
+import { UsersTable } from "@/components/users/usersTable";
 ---
 
-<Layout title="Welcome to Astro.">
+<Layout title="Users">
   <main>
-    <h1>
-      Users not implemented yet to <span class="text-blue-700">Astro</span>
-    </h1>
-    <p>
-      To get started, open the directory <code>src/pages</code> in your project.<br
-      />
-      <strong>Code Challenge:</strong> Tweak the "Welcome to Astro" message above.
-    </p>
-    <Button>Hello</Button>
+    <h1 class="text-3xl font-extrabold">Users</h1>
+    <UsersTable client:only="react" />
   </main>
 </Layout>
