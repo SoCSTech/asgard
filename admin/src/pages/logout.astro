@@ -1,0 +1,11 @@
+---
+import LogoutAction from "@/components/auth/logoutAction.tsx";
+import SignedOutLayout from "@/layouts/SignedOutLayout.astro";
+---
+
+<SignedOutLayout title="Logout">
+  <LogoutAction client:load />
+  <p class="text-white pt-5 text-center cursor-pointer">
+    <a href="/login">← Sign back in?</a>
+  </p>
+</SignedOutLayout>
