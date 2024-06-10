@@ -5,9 +5,15 @@ import { getCookie } from "@/lib/cookie";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import type { IUser } from "@/interfaces/user";
-import { HeaderLink, HeaderLinkGroup } from "./headerLink";
+import {
+  HeaderLink,
+  HeaderLinkGroup,
+  HeaderIcon
+} from "./headerLink";
 
-import { LogOut } from "lucide-react";
+import { LogOut, Search, CalendarPlus2 } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Button } from "../ui/button";
 
 export default function Header() {
   const [user, setUser] = React.useState({} as IUser);
@@ -21,7 +27,6 @@ export default function Header() {
       })
       .then((response) => {
         setUser(response.data.users[0] as IUser);
-        console.log(user);
       })
       .catch((error) => {
         console.error("There was an error!", error);
@@ -34,8 +39,8 @@ export default function Header() {
 
   return (
     <header className="bg-black tablet:grid tablet:grid-rows-1 tablet:grid-cols-3 pb-5 tablet:pb-2 py-2 px-5 text-white rounded-b-xl tablet:rounded-none mb-5 drop-shadow-md">
-      <div className="ml-2 mt-2 tablet:m-0">
-        <a href="/" className="flex items-center">
+      <div className="ml-2 mt-2 tablet:m-0 h-full">
+        <a href="/" className="flex items-center h-full">
           <img
             className="w-10 h-10"
             src="/images/logos/uol-white.svg"
@@ -48,25 +53,26 @@ export default function Header() {
         </a>
       </div>
 
-      <HeaderLinkGroup>
+      <HeaderLinkGroup href={""}>
         <HeaderLink href="/timetables">Timetables</HeaderLink>
         <HeaderLink href="/groups">Groups</HeaderLink>
         <HeaderLink href="/carousels">Carousels</HeaderLink>
+        <HeaderLink href="/users">Users</HeaderLink>
       </HeaderLinkGroup>
 
       <div className="hidden tablet:flex tablet:justify-end justify-center items-center">
-        <span className="tablet:mr-5">
-          Hi,{" "}
-          <a
-            className="underline hover:no-underline hover:text-slate"
-            href="/settings"
-          >
-            {user.shortName}
-          </a>
-          !
-        </span>
+        <form className="flex align-middle items-center text-black" action="search">
+          <Input
+            type="text"
+            placeholder="Search timetables, events, groups, and users"
+            name="q"
+          />
+          <Button type="submit" variant={"secondary"} className="ml-2 mr-5">
+            <Search />
+          </Button>
+        </form>
 
-        <a href="/settings">
+        <a href="/settings" className="ml-5">
           <Avatar>
             <AvatarImage
               src={user.profilePictureUrl}
@@ -74,10 +80,6 @@ export default function Header() {
             />
             <AvatarFallback>{user.initials}</AvatarFallback>
           </Avatar>
-        </a>
-
-        <a href="/logout" className="tablet:ml-5 text-xs hover:text-slate">
-          <LogOut />
         </a>
       </div>
     </header>

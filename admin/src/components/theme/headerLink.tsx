@@ -1,6 +1,7 @@
 interface Props {
-  children?: React.ReactNode | undefined;
+  children?: React.ReactNode;
   href: string;
+  onClick?: (event: React.MouseEvent<HTMLElement>) => void;
 }
 
 export function HeaderLink(props: Props) {
@@ -22,11 +23,22 @@ export function HeaderLink(props: Props) {
   }
 }
 
-export function HeaderLinkGroup(props: React.PropsWithChildren) {
+export function HeaderLinkGroup({ children }: Props) {
   return (
     <ul className="hidden tablet:flex flex-col tablet:flex-row tablet:items-center tablet:justify-center text-3xl tablet:text-base my-5 tablet:my-0">
-      {props.children}
+      {children}
     </ul>
   );
 }
- 
+
+export function HeaderIcon({ children, href, onClick }: Props) {
+  return (
+    <a
+      href={href}
+      onClick={onClick}
+      className="border-2 border-slate hover:border-white text-slate hover:text-white mx-1 p-2 text-xs rounded-xl flex justify-center"
+    >
+      {children}
+    </a>
+  );
+}
