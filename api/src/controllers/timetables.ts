@@ -118,7 +118,7 @@ const createTimetable = async (req: Request, res: Response, next: NextFunction) 
         capacity: req.body.capacity,
         canCombine: req.body.canCombine || false,
         combinedPartnerId: req.body.combinedPartnerId || null,
-        dataSource: req.body.dataSource || null,
+        dataSource: req.body.dataSource || "MANUAL",
     })
 
     await log(`Has created timetable with name ${req.body.name} (${req.body.spaceCode})`, currentUserId)
