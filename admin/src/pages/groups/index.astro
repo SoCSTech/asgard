@@ -1,18 +1,12 @@
 ---
 import { Button } from "@/components/ui/button";
 import Layout from "@/layouts/Layout.astro";
+import { GroupsTable } from "@/components/groups/groupsTable";
 ---
 
-<Layout title="Welcome to Astro.">
+<Layout title="Groups">
   <main>
-    <h1>
-      Groups not implemented yet to <span class="text-blue-700">Astro</span>
-    </h1>
-    <p>
-      To get started, open the directory <code>src/pages</code> in your project.<br
-      />
-      <strong>Code Challenge:</strong> Tweak the "Welcome to Astro" message above.
-    </p>
-    <Button>Hello</Button>
+    <h1 class="text-3xl font-extrabold">Groups</h1>
+    <GroupsTable client:only="react" />
   </main>
 </Layout>
