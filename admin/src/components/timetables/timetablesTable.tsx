@@ -38,8 +38,12 @@ export function TimetablesTable() {
   }, []);
 
   return (
-    <div className="relative overflow-x-auto shadow-md mt-5 rounded-xl">
-      <TableList headers={["spaceCode", "name", "capacity", "dataSource"]} data={timetables} urlBase="/timetables" />
+    <div className="relative overflow-x-auto tablet:shadow-md mt-5 rounded-xl">
+      <TableList
+        headers={["spaceCode", "name", "capacity", "dataSource"]}
+        data={timetables}
+        urlBase="/timetables"
+      />
     </div>
   );
 }

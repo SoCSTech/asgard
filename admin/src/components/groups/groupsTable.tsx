@@ -30,7 +30,7 @@ export function GroupsTable() {
   }, []);
 
   return (
-    <div className="relative overflow-x-auto shadow-md mt-5 rounded-xl">
+    <div className="relative overflow-x-auto tablet:shadow-md mt-5 rounded-xl">
       <TableList headers={["internalName", "name", "subtitle"]} data={groups} urlBase="/groups" />
     </div>
   );
