@@ -47,22 +47,21 @@ export default function ChangePasswordForm() {
       setErrorMessage("The passwords you have entered do not match.");
       return;
     }
-    
-
-    // axios
-    //   .post(API_URL + "/v2/auth/change-password", {
-    //     resetToken: code.value,
-    //     password: password.value,
-    //   })
-    //   .then(function (response) {
-    //     console.log(response);
-    //     setErrorMessage("");
-    //     // window.location.href = redirect || "/";
-    //   })
-    //   .catch(function (error) {
-    //     console.log(error);
-    //     setErrorMessage(error.response.data.message);
-    //   });
+  
+    axios
+      .post(API_URL + "/v2/auth/change-password", {
+        resetToken: code.value,
+        password: password.value,
+      })
+      .then(function (response) {
+        console.log(response);
+        setErrorMessage("");
+        window.location.href = "/login";
+      })
+      .catch(function (error) {
+        console.log(error);
+        setErrorMessage(error.response.data.message);
+      });
   };
 
   return (
@@ -106,7 +105,7 @@ export default function ChangePasswordForm() {
             id="confirmPassword"
           />
 
-          <div className="flex w-full flex-col mt-5">
+          <div className="flex w-full flex-col mt">
         <Button type="submit" variant={"primaryOutline"}>
             Change password
           </Button>

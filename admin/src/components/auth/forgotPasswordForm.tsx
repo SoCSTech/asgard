@@ -7,6 +7,7 @@ import { API_URL } from "@/constants";
 export default function ForgotPasswordForm() {
   const [errorMessage, setErrorMessage] = React.useState("");
   const [successMessage, setSuccessMessage] = React.useState("");
+  const [submitted, setSubmitted] = React.useState(false);
 
   const handleForm = (event: React.FormEvent<HTMLFormElement>): void => {
     // Prevent page reload
@@ -20,6 +21,7 @@ export default function ForgotPasswordForm() {
       .then(function (response) {
         setErrorMessage("");
         setSuccessMessage(response.data.message);
+        setSubmitted(true)
       })
       .catch(function (error) {
         console.log(error);
@@ -38,7 +40,7 @@ export default function ForgotPasswordForm() {
           name="username"
         />
         <div className="flex w-full flex-col">
-          <Button type="submit" variant={"primaryOutline"}>
+          <Button type="submit" variant={"primaryOutline"} disabled={submitted}>
             Send recovery email
           </Button>
         </div>
