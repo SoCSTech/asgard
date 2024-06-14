@@ -6,7 +6,6 @@ import type { IUser, UserRoles } from "@/interfaces/user";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Mail } from "lucide-react";
 import { Button } from "../ui/button";
-import { formatEnumValue } from "@/lib/enum";
 
 interface Props {
   userId: string;
@@ -23,9 +22,6 @@ export function UserPage(props: Props) {
       })
       .then((response) => {
         setUser(response.data.users[0]);
-         let data = response.data.users[0];
-         data.role = formatEnumValue(data.role)
-         setUser(data);
       })
       .catch((error) => {
         console.error("There was an error!", error);

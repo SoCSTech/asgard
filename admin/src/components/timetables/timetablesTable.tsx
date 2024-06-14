@@ -2,30 +2,31 @@ import * as React from "react";
 import axios from "axios";
 import { API_URL } from "@/constants";
 import { getCookie } from "@/lib/cookie";
-import type { IUser } from "@/interfaces/user";
 import TableList from "../theme/tableList";
+import type { ITimetable } from "@/interfaces/timetable";
 import { formatEnumValue } from "@/lib/enum";
 
-export function UsersTable() {
-  const [users, setUsers] = React.useState([{} as IUser]);
+export function TimetablesTable() {
+  const [timetables, setTimetables] = React.useState([{} as ITimetable]);
   const fetchData = async () => {
     await axios
-      .get(API_URL + "/v2/user", {
+      .get(API_URL + "/v2/timetable", {
         headers: {
           Authorization: `Bearer ${getCookie("token")}`,
         },
       })
       .then((response) => {
-        const data = response.data.users
-        let newData: IUser[] = []
-
-        data.map((usr: IUser) => {
-          let newUser = usr;
-          newUser.role = formatEnumValue(usr.role)
-          newData.push(newUser)
+        const data = response.data.timetables
+        let newData: ITimetable[] = []
+        
+        data.map((tt: ITimetable) => {
+          let newTimetable = tt;
+          newTimetable.dataSource = formatEnumValue(tt.dataSource)
+          newData.push(newTimetable)
         })
 
-        setUsers(newData);
+        console.log(newData)
+        setTimetables(newData);
       })
       .catch((error) => {
         console.error("There was an error!", error);
@@ -38,7 +39,7 @@ export function UsersTable() {
 
   return (
     <div className="relative overflow-x-auto shadow-md mt-5 rounded-xl">
-      <TableList headers={["fullName", "username", "email", "role"]} data={users} urlBase="/users" />
+      <TableList headers={["spaceCode", "name", "capacity", "dataSource"]} data={timetables} urlBase="/timetables" />
     </div>
   );
 }
