@@ -8,9 +8,7 @@ export default function ForgotPasswordForm() {
   const [errorMessage, setErrorMessage] = React.useState("");
   const [successMessage, setSuccessMessage] = React.useState("");
 
-  const handleForm = (
-    event: React.FormEvent<HTMLFormElement>
-  ): void => {
+  const handleForm = (event: React.FormEvent<HTMLFormElement>): void => {
     // Prevent page reload
     event.preventDefault();
     const { username } = document.forms[0];
@@ -39,9 +37,11 @@ export default function ForgotPasswordForm() {
           autoComplete="username"
           name="username"
         />
-        <Button type="submit" variant={"secondary"}>
-          Send recovery email
-        </Button>
+        <div className="flex w-full flex-col">
+          <Button type="submit" variant={"primaryOutline"}>
+            Send recovery email
+          </Button>
+        </div>
       </form>
       <p className="text-salmon pt-5 text-center">{errorMessage}</p>
       <p className="text-white pt-5 text-center">{successMessage}</p>

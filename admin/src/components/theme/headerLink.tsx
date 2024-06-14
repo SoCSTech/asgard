@@ -10,13 +10,15 @@ export function HeaderLink(props: Props) {
 
   if (currentSection === buttonSection) {
     return (
-      <li className="hover:text-slate my-1 tablet:my-0 tablet:mr-5 px-2 tablet:px-0 tablet:underline bg-white tablet:bg-inherit text-black tablet:text-white rounded tablet:rounded-none ">
+      <li className="rounded hover:bg-accent hover:text-accent-foreground my-1 tablet:my-0 tablet:mr-5 px-2 tablet:px-1 tablet:underline bg-white tablet:bg-inherit text-black tablet:text-white">
         <a href={props.href}>{props.children}</a>
       </li>
     );
   } else {
     return (
-      <li className="hover:text-slate my-1 tablet:my-0 tablet:mr-5 px-2 tablet:px-0">
+      <li
+        className="rounded hover:bg-accent hover:text-accent-foreground my-1 tablet:my-0 tablet:mr-5 px-2 tablet:px-1"
+      >
         <a href={props.href}>{props.children}</a>
       </li>
     );
@@ -28,17 +30,5 @@ export function HeaderLinkGroup({ children }: Props) {
     <ul className="hidden tablet:flex flex-col tablet:flex-row tablet:items-center tablet:justify-center text-3xl tablet:text-base my-5 tablet:my-0">
       {children}
     </ul>
-  );
-}
-
-export function HeaderIcon({ children, href, onClick }: Props) {
-  return (
-    <a
-      href={href}
-      onClick={onClick}
-      className="border-2 border-slate hover:border-white text-slate hover:text-white mx-1 p-2 text-xs rounded-xl flex justify-center"
-    >
-      {children}
-    </a>
   );
 }

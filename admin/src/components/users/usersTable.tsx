@@ -3,6 +3,7 @@ import axios from "axios";
 import { API_URL } from "@/constants";
 import { getCookie } from "@/lib/cookie";
 import type { IUser } from "@/interfaces/user";
+import TableList from "../theme/tableList";
 
 export function UsersTable() {
   const [users, setUsers] = React.useState([{} as IUser]);
@@ -25,18 +26,9 @@ export function UsersTable() {
     fetchData();
   }, []);
 
-  const userCard = () => {
-    return users.map((user) => (
-      <li>
-        <a href={`/users/${user.id}`}>
-          {user.fullName} - {user.username} ({user.id})
-        </a>
-      </li>
-    ));
-  };
   return (
-    <div className="w-full">
-      <ul className="list-disc">{userCard()}</ul>
+    <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
+      <TableList headers={["fullName", "email", "role"]} data={users} urlBase="/users" />
     </div>
   );
 }

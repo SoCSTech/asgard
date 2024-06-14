@@ -46,9 +46,11 @@ export default function LoginForm() {
           autoComplete="current-password"
           name="password"
         />
-        <Button type="submit" variant={"secondary"}>
-          Login
-        </Button>
+        <div className="flex w-full flex-col">
+          <Button type="submit" variant={"primaryOutline"}>
+            Login
+          </Button>
+        </div>
       </form>
       <p className="text-salmon pt-5 text-center">{errorMessage}</p>
     </div>

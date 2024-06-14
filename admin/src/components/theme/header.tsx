@@ -7,8 +7,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import type { IUser } from "@/interfaces/user";
 import {
   HeaderLink,
-  HeaderLinkGroup,
-  HeaderIcon
+  HeaderLinkGroup
 } from "./headerLink";
 
 import { LogOut, Search, CalendarPlus2 } from "lucide-react";
@@ -67,7 +66,7 @@ export default function Header() {
             placeholder="Search timetables, events, groups, and users"
             name="q"
           />
-          <Button type="submit" variant={"secondary"} className="ml-2 mr-5">
+          <Button type="submit" variant="primaryOutline" className="ml-2 mr-5">
             <Search />
           </Button>
         </form>

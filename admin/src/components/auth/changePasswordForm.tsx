@@ -106,9 +106,11 @@ export default function ChangePasswordForm() {
             id="confirmPassword"
           />
 
-          <Button type="submit" variant={"secondary"} className="mt-5">
+          <div className="flex w-full flex-col mt-5">
+        <Button type="submit" variant={"primaryOutline"}>
             Change password
           </Button>
+          </div>
         </form>
       </div>
       <p className="text-salmon pt-5 text-center">{errorMessage}</p>

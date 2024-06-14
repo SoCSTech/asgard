@@ -1,4 +1,5 @@
 ---
+import UserTest from '@/components/auth/userTest';
 import { Button } from '@/components/ui/button';
 import Layout from '@/layouts/Layout.astro';
 ---
@@ -10,6 +11,6 @@ import Layout from '@/layouts/Layout.astro';
 			To get started, open the directory <code>src/pages</code> in your project.<br />
 			<strong>Code Challenge:</strong> Tweak the "Welcome to Astro" message above.
 		</p>
-		<Button>Hello</Button>
+		<UserTest client:only="react" />
 	</main>
 </Layout>
