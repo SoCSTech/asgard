@@ -28,6 +28,21 @@ export function UserPage(props: Props) {
       });
   };
 
+  const deactivateUser = async () => {
+    await axios
+      .delete(API_URL + "/v2/user/" + props.userId, {
+        headers: {
+          Authorization: `Bearer ${getCookie("token")}`,
+        },
+      })
+      .then((response) => {
+        console.log("user deleted!!")
+      })
+      .catch((error) => {
+        console.error("There was an error!", error);
+      });
+  };
+
   React.useEffect(() => {
     fetchData();
   }, []);
@@ -73,9 +88,9 @@ export function UserPage(props: Props) {
       </div>
 
       <div className="mt-10 bg-black p-5 rounded-xl">
-        <Button className="mx-2" variant={"secondary"}>Edit</Button>
-        <Button className="mx-2" variant={"secondary"}>Reset Password</Button>
-        <Button className="mx-2" variant={"destructive"}>Deactivate</Button>
+        <Button className="mx-2" variant={"primaryOutline"}>Edit</Button>
+        <Button className="mx-2" variant={"primaryOutline"}>Reset Password</Button>
+        <Button className="mx-2" variant={"destructive"} onClick={() => deactivateUser()}>Deactivate</Button>
       </div>
     </div>
   );

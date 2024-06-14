@@ -27,8 +27,8 @@ export function UsersTable() {
   }, []);
 
   return (
-    <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
-      <TableList headers={["fullName", "email", "role"]} data={users} urlBase="/users" />
+    <div className="relative overflow-x-auto shadow-md mt-5 rounded-xl">
+      <TableList headers={["fullName", "username", "email", "role"]} data={users} urlBase="/users" />
     </div>
   );
 }

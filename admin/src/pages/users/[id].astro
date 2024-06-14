@@ -7,6 +7,6 @@ const { id } = Astro.params;
 
 <Layout title="Users">
   <main>
-    <UserPage userId={id} client:only="react" />
+    <UserPage userId={id as string} client:only="react" />
   </main>
 </Layout>

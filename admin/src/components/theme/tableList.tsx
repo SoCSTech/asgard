@@ -23,8 +23,8 @@ export default function TableList<T>({
   urlBase,
 }: TableProps<T>) {
   return (
-    <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-      <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400 rounded">
+    <table className="w-full text-sm text-left rtl:text-right text-black dark:text-white">
+      <thead className="text-xs text-white uppercase bg-black dark:bg-gray-200 dark:text-gray-400 tracking-wide">
         <tr>
           {headers.map((header) => (
             <th className="px-6 py-3" key={header as string}>
