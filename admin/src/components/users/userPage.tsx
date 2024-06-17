@@ -7,6 +7,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Mail } from "lucide-react";
 import { Button } from "../ui/button";
 import { formatEnumValue } from "@/lib/enum";
+import { toast } from "sonner";
 
 interface Props {
   userId: string;
@@ -17,6 +18,7 @@ export function UserPage(props: Props) {
   const fetchData = async () => {
     await axios
       .get(API_URL + "/v2/user/" + props.userId, {
+        
         headers: {
           Authorization: `Bearer ${getCookie("token")}`,
         },
@@ -26,24 +28,31 @@ export function UserPage(props: Props) {
          let data = response.data.users[0];
          data.role = formatEnumValue(data.role)
          setUser(data);
+
+         if (data.length == 0) {
+           toast("Can't find user");
+         }
       })
       .catch((error) => {
         console.error("There was an error!", error);
+        toast(error.message);
       });
   };
 
   const deactivateUser = async () => {
     await axios
       .delete(API_URL + "/v2/user/" + props.userId, {
+        
         headers: {
           Authorization: `Bearer ${getCookie("token")}`,
         },
       })
       .then((response) => {
-        console.log("user deleted!!")
+        toast("User has been deactivated")
       })
       .catch((error) => {
         console.error("There was an error!", error);
+        toast(error.message);
       });
   };
 

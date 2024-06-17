@@ -2,10 +2,11 @@ import * as React from "react";
 import axios from "axios";
 import { API_URL } from "@/constants";
 import { getCookie } from "@/lib/cookie";
-import type { IUser, UserRoles } from "@/interfaces/user";
+import type { IUser } from "@/interfaces/user";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Mail } from "lucide-react";
 import { Button } from "../ui/button";
+import { toast } from "sonner";
 
 interface Props {
   userId: string;
@@ -16,21 +17,25 @@ export function UserPage(props: Props) {
   const fetchData = async () => {
     await axios
       .get(API_URL + "/v2/user/" + props.userId, {
+        
         headers: {
           Authorization: `Bearer ${getCookie("token")}`,
         },
       })
       .then((response) => {
         setUser(response.data.users[0]);
+        
       })
       .catch((error) => {
         console.error("There was an error!", error);
+        toast(error.message);
       });
   };
 
   const deactivateUser = async () => {
     await axios
       .delete(API_URL + "/v2/user/" + props.userId, {
+        
         headers: {
           Authorization: `Bearer ${getCookie("token")}`,
         },
@@ -40,6 +45,7 @@ export function UserPage(props: Props) {
       })
       .catch((error) => {
         console.error("There was an error!", error);
+        toast(error.message);
       });
   };
 

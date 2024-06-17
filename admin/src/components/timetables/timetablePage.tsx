@@ -22,6 +22,7 @@ import {
 import { Label } from "../ui/label";
 import { Input } from "../ui/input";
 import { formatEnumValue } from "@/lib/enum";
+import { toast } from "sonner";
 
 interface Props {
   timetableId: string;
@@ -34,30 +35,41 @@ export function TimetablePage(props: Props) {
   const fetchTimetableData = async () => {
     await axios
       .get(API_URL + "/v2/timetable/" + props.timetableId, {
+        
         headers: {
           Authorization: `Bearer ${getCookie("token")}`,
         },
       })
       .then((response) => {
         setTimetable(response.data.timetables[0]);
+
+        if (response.data.timetables.length == 0) {
+          toast("No timetables are found");
+        }
       })
       .catch((error) => {
         console.error("There was an error!", error);
+        toast(error.message);
       });
   };
 
   const fetchEventsData = async () => {
     await axios
       .get(API_URL + "/v2/timetable/" + props.timetableId + "/events", {
+        
         headers: {
           Authorization: `Bearer ${getCookie("token")}`,
         },
       })
       .then((response) => {
         setEvents(response.data.events);
+        if (response.data.events.length == 0) {
+          toast("No events are found");
+        }
       })
       .catch((error) => {
         console.error("There was an error!", error);
+        toast(error.message);
       });
   };
 
@@ -157,7 +169,7 @@ export function TimetablePage(props: Props) {
             <TableList
               headers={["name", "moduleCode", "staff", "start", "end"]}
               data={events}
-              urlBase="#"
+              urlBase="/events"
             />
           </div>
         </TabsContent>

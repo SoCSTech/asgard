@@ -51,7 +51,7 @@ export default function ChangePasswordForm() {
     axios
       .post(API_URL + "/v2/auth/change-password", {
         resetToken: code.value,
-        password: password.value,
+        password: password.value
       })
       .then(function (response) {
         console.log(response);

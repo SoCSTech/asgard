@@ -17,11 +17,12 @@ export default function ForgotPasswordForm() {
     axios
       .post(API_URL + "/v2/auth/forgot-password", {
         username: username.value,
+        
       })
       .then(function (response) {
         setErrorMessage("");
         setSuccessMessage(response.data.message);
-        setSubmitted(true)
+        setSubmitted(true);
       })
       .catch(function (error) {
         console.log(error);

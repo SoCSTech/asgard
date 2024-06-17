@@ -8,5 +8,5 @@ export function formatEnumValue(value: string): string {
         .replace('Uol', 'UoL')
         .replace('Ms', 'Microsoft')
         .replace('Ms', 'Microsoft')
-        .replace('Ical', 'Internet Calendar Stream')
+        .replace('Ical', 'Internet Calendar')
 }

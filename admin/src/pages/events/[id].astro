@@ -1,0 +1,12 @@
+---
+import Layout from "@/layouts/Layout.astro";
+import { EventPage } from "@/components/timetables/eventPage";
+
+const { id } = Astro.params;
+---
+
+<Layout title="Event">
+  <main>
+    <EventPage eventId={id as string} client:only="react" />
+  </main>
+</Layout>

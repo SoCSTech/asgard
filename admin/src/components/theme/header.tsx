@@ -13,6 +13,7 @@ import {
 import { LogOut, Search, CalendarPlus2 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "../ui/button";
+import { toast } from "sonner";
 
 export default function Header() {
   const [user, setUser] = React.useState({} as IUser);
@@ -20,15 +21,20 @@ export default function Header() {
   const fetchData = async () => {
     await axios
       .get(API_URL + "/v2/user/me", {
+        
         headers: {
           Authorization: `Bearer ${getCookie("token")}`,
         },
       })
       .then((response) => {
         setUser(response.data.users[0] as IUser);
+        if (response.data.users.length == 0) {
+          toast("Authentication failure");
+        }
       })
       .catch((error) => {
         console.error("There was an error!", error);
+        toast(error.message);
       });
   };
 

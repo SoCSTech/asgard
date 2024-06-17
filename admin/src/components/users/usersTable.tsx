@@ -5,12 +5,14 @@ import { getCookie } from "@/lib/cookie";
 import type { IUser } from "@/interfaces/user";
 import TableList from "../theme/tableList";
 import { formatEnumValue } from "@/lib/enum";
+import { toast } from "sonner";
 
 export function UsersTable() {
   const [users, setUsers] = React.useState([{} as IUser]);
   const fetchData = async () => {
     await axios
       .get(API_URL + "/v2/user", {
+        
         headers: {
           Authorization: `Bearer ${getCookie("token")}`,
         },
@@ -18,6 +20,10 @@ export function UsersTable() {
       .then((response) => {
         const data = response.data.users
         let newData: IUser[] = []
+
+        if (data.length == 0) {
+          toast("No users are found")
+        }
 
         data.map((usr: IUser) => {
           let newUser = usr;
@@ -29,6 +35,7 @@ export function UsersTable() {
       })
       .catch((error) => {
         console.error("There was an error!", error);
+        toast(error.message);
       });
   };
 
