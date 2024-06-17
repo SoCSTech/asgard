@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import Cookies from "js-cookie";
 
 export default function SignedOutBackgroundLayer() {
@@ -21,7 +21,7 @@ export default function SignedOutBackgroundLayer() {
     return savedBgImage ? parseInt(savedBgImage) : undefined;
   };
 
-  const [bgImage, setBgImage] = useState<number>(() => {
+  const [bgImage] = useState<number>(() => {
     // Get the number saved as a cookie
     const savedBgImage = getBgImageFromCookie();
     if (

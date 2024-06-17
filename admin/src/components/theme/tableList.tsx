@@ -1,8 +1,9 @@
 import * as React from "react";
-import axios from "axios";
-import { API_URL } from "@/constants";
-import { getCookie } from "@/lib/cookie";
-import type { IUser } from "@/interfaces/user";
+
+interface DataWithId {
+  id: string;
+}
+
 
 interface TableProps<T> {
   headers: (keyof T)[];
@@ -17,7 +18,7 @@ const camelToTitle = (camelCase: string): string => {
     .replace(/\s+/g, " "); // Ensure single space separation
 };
 
-export default function TableList<T>({
+export default function TableList<T extends DataWithId>({
   headers,
   data,
   urlBase

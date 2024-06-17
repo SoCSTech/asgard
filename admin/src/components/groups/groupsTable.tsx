@@ -3,8 +3,6 @@ import axios from "axios";
 import { API_URL } from "@/constants";
 import { getCookie } from "@/lib/cookie";
 import TableList from "../theme/tableList";
-import type { ITimetable } from "@/interfaces/timetable";
-import { formatEnumValue } from "@/lib/enum";
 import type { ITimetableGroup } from "@/interfaces/timetableGroup";
 import { toast } from "sonner";
 

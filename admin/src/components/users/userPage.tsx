@@ -4,10 +4,9 @@ import { API_URL } from "@/constants";
 import { getCookie } from "@/lib/cookie";
 import type { IUser } from "@/interfaces/user";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Mail } from "lucide-react";
-import { Button } from "../ui/button";
 import { formatEnumValue } from "@/lib/enum";
 import { toast } from "sonner";
+import { Button } from "../ui/button";
 
 interface Props {
   userId: string;
@@ -47,7 +46,7 @@ export function UserPage(props: Props) {
           Authorization: `Bearer ${getCookie("token")}`,
         },
       })
-      .then((response) => {
+      .then(() => {
         toast("User has been deactivated")
       })
       .catch((error) => {

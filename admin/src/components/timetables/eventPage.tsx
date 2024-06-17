@@ -2,26 +2,8 @@ import * as React from "react";
 import axios from "axios";
 import { API_URL } from "@/constants";
 import { getCookie } from "@/lib/cookie";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Copy, Mail } from "lucide-react";
 import { Button } from "../ui/button";
-import type { ITimetable } from "@/interfaces/timetable";
-import TableList from "../theme/tableList";
 import type { IEvent } from "@/interfaces/event";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import {
-  Dialog,
-  DialogClose,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import { Label } from "../ui/label";
-import { Input } from "../ui/input";
-import { formatEnumValue } from "@/lib/enum";
 import { toast } from "sonner";
 
 interface Props {

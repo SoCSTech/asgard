@@ -4,7 +4,6 @@ import { API_URL } from "@/constants";
 import { getCookie } from "@/lib/cookie";
 import type { IUser } from "@/interfaces/user";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Mail } from "lucide-react";
 import { Button } from "../ui/button";
 import { toast } from "sonner";
 
@@ -40,7 +39,7 @@ export function UserPage(props: Props) {
           Authorization: `Bearer ${getCookie("token")}`,
         },
       })
-      .then((response) => {
+      .then(() => {
         console.log("user deleted!!")
       })
       .catch((error) => {

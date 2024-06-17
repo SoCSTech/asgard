@@ -10,7 +10,7 @@ import {
   HeaderLinkGroup
 } from "./headerLink";
 
-import { LogOut, Search, CalendarPlus2 } from "lucide-react";
+import { Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "../ui/button";
 import { toast } from "sonner";

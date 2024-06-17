@@ -3,7 +3,6 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import axios from "axios";
 import { API_URL } from "@/constants";
-import { setJwtCookie } from "@/lib/cookie";
 
 import {
   InputOTP,

@@ -1,10 +1,6 @@
-import * as React from "react";
-import axios from "axios";
-import { API_URL } from "@/constants";
-import { getCookie } from "@/lib/cookie";
 import { Button } from "../ui/button";
 
-export default function UserTest() {
+export default function TestComponent() {
 
   return (
     <div className="">
