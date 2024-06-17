@@ -1,0 +1,12 @@
+---
+import Layout from "@/layouts/Layout.astro";
+import { TimetablePage } from "@/components/timetables/timetablePage";
+
+const { id } = Astro.params;
+---
+
+<Layout title="Timetables">
+  <main>
+    <TimetablePage timetableId={id as string} client:only="react" />
+  </main>
+</Layout>

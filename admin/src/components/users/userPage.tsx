@@ -2,7 +2,7 @@ import * as React from "react";
 import axios from "axios";
 import { API_URL } from "@/constants";
 import { getCookie } from "@/lib/cookie";
-import type { IUser, UserRoles } from "@/interfaces/user";
+import type { IUser } from "@/interfaces/user";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Mail } from "lucide-react";
 import { Button } from "../ui/button";

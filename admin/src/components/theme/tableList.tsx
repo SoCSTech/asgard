@@ -20,11 +20,11 @@ const camelToTitle = (camelCase: string): string => {
 export default function TableList<T>({
   headers,
   data,
-  urlBase,
+  urlBase
 }: TableProps<T>) {
   return (
     <table className="w-full text-sm text-left rtl:text-right text-black dark:text-white">
-      <thead className="text-xs text-white uppercase bg-black dark:bg-gray-200 dark:text-gray-400 tracking-wide">
+      <thead className="text-xs text-white uppercase bg-black dark:bg-gray-800 dark:text-gray-400 tracking-wide">
         <tr>
           {headers.map((header) => (
             <th className="px-6 py-3" key={header as string}>
