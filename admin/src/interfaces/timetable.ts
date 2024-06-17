@@ -6,6 +6,7 @@ export interface ITimetable {
     capacity: number;
     canCombine: boolean;
     combinedPartnerId: string;
+    combinedPartnerSpaceCode: string;
     isDeleted: boolean;
     dataSource: string;
 }

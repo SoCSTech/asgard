@@ -18,6 +18,34 @@ const newTimetable = {
     dataSource: timetableSchema.dataSource || null,
 }
 
+type TimetableWithPartner = {
+    id: string;
+    name: string;
+    spaceCode: string;
+    creationDate: Date;
+    capacity: number | null;
+    canCombine: boolean;
+    combinedPartnerId: string | null;
+    isDeleted: boolean;
+    dataSource: "MANUAL" | "UOL_TIMETABLE" | "ICAL" | "MS_BOOKINGS";
+    combinedPartnerSpaceCode?: string;
+};
+
+export const convertTimetableIdToSpaceCode = async (spaceCode: string) => {
+    const timetable = await db.select().from(timetableSchema)
+        .where(and(
+            eq(timetableSchema.id, String(spaceCode)),
+            eq(timetableSchema.isDeleted, false)
+        ));
+
+    if (timetable.length !== 1) {
+        console.error("Couldn't find timetable for that Id???")
+        return "null";
+    }
+
+    return timetable[0].spaceCode;
+}
+
 export const convertSpaceCodeToTimetableId = async (timetableId: string) => {
     const isSpaceCode: RegExp = /^[A-Za-z]{3}\d{4}$/; // Three Letters - 4 Numbers
     if (isSpaceCode.test(timetableId)) {
@@ -38,19 +66,31 @@ export const convertSpaceCodeToTimetableId = async (timetableId: string) => {
 }
 
 const getTimetableById = async (req: Request, res: Response, next: NextFunction) => {
-    let timetableId: string = req.params.id
+    try {
+        const timetableId: string = req.params.id;
 
-    const timetable = await db.select().from(timetableSchema)
-        .where(
-            and(
-                or(
-                    eq(timetableSchema.id, String(timetableId)),
-                    eq(timetableSchema.spaceCode, String(timetableId)),
-                ),
-                eq(timetableSchema.isDeleted, false))
-        );
+        const timetables: TimetableWithPartner[] = await db.select().from(timetableSchema)
+            .where(
+                and(
+                    or(
+                        eq(timetableSchema.id, String(timetableId)),
+                        eq(timetableSchema.spaceCode, String(timetableId)),
+                    ),
+                    eq(timetableSchema.isDeleted, false))
+            );
 
-    res.json({ timetables: timetable });
+        const returnedTimetables: TimetableWithPartner[] = await Promise.all(timetables.map(async (tt) => {
+            const extendedTimetable = { ...tt } as TimetableWithPartner;
+            if (tt.combinedPartnerId) {
+                extendedTimetable.combinedPartnerSpaceCode = await convertTimetableIdToSpaceCode(tt.combinedPartnerId);
+            }
+            return extendedTimetable;
+        }));
+
+        res.json({ timetables: returnedTimetables });
+    } catch (error) {
+        next(error); // Pass the error to the next middleware (usually an error handler)
+    }
 };
 
 const getAllTimetables = async (req: Request, res: Response, next: NextFunction) => {
