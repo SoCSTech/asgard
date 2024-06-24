@@ -44,6 +44,7 @@ export const users = mysqlTable('users', {
 export const timetables = mysqlTable('timetables', {
     id: varchar('id', { length: 128 }).$defaultFn(() => createId()).primaryKey(),
     spaceCode: varchar('space_code', { length: 10 }).notNull(),
+    lab: varchar('lab', { length: 4 }),
     name: varchar('name', { length: 256 }).notNull(),
     creationDate: timestamp('creation_date').defaultNow().notNull(),
     capacity: int('capacity'),

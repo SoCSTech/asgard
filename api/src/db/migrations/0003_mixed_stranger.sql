@@ -1,0 +1,1 @@
+ALTER TABLE `timetables` ADD `lab` varchar(4);

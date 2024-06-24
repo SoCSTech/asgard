@@ -61,18 +61,26 @@ export default function Header() {
       <HeaderLinkGroup href={""}>
         <HeaderLink href="/timetables">Timetables</HeaderLink>
         <HeaderLink href="/groups">Groups</HeaderLink>
-        <HeaderLink href="/carousels">Carousels</HeaderLink>
+        <HeaderLink href="/desks">Desks</HeaderLink>
         <HeaderLink href="/users">Users</HeaderLink>
       </HeaderLinkGroup>
 
       <div className="hidden tablet:flex tablet:justify-end justify-center items-center">
-        <form className="flex align-middle items-center text-black" action="search">
+        <form
+          className="flex align-middle items-center text-black"
+          action="search"
+        >
           <Input
             type="text"
             placeholder="Search timetables, events, groups, and users"
             name="q"
           />
-          <Button type="submit" variant="primaryOutline" size="rounded" className="ml-2 mr-5">
+          <Button
+            type="submit"
+            variant="primaryOutline"
+            size="rounded"
+            className="ml-2 mr-5"
+          >
             <Search />
           </Button>
         </form>

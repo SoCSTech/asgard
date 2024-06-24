@@ -11,6 +11,8 @@
 # python main.py inb2102 4
 # python main.py inb2305 5
 
-python3 main.py inb1102 a02e6de1-187b-4cd8-8729-1002c6bdc5a1
-python3 main.py inb2102 c763d3b5-46c8-4fad-a687-b488724db6ad
+python3 main.py inb1101 xwc75rgdk8dx1dv33t6v2kc9
+python3 main.py inb1102 y3nt1cdqyh3ic2msvcuemgl8
+python3 main.py inb1301 ck4u2ivfifnguih3ozhgwhg9
+
 # cat dump/inb*.sql > dump/big.sql

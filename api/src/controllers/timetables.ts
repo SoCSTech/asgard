@@ -11,6 +11,7 @@ dotenv.config();
 // Schema of New Timetable
 const newTimetable = {
     spaceCode: timetableSchema.spaceCode,
+    lab: timetableSchema.lab || null,
     name: timetableSchema.name,
     capacity: timetableSchema.capacity,
     canCombine: timetableSchema.canCombine || false,
@@ -20,8 +21,9 @@ const newTimetable = {
 
 type TimetableWithPartner = {
     id: string;
-    name: string;
-    spaceCode: string;
+    name: string | null;
+    spaceCode: string | null;
+    lab: string | null;
     creationDate: Date;
     capacity: number | null;
     canCombine: boolean;
@@ -154,6 +156,7 @@ const createTimetable = async (req: Request, res: Response, next: NextFunction) 
     // Push to DB new timetable
     const timetable = await db.insert(timetableSchema).values({
         spaceCode: req.body.spaceCode,
+        lab: req.body.lab || null,
         name: req.body.name,
         capacity: req.body.capacity,
         canCombine: req.body.canCombine || false,
@@ -280,6 +283,7 @@ const updateTimetable = async (req: Request, res: Response, next: NextFunction) 
         .set({
             name: req.body.name || timetable[0].name,
             spaceCode: req.body.spaceCode || timetable[0].spaceCode,
+            lab: req.body.lab || timetable[0].lab,
             capacity: req.body.capacity || timetable[0].capacity,
             canCombine: req.body.canCombine || timetable[0].canCombine,
             combinedPartnerId: req.body.combinedPartnerId || timetable[0].combinedPartnerId,
