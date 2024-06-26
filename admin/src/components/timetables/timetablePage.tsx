@@ -1,8 +1,8 @@
 import * as React from "react";
 import axios from "axios";
-import { API_URL } from "@/constants";
+import { API_URL, Y2_URL } from "@/constants";
 import { getCookie } from "@/lib/cookie";
-import { Copy } from "lucide-react";
+import { CalendarIcon, Copy } from "lucide-react";
 import { Button } from "../ui/button";
 import type { ITimetable } from "@/interfaces/timetable";
 import TableList from "../theme/tableList";
@@ -19,13 +19,70 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Label } from "../ui/label";
-import { Input } from "../ui/input";
 import { formatEnumValue } from "@/lib/enum";
 import { toast } from "sonner";
+
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { Checkbox } from "../ui/checkbox";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+} from "@/components/ui/command";
+
+import { cn } from "@/lib/utils";
+import { Calendar } from "../ui/calendar";
+import { Check, ChevronsUpDown } from "lucide-react";
+
+const eventTypes = [
+  { label:"Other", value:"OTHER" },
+  { label:"Workshop", value:"WORKSHOP" },
+  { label:"Lecture", value:"LECTURE" },
+  { label:"Social", value:"SOCIAL" },
+  { label:"Maintenance", value:"MAINTENANCE" },
+  { label:"Exam", value:"EXAM" },
+  { label:"Project", value:"PROJECT" }
+]
 
 interface Props {
   timetableId: string;
 }
+
+const FormSchema = z.object({
+  // username: z.string().min(2, {
+  //   message: "Username must be at least 2 characters.",
+  // }),
+
+  name: z.string(),
+  staff: z.string().optional(),
+  type: z.string().default("OTHER"),
+  colour: z.string(),
+  start: z.string().datetime(),
+  end: z.string().datetime(),
+  isCombinedSession: z.boolean().default(false),
+  group: z.string().default(""),
+  externalId: z.string().default(""),
+});
 
 export function TimetablePage(props: Props) {
   const [timetable, setTimetable] = React.useState({} as ITimetable);
@@ -34,7 +91,6 @@ export function TimetablePage(props: Props) {
   const fetchTimetableData = async () => {
     await axios
       .get(API_URL + "/v2/timetable/" + props.timetableId, {
-        
         headers: {
           Authorization: `Bearer ${getCookie("token")}`,
         },
@@ -55,7 +111,6 @@ export function TimetablePage(props: Props) {
   const fetchEventsData = async () => {
     await axios
       .get(API_URL + "/v2/timetable/" + props.timetableId + "/events", {
-        
         headers: {
           Authorization: `Bearer ${getCookie("token")}`,
         },
@@ -77,46 +132,385 @@ export function TimetablePage(props: Props) {
     fetchEventsData();
   }, []);
 
+  const newEventForm = () => {
+    const form = useForm<z.infer<typeof FormSchema>>({
+      resolver: zodResolver(FormSchema),
+      defaultValues: {
+        // username: "",
+      },
+    });
+
+    function onSubmit(data: z.infer<typeof FormSchema>) {
+      toast("new event!");
+    }
+
+    return (
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+          <FormField
+            control={form.control}
+            name="name"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>
+                  Name<span className="text-destructive">*</span>
+                </FormLabel>
+                <FormControl>
+                  <Input {...field} />
+                </FormControl>
+                <FormDescription>
+                  This is the event display name.
+                </FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="staff"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Staff</FormLabel>
+                <FormControl>
+                  <Input {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="type"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Type</FormLabel>
+                <FormControl>
+                  <Input placeholder="shadcn" {...field} />
+                </FormControl>
+                <FormDescription>
+                  This is your public display name.
+                </FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="type"
+            render={({ field }) => (
+              <FormItem className="flex flex-col">
+                <FormLabel>Type</FormLabel>
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <FormControl>
+                      <Button
+                        variant="primaryOutline"
+                        role="combobox"
+                        className={cn(
+                          "w-[200px] justify-between",
+                          !field.value && "text-muted-foreground"
+                        )}
+                      >
+                        {field.value
+                          ? eventTypes.find(
+                              (type) => type.value === field.value
+                            )?.label
+                          : "Select event type"}
+                        <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                      </Button>
+                    </FormControl>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-[200px] p-0">
+                    <Command>
+                      <CommandInput placeholder="Search types..." />
+                      <CommandEmpty>No event type found.</CommandEmpty>
+                      <CommandGroup>
+                        {eventTypes.map((type) => (
+                          <CommandItem
+                            value={type.label}
+                            key={type.value}
+                            onSelect={() => {
+                              form.setValue("type", type.value);
+                            }}
+                          >
+                            <Check
+                              className={cn(
+                                "mr-2 h-4 w-4",
+                                type.value === field.value
+                                  ? "opacity-100"
+                                  : "opacity-0"
+                              )}
+                            />
+                            {type.label}
+                          </CommandItem>
+                        ))}
+                      </CommandGroup>
+                    </Command>
+                  </PopoverContent>
+                </Popover>
+                <FormDescription>
+                  The types allows Yggdrasil to show different icons and act in different ways.
+                </FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="colour"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>
+                  Colour<span className="text-destructive">*</span>
+                </FormLabel>
+                <FormControl>
+                  <Input defaultValue={"#fcc05f"} {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="start"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>
+                  Start<span className="text-destructive">*</span>
+                </FormLabel>
+                <FormControl>
+                  <Input {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="start"
+            render={({ field }) => (
+              <FormItem className="flex flex-col">
+                <FormLabel>Start Time</FormLabel>
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <FormControl>
+                      <Button
+                        variant={"primaryOutline"}
+                        className={cn(
+                          "w-[240px] pl-3 text-left font-normal",
+                          !field.value && "text-muted-foreground"
+                        )}
+                      >
+                        {field.value ? (
+                          format(field.value, "PPP")
+                        ) : (
+                          <span>Pick a date</span>
+                        )}
+                        <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                      </Button>
+                    </FormControl>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto p-0" align="start">
+                    <Calendar
+                      mode="single"
+                      selected={field.value}
+                      onSelect={field.onChange}
+                      disabled={(date) =>
+                        date > new Date() || date < new Date("1900-01-01")
+                      }
+                      initialFocus
+                    />
+                  </PopoverContent>
+                </Popover>
+                <FormDescription>
+                  Your date of birth is used to calculate your age.
+                </FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="end"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>
+                  End<span className="text-destructive">*</span>
+                </FormLabel>
+                <FormControl>
+                  <Input {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="group"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Group</FormLabel>
+                <FormControl>
+                  <Input {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          {/* <FormField
+            control={form.control}
+            name="externalId"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>External Id</FormLabel>
+                <FormControl>
+                  <Input {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          /> */}
+          {/* 
+          <FormField
+            control={form.control}
+            name="externalId"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>External Id</FormLabel>
+                <FormControl>
+                  <Input {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="externalId"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>External Id</FormLabel>
+                <FormControl>
+                  <Input {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="externalId"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>External Id</FormLabel>
+                <FormControl>
+                  <Input {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="externalId"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>External Id</FormLabel>
+                <FormControl>
+                  <Input {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="externalId"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>External Id</FormLabel>
+                <FormControl>
+                  <Input {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="externalId"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>External Id</FormLabel>
+                <FormControl>
+                  <Input {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          /> */}
+
+          {timetable.combinedPartnerSpaceCode ? (
+            <FormField
+              control={form.control}
+              name="isCombinedSession"
+              render={({ field }) => (
+                <FormItem className="flex flex-row items-start space-x-3 space-y-0">
+                  <FormControl>
+                    <Checkbox
+                      checked={field.value}
+                      onCheckedChange={field.onChange}
+                    />
+                  </FormControl>
+                  <div className="space-y-1 leading-none">
+                    <FormLabel>
+                      Session is combined with{" "}
+                      {timetable.combinedPartnerSpaceCode}
+                    </FormLabel>
+                  </div>
+                </FormItem>
+              )}
+            />
+          ) : (
+            ""
+          )}
+
+          <Button variant={"constructive"} type="submit">
+            Create
+          </Button>
+        </form>
+      </Form>
+    );
+  };
+
   const newEventWindow = () => {
     return (
       <Dialog>
         <DialogTrigger asChild>
           <Button variant={"constructive"}>New Event</Button>
         </DialogTrigger>
-        <DialogContent className="sm:max-w-md">
-          <DialogHeader>
-            <DialogTitle>Share link</DialogTitle>
-            <DialogDescription>
-              Anyone who has this link will be able to view this.
-            </DialogDescription>
-          </DialogHeader>
-          <div className="flex items-center space-x-2">
-            <div className="grid flex-1 gap-2">
-              <Label htmlFor="link" className="sr-only">
-                Link
-              </Label>
-              <Input
-                id="link"
-                defaultValue="https://ui.shadcn.com/docs/installation"
-                readOnly
-              />
-            </div>
-            <Button type="submit" size="sm" className="px-3">
-              <span className="sr-only">Copy</span>
-              <Copy className="h-4 w-4" />
-            </Button>
-          </div>
-          <DialogFooter className="sm:justify-start">
-            <DialogClose asChild>
-              <Button type="button" variant="secondary">
-                Close
-              </Button>
-            </DialogClose>
-          </DialogFooter>
-        </DialogContent>
+          <DialogContent className="sm:max-w-md">
+            <DialogHeader>
+              <DialogTitle>New Event</DialogTitle>
+              <DialogDescription>
+                Create a new event for the timetable {timetable.spaceCode}.
+              </DialogDescription>
+            </DialogHeader>
+            {newEventForm()}
+          </DialogContent>
       </Dialog>
     );
-  }
+  };
 
   return (
     <div className="w-full text-xl flex flex-col items-center text-center p-10 pt-0">
@@ -152,9 +546,23 @@ export function TimetablePage(props: Props) {
             </li>
           </ul>
         </div>
-        <div className="flex flex-col justify-evenly">
-          {newEventWindow()}
+        <div className="flex flex-row justify-evenly gap-2">
+          <Button
+            variant="primaryOutline"
+            onClick={() => {
+              const newWindow = window.open(
+                `${Y2_URL}/#/room/${timetable.id}`,
+                "_blank"
+              );
+              if (newWindow) {
+                newWindow.focus();
+              }
+            }}
+          >
+            Open in Y2
+          </Button>
           <Button variant={"primaryOutline"}>Edit</Button>
+          {newEventWindow()}
         </div>
       </div>
       <h2 className="my-5 text-3xl w-full text-left">Events</h2>
