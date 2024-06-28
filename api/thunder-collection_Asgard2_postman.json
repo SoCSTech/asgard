@@ -1,6 +1,6 @@
 {
     "info": {
-        "_postman_id": "8ca8c5a6-724c-4474-bf61-4bace6931c38",
+        "_postman_id": "b1c05c2d-1fb3-4417-800f-dd31af63a2c2",
         "name": "Asgard2",
         "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
         "description": ""
@@ -133,10 +133,10 @@
                     "request": {
                         "method": "PUT",
                         "url": {
-                            "raw": "/v2/user/272fea67-06e1-45b8-9c09-59afc3ba65b1",
+                            "raw": "/v2/user/jappleseed",
                             "path": [
                                 "user",
-                                "272fea67-06e1-45b8-9c09-59afc3ba65b1"
+                                "jappleseed"
                             ],
                             "host": [
                                 "v2"
@@ -149,7 +149,7 @@
                                     "language": "json"
                                 }
                             },
-                            "raw": "{\n  \"username\": \"fnoble\",\n  \"shortName\": \"Florrie\",\n  \"fullName\": \"Florence Noble\",\n  \"role\": \"TECHNICIAN\",\n  \"isDeleted\": false\n}"
+                            "raw": "{\n  \"profilePictureUrl\": \"#\"\n}"
                         }
                     }
                 },
@@ -158,11 +158,11 @@
                     "request": {
                         "method": "POST",
                         "url": {
-                            "raw": "/v2/user/reactivate/jsmith",
+                            "raw": "/v2/user/reactivate/jappleseed",
                             "path": [
                                 "user",
                                 "reactivate",
-                                "jsmith"
+                                "jappleseed"
                             ],
                             "host": [
                                 "v2"
@@ -291,10 +291,10 @@
                     "request": {
                         "method": "GET",
                         "url": {
-                            "raw": "/v2/timetable/365c3cc1-2086-4d0f-9261-4d0cf68bfa47",
+                            "raw": "/v2/timetable/s0nssm54ft36fxovj0t2oxqp",
                             "path": [
                                 "timetable",
-                                "365c3cc1-2086-4d0f-9261-4d0cf68bfa47"
+                                "s0nssm54ft36fxovj0t2oxqp"
                             ],
                             "host": [
                                 "v2"
@@ -322,7 +322,7 @@
                                     "language": "json"
                                 }
                             },
-                            "raw": "{\n  \"spaceCode\": \"INB1111\",\n  \"name\": \"Compter Lab 1D\",\n  \"capacity\": 10\n}"
+                            "raw": "{\n  \"spaceCode\": \"INB1111\",\n  \"name\": \"Compter Lab 1D\",\n  \"capacity\": 10,\n  \"dataSource\": \"UOL_TIMETABLE\"\n}"
                         }
                     }
                 },
@@ -331,10 +331,10 @@
                     "request": {
                         "method": "DELETE",
                         "url": {
-                            "raw": "/v2/timetable/7bf40deb-0eec-420d-b999-5ed6c1970660",
+                            "raw": "/v2/timetable/INB1111",
                             "path": [
                                 "timetable",
-                                "7bf40deb-0eec-420d-b999-5ed6c1970660"
+                                "INB1111"
                             ],
                             "host": [
                                 "v2"
@@ -347,11 +347,11 @@
                     "request": {
                         "method": "POST",
                         "url": {
-                            "raw": "/v2/timetable/reactivate/INB1307",
+                            "raw": "/v2/timetable/reactivate/INB1111",
                             "path": [
                                 "timetable",
                                 "reactivate",
-                                "INB1307"
+                                "INB1111"
                             ],
                             "host": [
                                 "v2"
@@ -364,10 +364,10 @@
                     "request": {
                         "method": "PUT",
                         "url": {
-                            "raw": "/v2/timetable/INB1102",
+                            "raw": "/v2/timetable/INB1101",
                             "path": [
                                 "timetable",
-                                "INB1102"
+                                "INB1101"
                             ],
                             "host": [
                                 "v2"
@@ -380,7 +380,7 @@
                                     "language": "json"
                                 }
                             },
-                            "raw": "{\n  \"name\": \"SoCS Lab 1A\",\n  \"spaceCode\": \"INB1102\",\n  \"capacity\": 69,\n  \"isDeleted\": false\n}"
+                            "raw": "{\n  \"lab\": \"1C\"\n}"
                         }
                     }
                 },
@@ -397,6 +397,31 @@
                             "host": [
                                 "v2"
                             ]
+                        }
+                    }
+                },
+                {
+                    "name": "Timetable - My",
+                    "request": {
+                        "method": "GET",
+                        "url": {
+                            "raw": "/v2/timetable/my",
+                            "path": [
+                                "timetable",
+                                "my"
+                            ],
+                            "host": [
+                                "v2"
+                            ]
+                        },
+                        "body": {
+                            "mode": "raw",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            },
+                            "raw": "{\n  \"user\": \"joshcooper\",\n  \"timetable\": \"INB1111\"\n}"
                         }
                     }
                 }
@@ -456,7 +481,7 @@
                                     "language": "json"
                                 }
                             },
-                            "raw": "{\n  \"name\": \"Social: Computer Science for Noobs\",\n  \"staff\": \"Bob Smith, Derek Jones\",\n  \"moduleCode\": \"CMP0004\",\n  \"timetableId\": \"INB1308\",\n  \"type\": \"SOCIAL\",\n  \"colour\": \"#ff0077\",\n  \"start\": \"2024-05-16 10:00:00\",\n  \"end\": \"2024-05-16 12:00:00\",\n  \"isCombinedSession\": false,\n  \"group\": \"P\"\n}"
+                            "raw": "{\n  \"name\": \"Social: Computer Science for Noobs\",\n  \"staff\": \"Bob Smith, Derek Jones\",\n  \"moduleCode\": \"CMP0004\",\n  \"timetableId\": \"INB1301\",\n  \"type\": \"SOCIAL\",\n  \"colour\": \"#ff0077\",\n  \"start\": \"2024-06-17 10:00:00\",\n  \"end\": \"2024-06-17 12:00:00\",\n  \"isCombinedSession\": false,\n  \"group\": \"P\"\n}"
                         }
                     }
                 },
@@ -534,6 +559,23 @@
                             ]
                         }
                     }
+                },
+                {
+                    "name": "Remove Events for Timetable",
+                    "request": {
+                        "method": "DELETE",
+                        "url": {
+                            "raw": "/v2/timetable/INB1111/events",
+                            "path": [
+                                "timetable",
+                                "INB1111",
+                                "events"
+                            ],
+                            "host": [
+                                "v2"
+                            ]
+                        }
+                    }
                 }
             ]
         },
@@ -600,10 +642,10 @@
                     "request": {
                         "method": "PUT",
                         "url": {
-                            "raw": "/v2/timetable-group/dthyuvt9mnwnufo4393po5qi",
+                            "raw": "/v2/timetable-group/xupu2x3py304qq7gcwwftrs4",
                             "path": [
                                 "timetable-group",
-                                "dthyuvt9mnwnufo4393po5qi"
+                                "xupu2x3py304qq7gcwwftrs4"
                             ],
                             "host": [
                                 "v2"
@@ -616,7 +658,7 @@
                                     "language": "json"
                                 }
                             },
-                            "raw": "{\n  \"internalName\": \"INB 1st Floor Landing\",\n  \"name\": \"Today's Timetable\",\n  \"subtitle\": \"School of Compy Scie\",\n  \"displayInfoPane\": false,\n  \"infoPaneText\": \"# Contactie a Techie \\nPlease OMG **__do not__** do that. \\n\\nPlease leave me alone for goodness sake \\n\\nOkay i guess you can open a ticket\",\n  \"displayInfoPaneQR\": true,\n  \"infoPaneQRUrl\": \"https://lncn.ac/socssupport\",\n  \"isDeleted\": false,\n  \"verbAvailable\": \"free\",\n  \"verbUnavailable\": \"in use\",\n  \"object\": \"lab\"\n}"
+                            "raw": "{\n  \"subtitle\": \"Today's Timetable\",\n  \"name\": \"School of Applied and Mathematical Science\",\n  \"displayInfoPane\": false,\n  \"verbAvailable\": \"free\",\n  \"verbUnavailable\": \"in use\",\n  \"object\": \"computing lab\"\n}"
                         }
                     }
                 },
@@ -958,7 +1000,7 @@
         "bearer": [
             {
                 "key": "token",
-                "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImFkZGQzZGYzLWQyMjctNGUxMi1hZDM1LTRlMDA2MzNkZTdiNSIsInVzZXJuYW1lIjoiam9zaGNvb3BlciIsImlhdCI6MTcxNjkwNjg5MCwiZXhwIjoxNzE2OTkzMjkwfQ.yBZeLyRr4m70aJpEE5g6YQQ3XyJ1oOy2fB9j1112lTU",
+                "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Iml1czdxYnJ6eG5jZHdvNXpjZGRoYWtneSIsInVzZXJuYW1lIjoiam9zaGNvb3BlciIsImlhdCI6MTcxOTU2MjgwMSwiZXhwIjoxNzE5NjQ5MjAxfQ.Bm8OuOxdglXaxSg9b5_44AqX8-_z-UVzIrrGbAaeaH4",
                 "type": "string"
             }
         ]

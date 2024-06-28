@@ -57,7 +57,7 @@ export const convertSpaceCodeToTimetableId = async (timetableId: string) => {
                 eq(timetableSchema.isDeleted, false)
             ));
 
-        if (timetable.length !== 1){
+        if (timetable.length !== 1) {
             console.error("Couldn't find timetable for that Id???")
             return "null";
         }
@@ -68,16 +68,47 @@ export const convertSpaceCodeToTimetableId = async (timetableId: string) => {
 }
 
 const getMyTimetables = async (req: Request, res: Response, next: NextFunction) => {
-    const token = getTokenFromAuthCookie(req, res)
+    const token = getTokenFromAuthCookie(req, res);
     const currentUserId = getUserIdFromJWT(token);
+    
+    try {
+        const timetables = await db.select()
+            .from(userTimetablesSchema)
+            .where(eq(userTimetablesSchema.user, currentUserId))
+            .leftJoin(timetableSchema, eq(userTimetablesSchema.timetable, timetableSchema.id))
+            .orderBy(asc(timetableSchema.spaceCode));
 
-    const timetables = await db.select()
-        .from(userTimetablesSchema)
-        .where(eq(userTimetablesSchema.user, currentUserId))
-        .leftJoin(timetableSchema, eq(userTimetablesSchema.timetable, timetableSchema.id))
-        .orderBy(asc(timetableSchema.spaceCode));
+        /* timetables [{
+            user_timetable: {
+                user: "josh",
+                timetable: "inb1305"
+            },
+            timetable: {
+                name: "Games Lab",
+                spaceCode: "INB1305"
+            }
+        }]
+        */
 
-    res.json({ timetables: timetables });
+        let cleanedTimetables: Array<any> = [];
+        timetables.forEach((tt) => {
+            if (tt.timetables) {
+                cleanedTimetables.push(tt.timetables);
+            }
+        });
+
+        /* cleanedTimetables [{
+            name: "Games Lab",
+            spaceCode: "INB1305"
+        }]
+        */
+
+        res.json({ timetables: cleanedTimetables });
+
+    } catch (error) {
+        await log(`Caught error while trying to get my timetables ${error}`, currentUserId)
+        next(error); // Pass any errors to the next middleware
+    }
 };
 
 const addMyTimetables = async (req: Request, res: Response, next: NextFunction) => {
@@ -108,8 +139,6 @@ const addMyTimetables = async (req: Request, res: Response, next: NextFunction) 
             eq(userTimetablesSchema.user, user[0].id),
             eq(userTimetablesSchema.timetable, timetableId)
         ))
-
-    console.log(oldLink)
 
     if (oldLink.length !== 0) {
         res.status(409).json({ "message": "User has access to that timetable already!" })
@@ -233,7 +262,7 @@ const createTimetable = async (req: Request, res: Response, next: NextFunction) 
     })
 
     await log(`Has created timetable with name ${req.body.name} (${req.body.spaceCode})`, currentUserId)
-    
+
     const newTimetablesId = await convertSpaceCodeToTimetableId(req.body.spaceCode)
     console.log(newTimetablesId)
 
