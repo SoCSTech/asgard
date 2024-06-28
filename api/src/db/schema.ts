@@ -139,3 +139,8 @@ export const timetableGroupMembers = mysqlTable('timetable_group_members', {
     timetableIndex: index('timetable_idx').on(timetableGroupMembers.timetableId),
     groupIndex: index('group_idx').on(timetableGroupMembers.groupId)
 }));
+
+export const userTimetables = mysqlTable('user_timetables', {
+    user: varchar('user', { length: 128 }).references(() => users.id),
+    timetable: varchar('timetable', { length: 128 }).references(() => timetables.id),
+})

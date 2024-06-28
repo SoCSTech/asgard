@@ -1,6 +1,6 @@
 import e, { Request, Response, NextFunction } from "express";
 import { db } from '@/db';
-import { timetables as timetableSchema, users as userSchema, carousels as carouselSchema, carouselItems as carouselItemsSchema } from '@/db/schema';
+import { timetables as timetableSchema, users as userSchema, carousels as carouselSchema, carouselItems as carouselItemsSchema, userTimetables as userTimetablesSchema } from '@/db/schema';
 import { eq, and, or, asc } from 'drizzle-orm';
 import { getUserIdFromJWT, getTokenFromAuthCookie } from "@/utils/auth";
 import { isUserATechnician } from "@/utils/users";
@@ -66,6 +66,73 @@ export const convertSpaceCodeToTimetableId = async (timetableId: string) => {
     }
     return timetableId;
 }
+
+const getMyTimetables = async (req: Request, res: Response, next: NextFunction) => {
+    const timetables = await db.select()
+        .from(timetableSchema)
+        .where(and(
+            eq(timetableSchema.isDeleted, false),
+            eq(timetableSchema.isDeleted, false)
+        ))
+        .orderBy(asc(timetableSchema.spaceCode));
+
+    res.json({ timetables: timetables });
+};
+
+const addMyTimetables = async (req: Request, res: Response, next: NextFunction) => {
+    const token = getTokenFromAuthCookie(req, res)
+    const currentUserId = getUserIdFromJWT(token);
+    if (await isUserATechnician(currentUserId) == false) {
+        res.status(401).json({ "message": "You don't have permission to add timetables to users" })
+        return
+    }
+
+    const timetableId = await convertSpaceCodeToTimetableId(req.body.timetable)
+
+    // Check if user exists
+    const user = await db.select().from(userSchema).where(or(
+        eq(userSchema.id, String(req.body.user)),
+        eq(userSchema.username, String(req.body.user)),
+        eq(userSchema.email, String(req.body.user)),
+    ))
+
+    if (user.length !== 1) {
+        res.status(404).json({ "message": "User does not exist" })
+        return;
+    }
+
+    // Check if user has access/"my" to that timetable already
+    const oldLink = await db.select().from(userTimetablesSchema)
+        .where(and(
+            eq(userTimetablesSchema.user, user[0].id),
+            eq(userTimetablesSchema.timetable, timetableId)
+        ))
+
+    console.log(oldLink)
+
+    if (oldLink.length !== 0) {
+        res.status(409).json({ "message": "User has access to that timetable already!" })
+        return;
+    }
+
+    // Push to DB new timetable
+    const link = await db.insert(userTimetablesSchema).values({
+        timetable: timetableId,
+        user: user[0].id,
+    })
+
+    await log(`Linked user ${user[0].username} with timetable ${timetableId}`, currentUserId)
+    res.status(201).json({ message: `Linked user ${user[0].username} with timetable ${timetableId}` });
+};
+
+const removeMyTimetables = async (req: Request, res: Response, next: NextFunction) => {
+    const timetables = await db.select()
+        .from(timetableSchema)
+        .where(eq(timetableSchema.isDeleted, false))
+        .orderBy(asc(timetableSchema.spaceCode));
+
+    res.json({ timetables: timetables });
+};
 
 const getTimetableById = async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -304,4 +371,4 @@ const updateTimetable = async (req: Request, res: Response, next: NextFunction) 
     res.status(201).json({ message: `Timetable for ${timetable[0].spaceCode} has been updated`, timetable: timetable[0].id });
 };
 
-export default { getTimetableById, getAllTimetables, getAllDeletedTimetables, createTimetable, deleteTimetable, undeleteTimetable, updateTimetable };
+export default { getMyTimetables, addMyTimetables, removeMyTimetables, getTimetableById, getAllTimetables, getAllDeletedTimetables, createTimetable, deleteTimetable, undeleteTimetable, updateTimetable };
