@@ -68,12 +68,13 @@ export const convertSpaceCodeToTimetableId = async (timetableId: string) => {
 }
 
 const getMyTimetables = async (req: Request, res: Response, next: NextFunction) => {
+    const token = getTokenFromAuthCookie(req, res)
+    const currentUserId = getUserIdFromJWT(token);
+
     const timetables = await db.select()
-        .from(timetableSchema)
-        .where(and(
-            eq(timetableSchema.isDeleted, false),
-            eq(timetableSchema.isDeleted, false)
-        ))
+        .from(userTimetablesSchema)
+        .where(eq(userTimetablesSchema.user, currentUserId))
+        .leftJoin(timetableSchema, eq(userTimetablesSchema.timetable, timetableSchema.id))
         .orderBy(asc(timetableSchema.spaceCode));
 
     res.json({ timetables: timetables });
