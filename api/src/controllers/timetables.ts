@@ -218,6 +218,10 @@ const deleteTimetable = async (req: Request, res: Response, next: NextFunction) 
         .set({ isDeleted: true })
         .where(eq(timetableSchema.id, timetables[0].id));
 
+    const updatedCarousel = await db.update(carouselSchema)
+        .set({ isDeleted: true })
+        .where(eq(carouselSchema.timetable, timetables[0].id))
+
     await log(`Has deleted timetable with id ${timetableId}`, currentUserId)
     res.status(201).json({ message: "Timetable has been deleted", timetable: timetableId });
 };
@@ -251,6 +255,10 @@ const undeleteTimetable = async (req: Request, res: Response, next: NextFunction
     const updatedTimetable = await db.update(timetableSchema)
         .set({ isDeleted: false })
         .where(eq(timetableSchema.id, timetable[0].id));
+
+    const updatedCarousel = await db.update(carouselSchema)
+        .set({ isDeleted: false })
+        .where(eq(carouselSchema.timetable, timetable[0].id))
 
     await log(`Has reactivated timetable with id ${timetableId}`, currentUserId)
     res.status(201).json({ message: "Timetable has been reactivated", timetable: timetable[0].id });

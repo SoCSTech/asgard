@@ -22,6 +22,11 @@ const getCarouselItemById = async (req: Request, res: Response, next: NextFuncti
             eq(carouselSchema.isDeleted, false)
         ))
 
+    if (items.length === 0) {
+        res.json({ message: "Couldn't get carousel, does it exist?"}).status(404)
+        return
+    }        
+    
     res.json({ carouselItems: items });
 }
 
