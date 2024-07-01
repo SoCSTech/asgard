@@ -24,11 +24,8 @@ import { Toaster } from "@/components/ui/sonner";
   if (token) {
     try {
       const result = await verifyToken(token);
-      console.log(user);
-
       if (result.valid && result.user) {
         user = result.user;
-        console.log(user);
       }
     } catch (error) {
       console.error("Token verification failed:", error);

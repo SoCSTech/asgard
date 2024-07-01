@@ -47,10 +47,6 @@ const createEvent = async (req: Request, res: Response, next: NextFunction) => {
     const adjustedStartTime = new Date(req.body.start)
     adjustedStartTime.setMinutes(adjustedStartTime.getMinutes() + 1);
 
-    console.log(adjustedEndTime)
-    console.log(adjustedStartTime)
-
-
     const clashingEvents = await db.select()
         .from(eventSchema)
         .where(
@@ -64,7 +60,6 @@ const createEvent = async (req: Request, res: Response, next: NextFunction) => {
         );
 
     if (clashingEvents.length !== 0) {
-        console.log(clashingEvents)
         res.status(409).json({ message: "Event already exists on that timetable at that time." });
         return;
     }

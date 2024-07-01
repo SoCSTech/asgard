@@ -136,6 +136,7 @@ for item in items:
     # (if we push a2 and y2 to more than what is socs now - we may have to make more colours and the colours do things nicer.)
     # plus new courses like BSc Robotics dont have a colour in this script yet!!
 	moduleId = item['allModuleIds']
+   
 	module = re.search(r"[ACM](.{2}\d)\d{3}", moduleId)
 	# print(module) # sometimes, a module ID doesn't exist, so just give it a default colour.
 	try:
@@ -144,41 +145,54 @@ for item in items:
 		m = "NO"
 		print('🖍️  no colour assigned')
   
+    
+  
   	# assign colours per level (CMP1 = MP1, CGP2 = GP2 etc...)
 	if m == 'GP1':
 		cell_colour = '#FCC05F'
-	if m == 'GP2':
+	elif m == 'GP2':
 		cell_colour = '#B68AE5'
-	if m == 'GP3':
+	elif m == 'GP3':
 		cell_colour = '#E38178'
-	if m == 'GP9':
+	elif m == 'GP9':
 		cell_colour = '#59D5D9'
-	if m == 'MP1':
+	elif m == 'MP1':
 		cell_colour = '#7AF58F'
-	if m == 'MP2':
+	elif m == 'MP2':
 		cell_colour = '#7AB4F5'
-	if m == 'MP3':
+	elif m == 'MP3':
 		cell_colour = '#CF8BA3'
-	if m == 'MP9':
+	elif m == 'MP9':
 		cell_colour = '#6AF0CA'
-	if m == 'TH1':
+	elif m == 'TH1':
 		cell_colour = '#BDC667'
-	if m == 'TH2':
+	elif m == 'TH2':
 		cell_colour = '#A4A4CB'
-	if m == 'TH3':
+	elif m == 'TH3':
 		cell_colour = '#E58A92'
-	if m == 'TH9':
+	elif m == 'TH9':
 		cell_colour = '#C293C8'
-	if m == 'GY3':
+	elif m == 'GY3':
 		cell_colour = '#D6FFFE'
-	if m == 'HY2':
+	elif m == 'HY2':
 		cell_colour = '#A2AEBB'
-	if m == 'HY9':
+	elif m == 'HY9':
 		cell_colour = '#FF9B71'
-	if m == 'GR9':
+	elif m == 'GR9':
 		cell_colour = '#E481FC'
-	if m == 'NO':
-		cell_colour = '#FFFFFF'
+	else:
+		year = int(item['allModuleIds'][3])
+		print("Colour not detected, setting on year group instead - " + str(year))
+		if (year == 1):
+			cell_colour = '#7AF58F'
+		elif (year == 2):
+			cell_colour = '#7AB4F5'
+		elif (year == 3):
+			cell_colour = '#CF8BA3'
+		elif (year == 9):
+			cell_colour = '#6AF0CA'
+		else:
+			cell_colour = '#FFFFFF'
 
 	# Get a nice name for the event!
 	name = item['allModuleTitles']

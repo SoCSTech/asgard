@@ -2,30 +2,28 @@ import * as React from "react";
 import axios from "axios";
 import { API_URL, Y2_URL } from "@/constants";
 import { getCookie } from "@/lib/cookie";
-import { CalendarIcon, Copy } from "lucide-react";
+import { CalendarIcon, Copy, Check, ChevronsUpDown } from "lucide-react";
 import { Button } from "../ui/button";
 import type { ITimetable } from "@/interfaces/timetable";
 import TableList from "../theme/tableList";
 import type { IEvent } from "@/interfaces/event";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
-  Dialog,
-  DialogClose,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
+  Sheet,
+  SheetClose,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { Label } from "../ui/label";
 import { formatEnumValue } from "@/lib/enum";
 import { toast } from "sonner";
-
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { z } from "zod";
-
+import { boolean, z } from "zod";
 import {
   Form,
   FormControl,
@@ -49,82 +47,81 @@ import {
   CommandInput,
   CommandItem,
 } from "@/components/ui/command";
-
 import { cn } from "@/lib/utils";
 import { Calendar } from "../ui/calendar";
-import { Check, ChevronsUpDown } from "lucide-react";
 
 const eventTypes = [
-  { label:"Other", value:"OTHER" },
-  { label:"Workshop", value:"WORKSHOP" },
-  { label:"Lecture", value:"LECTURE" },
-  { label:"Social", value:"SOCIAL" },
-  { label:"Maintenance", value:"MAINTENANCE" },
-  { label:"Exam", value:"EXAM" },
-  { label:"Project", value:"PROJECT" }
-]
+  { label: "Other", value: "OTHER" },
+  { label: "Workshop", value: "WORKSHOP" },
+  { label: "Lecture", value: "LECTURE" },
+  { label: "Social", value: "SOCIAL" },
+  { label: "Maintenance", value: "MAINTENANCE" },
+  { label: "Exam", value: "EXAM" },
+  { label: "Project", value: "PROJECT" },
+];
 
 interface Props {
   timetableId: string;
 }
 
 const FormSchema = z.object({
-  // username: z.string().min(2, {
-  //   message: "Username must be at least 2 characters.",
-  // }),
-
-  name: z.string(),
-  staff: z.string().optional(),
-  type: z.string().default("OTHER"),
-  colour: z.string(),
-  start: z.string().datetime(),
-  end: z.string().datetime(),
-  isCombinedSession: z.boolean().default(false),
-  group: z.string().default(""),
-  externalId: z.string().default(""),
+  name: z.string().min(2).max(128),
+  staff: z.string(),
+  moduleCode: z.string(),
+  type: z.string(),
+  colour: z.string().min(7).max(7),
+  start: z.string(),
+  end: z.string(),
+  isCombinedSession: z.boolean(),
+  group: z.string().max(10),
+  externalId: z.string().max(128),
 });
 
 export function TimetablePage(props: Props) {
   const [timetable, setTimetable] = React.useState({} as ITimetable);
   const [events, setEvents] = React.useState([{} as IEvent]);
+  const [sheetIsOpen, setSheetIsOpen] = React.useState(false);
 
   const fetchTimetableData = async () => {
-    await axios
-      .get(API_URL + "/v2/timetable/" + props.timetableId, {
-        headers: {
-          Authorization: `Bearer ${getCookie("token")}`,
-        },
-      })
-      .then((response) => {
-        setTimetable(response.data.timetables[0]);
-
-        if (response.data.timetables.length == 0) {
-          toast("No timetables are found");
+    try {
+      const response = await axios.get(
+        API_URL + "/v2/timetable/" + props.timetableId,
+        {
+          headers: {
+            Authorization: `Bearer ${getCookie("token")}`,
+          },
         }
-      })
-      .catch((error) => {
-        console.error("There was an error!", error);
-        toast(error.message);
-      });
+      );
+      if (response.data.timetables.length === 0) {
+        toast("No timetables are found");
+      } else {
+        setTimetable(response.data.timetables[0]);
+      }
+    } catch (error) {
+      console.error("There was an error!", error);
+      toast(error.message);
+    }
   };
 
   const fetchEventsData = async () => {
-    await axios
-      .get(API_URL + "/v2/timetable/" + props.timetableId + "/events", {
-        headers: {
-          Authorization: `Bearer ${getCookie("token")}`,
-        },
-      })
-      .then((response) => {
-        setEvents(response.data.events);
-        if (response.data.events.length == 0) {
-          toast("No events are found");
+    try {
+      const response = await axios.get(
+        API_URL + "/v2/timetable/" + props.timetableId + "/events",
+        {
+          headers: {
+            Authorization: `Bearer ${getCookie("token")}`,
+          },
         }
-      })
-      .catch((error) => {
-        console.error("There was an error!", error);
-        toast(error.message);
-      });
+      );
+      if (response.data.events.length === 0) {
+        toast("No events are found");
+      } else {
+        setEvents(response.data.events);
+      }
+    } catch (error) {
+      console.error("There was an error!", error);
+      toast(error.message);
+    }
   };
 
   React.useEffect(() => {
@@ -136,13 +133,50 @@ export function TimetablePage(props: Props) {
     const form = useForm<z.infer<typeof FormSchema>>({
       resolver: zodResolver(FormSchema),
       defaultValues: {
-        // username: "",
+        name: "",
+        staff: "",
+        moduleCode: "",
+        type: "OTHER",
+        colour: "",
+        start: "",
+        end: "",
+        isCombinedSession: false,
+        group: "",
+        externalId: "",
       },
     });
 
-    function onSubmit(data: z.infer<typeof FormSchema>) {
-      toast("new event!");
-    }
+    const onSubmit = async (data: z.infer<typeof FormSchema>) => {
+      let response
+      try {
+        response = await axios.post(
+          API_URL + "/v2/event",
+          {
+            name: data.name,
+            staff: data.staff,
+            moduleCode: data.moduleCode,
+            timetableId: props.timetableId,
+            type: data.type,
+            colour: data.colour,
+            start: "2024-07-01 10:00:00",
+            end: "2024-07-01 12:00:00",
+            isCombinedSession: data.isCombinedSession,
+            group: data.group,
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${getCookie("token")}`,
+            },
+          }
+        );
+        toast("New event created!");
+        fetchEventsData();
+        setSheetIsOpen(false);
+      } catch (error) {
+        console.error("There was an error!", error);
+        toast(error.response.data.message || "Couldn't add the event");
+      }
+    };
 
     return (
       <Form {...form}>
@@ -159,8 +193,21 @@ export function TimetablePage(props: Props) {
                   <Input {...field} />
                 </FormControl>
                 <FormDescription>
-                  This is the event display name.
+                  This is the name for the event displayed on the screens.
                 </FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="moduleCode"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Module Code</FormLabel>
+                <FormControl>
+                  <Input {...field} />
+                </FormControl>
                 <FormMessage />
               </FormItem>
             )}
@@ -178,23 +225,6 @@ export function TimetablePage(props: Props) {
               </FormItem>
             )}
           />
-          <FormField
-            control={form.control}
-            name="type"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Type</FormLabel>
-                <FormControl>
-                  <Input placeholder="shadcn" {...field} />
-                </FormControl>
-                <FormDescription>
-                  This is your public display name.
-                </FormDescription>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
           <FormField
             control={form.control}
             name="type"
@@ -250,13 +280,13 @@ export function TimetablePage(props: Props) {
                   </PopoverContent>
                 </Popover>
                 <FormDescription>
-                  The types allows Yggdrasil to show different icons and act in different ways.
+                  The types allows Yggdrasil to show different icons and act in
+                  different ways.
                 </FormDescription>
                 <FormMessage />
               </FormItem>
             )}
           />
-
           <FormField
             control={form.control}
             name="colour"
@@ -266,7 +296,7 @@ export function TimetablePage(props: Props) {
                   Colour<span className="text-destructive">*</span>
                 </FormLabel>
                 <FormControl>
-                  <Input defaultValue={"#fcc05f"} {...field} />
+                  <Input {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -289,51 +319,6 @@ export function TimetablePage(props: Props) {
           />
           <FormField
             control={form.control}
-            name="start"
-            render={({ field }) => (
-              <FormItem className="flex flex-col">
-                <FormLabel>Start Time</FormLabel>
-                <Popover>
-                  <PopoverTrigger asChild>
-                    <FormControl>
-                      <Button
-                        variant={"primaryOutline"}
-                        className={cn(
-                          "w-[240px] pl-3 text-left font-normal",
-                          !field.value && "text-muted-foreground"
-                        )}
-                      >
-                        {field.value ? (
-                          format(field.value, "PPP")
-                        ) : (
-                          <span>Pick a date</span>
-                        )}
-                        <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                      </Button>
-                    </FormControl>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-auto p-0" align="start">
-                    <Calendar
-                      mode="single"
-                      selected={field.value}
-                      onSelect={field.onChange}
-                      disabled={(date) =>
-                        date > new Date() || date < new Date("1900-01-01")
-                      }
-                      initialFocus
-                    />
-                  </PopoverContent>
-                </Popover>
-                <FormDescription>
-                  Your date of birth is used to calculate your age.
-                </FormDescription>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            control={form.control}
             name="end"
             render={({ field }) => (
               <FormItem>
@@ -347,7 +332,6 @@ export function TimetablePage(props: Props) {
               </FormItem>
             )}
           />
-
           <FormField
             control={form.control}
             name="group"
@@ -361,106 +345,7 @@ export function TimetablePage(props: Props) {
               </FormItem>
             )}
           />
-
-          {/* <FormField
-            control={form.control}
-            name="externalId"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>External Id</FormLabel>
-                <FormControl>
-                  <Input {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          /> */}
-          {/* 
-          <FormField
-            control={form.control}
-            name="externalId"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>External Id</FormLabel>
-                <FormControl>
-                  <Input {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            control={form.control}
-            name="externalId"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>External Id</FormLabel>
-                <FormControl>
-                  <Input {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            control={form.control}
-            name="externalId"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>External Id</FormLabel>
-                <FormControl>
-                  <Input {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            control={form.control}
-            name="externalId"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>External Id</FormLabel>
-                <FormControl>
-                  <Input {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            control={form.control}
-            name="externalId"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>External Id</FormLabel>
-                <FormControl>
-                  <Input {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            control={form.control}
-            name="externalId"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>External Id</FormLabel>
-                <FormControl>
-                  <Input {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          /> */}
-
-          {timetable.combinedPartnerSpaceCode ? (
+          {timetable.combinedPartnerSpaceCode && (
             <FormField
               control={form.control}
               name="isCombinedSession"
@@ -481,10 +366,7 @@ export function TimetablePage(props: Props) {
                 </FormItem>
               )}
             />
-          ) : (
-            ""
           )}
-
           <Button variant={"constructive"} type="submit">
             Create
           </Button>
@@ -495,20 +377,22 @@ export function TimetablePage(props: Props) {
 
   const newEventWindow = () => {
     return (
-      <Dialog>
-        <DialogTrigger asChild>
+      <Sheet open={sheetIsOpen} onOpenChange={setSheetIsOpen}>
+        <SheetTrigger asChild>
           <Button variant={"constructive"}>New Event</Button>
-        </DialogTrigger>
-          <DialogContent className="sm:max-w-md">
-            <DialogHeader>
-              <DialogTitle>New Event</DialogTitle>
-              <DialogDescription>
-                Create a new event for the timetable {timetable.spaceCode}.
-              </DialogDescription>
-            </DialogHeader>
+        </SheetTrigger>
+        <SheetContent className="w-[540px]">
+          <SheetHeader>
+            <SheetTitle>New Event</SheetTitle>
+            <SheetDescription>
+              Create a new event for the timetable {timetable.spaceCode}.
+            </SheetDescription>
+          </SheetHeader>
+          <ScrollArea className="h-[calc(100vh-150px)]">
             {newEventForm()}
-          </DialogContent>
-      </Dialog>
+          </ScrollArea>
+        </SheetContent>
+      </Sheet>
     );
   };
 
@@ -539,7 +423,6 @@ export function TimetablePage(props: Props) {
                 <span>No</span>
               )}
             </li>
-
             <li>
               <strong>Data Source:</strong>{" "}
               {formatEnumValue(String(timetable.dataSource))}
@@ -580,7 +463,6 @@ export function TimetablePage(props: Props) {
             />
           </div>
         </TabsContent>
-
         <TabsContent value="calendar">
           <div className="w-full">
             <h1>Not yet implemented!!!</h1>

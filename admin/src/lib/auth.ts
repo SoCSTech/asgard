@@ -14,7 +14,6 @@ export async function verifyToken(token: string): Promise<VerifyTokenResponse> {
         }
     });
 
-    console.log(response)
     if (response.ok) {
         return response.json();
 
