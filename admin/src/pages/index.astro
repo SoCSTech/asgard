@@ -1,15 +1,11 @@
 ---
-import TestComponent from '@/components/auth/test';
-import Layout from '@/layouts/Layout.astro';
+import { MyTimetables } from "@/components/homePage";
+import Layout from "@/layouts/Layout.astro";
 ---
 
-<Layout title="Welcome to Astro.">
-	<main>
-		<h1>Welcome to <span class="text-blue-700">Astro</span></h1>
-		<p>
-			To get started, open the directory <code>src/pages</code> in your project.<br />
-			<strong>Code Challenge:</strong> Tweak the "Welcome to Astro" message above.
-		</p>
-		<TestComponent client:only="react" />
-	</main>
+<Layout title="Home">
+  <main>
+    <h1 class="text-3xl text-center mb-5">My Timetables</h1>
+    <MyTimetables client:only="react" />
+  </main>
 </Layout>
