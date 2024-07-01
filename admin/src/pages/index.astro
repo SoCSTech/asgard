@@ -3,9 +3,30 @@ import { MyTimetables } from "@/components/homePage";
 import Layout from "@/layouts/Layout.astro";
 ---
 
+<script>
+  function updateGreeting() {
+    const text = document.getElementById("greeting") as HTMLElement;
+    const currentHour = new Date().getHours();
+
+    let greeting;
+    if (currentHour < 12) {
+      greeting = `Good Morning!`;
+    } else if (currentHour < 18) {
+      greeting = `Good Afternoon!`;
+    } else {
+      greeting = `Good Evening!`;
+    }
+
+    text.textContent = greeting;
+  }
+
+  // Call the function to update the greeting when the page loads
+  updateGreeting();
+</script>
+
 <Layout title="Home">
   <main>
-    <h1 class="text-3xl text-center mb-5">My Timetables</h1>
+    <h1 class="text-3xl text-center mb-5" id="greeting"></h1>
     <MyTimetables client:only="react" />
   </main>
 </Layout>

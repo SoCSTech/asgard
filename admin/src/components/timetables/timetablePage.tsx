@@ -381,7 +381,7 @@ export function TimetablePage(props: Props) {
         <SheetTrigger asChild>
           <Button variant={"constructive"}>New Event</Button>
         </SheetTrigger>
-        <SheetContent className="w-[540px]">
+        <SheetContent className="w-full max-w-[540px]">
           <SheetHeader>
             <SheetTitle>New Event</SheetTitle>
             <SheetDescription>
@@ -398,7 +398,7 @@ export function TimetablePage(props: Props) {
 
   return (
     <div className="w-full text-xl flex flex-col items-center text-center p-10 pt-0">
-      <div className="flex w-full justify-between">
+      <div className="flex flex-col laptop:flex-row w-full justify-between">
         <div className="flex flex-col">
           <h1 className="text-3xl mb-5">
             <strong>{timetable.spaceCode}:</strong> {timetable.name}
@@ -429,7 +429,7 @@ export function TimetablePage(props: Props) {
             </li>
           </ul>
         </div>
-        <div className="flex flex-row justify-evenly gap-2">
+        <div className="flex flex-row justify-evenly gap-2 mt-5 laptop:mt-0">
           <Button
             variant="primaryOutline"
             onClick={() => {
