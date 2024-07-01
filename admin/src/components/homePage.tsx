@@ -71,6 +71,8 @@ function TimetableCard({ timetable }: { timetable: ITimetable }) {
 
   React.useEffect(() => {
     fetchNowNext();
+    const intervalId = setInterval(fetchNowNext, 30000); // Fetch every 30 seconds
+    return () => clearInterval(intervalId); // Clear the interval on component unmount
   }, [timetable.id]);
 
   return (

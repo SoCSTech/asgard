@@ -67,6 +67,7 @@ app.use('/v2', require('./routes/timetableGroups'));
 app.use('/v2', require('./routes/tests'));
 app.use('/v2', require('./routes/logs'));
 app.use('/v2', require('./routes/carousels'));
+app.use('/v2', require('./routes/search'));
 
 /* Error handling */
 app.use((req, res, next) => {

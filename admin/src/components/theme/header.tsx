@@ -75,14 +75,6 @@ export default function Header() {
             placeholder="Search timetables, events, groups, and users"
             name="q"
           />
-          <Button
-            type="submit"
-            variant="primaryOutline"
-            size="rounded"
-            className="ml-2 mr-5"
-          >
-            <Search />
-          </Button>
         </form>
 
         <a href="/settings" className="ml-5">
