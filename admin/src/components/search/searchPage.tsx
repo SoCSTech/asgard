@@ -7,6 +7,18 @@ import { API_URL } from "@/constants";
 import { toast } from "sonner";
 import axios from "axios";
 import { getCookie } from "@/lib/cookie";
+import type { ITimetableGroup } from "@/interfaces/timetableGroup";
+import type { ITimetable } from "@/interfaces/timetable";
+import type { IEvent } from "@/interfaces/event";
+import type { IUser } from "@/interfaces/user";
+
+interface ISearchResults {
+  query: string;
+  timetables: ITimetable[];
+  groups: ITimetableGroup[];
+  events: IEvent[];
+  users: IUser[];
+}
 
 export default function SearchPage() {
   const getQueryParam = (param: string) => {
@@ -16,7 +28,7 @@ export default function SearchPage() {
 
   const initialQuery = getQueryParam("q") || "";
   const [searchQuery, setSearchQuery] = React.useState(initialQuery);
-  const [results, setResults] = React.useState([]);
+  const [results, setResults] = React.useState({} as ISearchResults);
 
   React.useEffect(() => {
     if (searchQuery) {
@@ -60,6 +72,7 @@ export default function SearchPage() {
         );
         setResults(response.data);
         console.log(results);
+        console.log(results.users);
       } catch (error) {
         toast("A problem occurred while trying to search");
         console.error("There was a problem with the fetch operation:", error);
@@ -88,10 +101,11 @@ export default function SearchPage() {
       </form>
 
       {/* LOADS OF TABLES HERE!!! */}
+      <h2>Timetables</h2>
       {/* <TableList
-        headers={["name", "username"]}
-        data={_data}
-        urlBase="/groups"
+        headers={["spaceCode", "name", "capacity", "dataSource"]}
+        data={results.timetables}
+        urlBase="/timetables"
       /> */}
     </div>
   );
