@@ -14,7 +14,7 @@
         "maintenance": "#ff0000"
     },
     "default_room": "inb1102",
-    "current_week": 32,
+    "current_week": 12,
     "current_week_start_date": "July 1 2024 00:00AM",
     "default_cell_color": "#F9844A",
     "asgard_server": "http://localhost:3000",

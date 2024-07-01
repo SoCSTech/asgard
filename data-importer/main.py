@@ -49,11 +49,11 @@ items = []
 
 # Get only this weeks events from the list of all possible events
 for entry in data:
-    try: 
-      if entry["weeksMap"][current_week] == "1":
-        items.append(entry)
-    except IndexError:
-      print(entry["allModuleTitles"], ": booking problem - corrupted data?")
+	try: 
+		if entry["weeksMap"][current_week] == "1":
+			items.append(entry)
+	except IndexError:
+		print(entry["allModuleTitles"], ": booking problem - corrupted data?")
 
 # default colours!!
 lecture_color = config["colors"]["lecture"]
@@ -79,10 +79,18 @@ for item in items:
 	elif event == "LEC/SEM":
 		event = "LECTURE"
 		eventName = "Lecture/Seminar"
+  
+	elif event == "LEC/WORKS":
+		event = "WORKSHOP"
+		eventName = "Lecture/Workshop"
 
 	elif event == "SEM":
 		event = "LECTURE"
 		eventName = "Seminar"
+  
+	elif event == "IT":
+		event = "WORKSHOP"
+		eventName = "IT"
   
 	elif event == "SEMINAR":
 		event = "LECTURE"
@@ -147,7 +155,7 @@ for item in items:
   
     
   
-  	# assign colours per level (CMP1 = MP1, CGP2 = GP2 etc...)
+	# assign colours per level (CMP1 = MP1, CGP2 = GP2 etc...)
 	if m == 'GP1':
 		cell_colour = '#FCC05F'
 	elif m == 'GP2':
@@ -181,7 +189,12 @@ for item in items:
 	elif m == 'GR9':
 		cell_colour = '#E481FC'
 	else:
-		year = int(item['allModuleIds'][3])
+		year = item['allModuleIds'][3]
+		if not year.isdigit():
+			year = int(0)
+		else:
+			year = int(year)
+
 		print("Colour not detected, setting on year group instead - " + str(year))
 		if (year == 1):
 			cell_colour = '#7AF58F'
@@ -218,7 +231,7 @@ for item in items:
 
 	# ? If the module code is way too long don't include it
 	# TODO: convert this to a REGEX so that only module codes can get through 
- 	# TODO: ... because if you book an event in CMIS the module code will be the full event name. 
+	# TODO: ... because if you book an event in CMIS the module code will be the full event name. 
 	if len(moduleId) > 20:
 		moduleId = ""
   
@@ -259,7 +272,6 @@ for item in items:
 		else:
 			print(f"⛔️ {req.status_code} -> {name}")
 			print(req.text)
-
 		print("")
 	except:
 		print("is the api server broken? im having trouble making requests!")
