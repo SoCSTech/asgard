@@ -66,7 +66,7 @@ export default function Header() {
       <div className="hidden tablet:flex tablet:justify-end justify-center items-center">
         <form
           className="flex align-middle items-center text-black"
-          action="search"
+          action="/search"
         >
           <Input
             type="text"
