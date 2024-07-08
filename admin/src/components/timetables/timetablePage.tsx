@@ -398,7 +398,7 @@ export function TimetablePage(props: Props) {
 
   return (
     <div className="w-full text-xl flex flex-col items-center text-center p-10 pt-0">
-      <div className="flex flex-col laptop:flex-row w-full justify-between">
+      <div className="flex flex-col laptop:flex-row w-full justify-between items-center">
         <div className="flex flex-col">
           <h1 className="text-3xl mb-5">
             <strong>{timetable.spaceCode}:</strong> {timetable.name}
@@ -429,7 +429,7 @@ export function TimetablePage(props: Props) {
             </li>
           </ul>
         </div>
-        <div className="flex flex-row justify-evenly gap-2 mt-5 laptop:mt-0">
+        <div className="flex flex-row justify-evenly gap-2 mt-5 laptop:mt-0 bg-black p-5 rounded-xl">
           <Button
             variant="primaryOutline"
             onClick={() => {
@@ -455,7 +455,7 @@ export function TimetablePage(props: Props) {
           <TabsTrigger value="list">List</TabsTrigger>
         </TabsList>
         <TabsContent value="list">
-          <div className="relative overflow-x-auto tablet:shadow-md mt-5 rounded-xl w-full">
+          <div className="relative overflow-x-auto tablet:shadow-md mt-5 rounded-xl w-full items-center">
             <TableList
               headers={["name", "moduleCode", "staff", "start", "end"]}
               data={events}
