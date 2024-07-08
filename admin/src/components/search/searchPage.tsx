@@ -77,7 +77,7 @@ export default function SearchPage() {
     <div className="mb-auto pb-10 tablet:mx-20 w-full max-w-[1500px] self-center">
       <div className="mb-5" id="search-form">
         <form
-          className="flex align-middle items-center text-black px-10"
+          className="flex align-middle items-center text-black"
           onSubmit={handleSubmit}
         >
           <Input
