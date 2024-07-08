@@ -16,10 +16,17 @@ export default function LoginForm() {
     const redirect = queryParameters.get("redirect");
 
     axios
-      .post(API_URL + "/v2/auth/login", {
-        username: username.value,
-        password: password.value,
-      })
+      .post(
+        API_URL + "/v2/auth/login",
+        {
+          username: username.value,
+          password: password.value,
+        },
+        {
+          timeout: 15000, // 15 seconds timeout
+          headers: { "Cache-Control": "no-cache" },
+        }
+      )
       .then(function (response) {
         setErrorMessage("");
         setJwtCookie(response.data.TOKEN);
@@ -27,7 +34,15 @@ export default function LoginForm() {
       })
       .catch(function (error) {
         console.log(error);
-        setErrorMessage(error.response.data.message);
+        if (error.code === "ECONNABORTED") {
+          setErrorMessage(
+            "The request took too long - please try again later."
+          );
+        } else {
+          setErrorMessage(
+            error.response?.data?.message || "An unknown error occurred"
+          );
+        }
       });
   };
 

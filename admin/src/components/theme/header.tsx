@@ -10,9 +10,7 @@ import {
   HeaderLinkGroup
 } from "./headerLink";
 
-import { Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
-import { Button } from "../ui/button";
 import { toast } from "sonner";
 
 export default function Header() {
@@ -52,7 +50,7 @@ export default function Header() {
             alt="University of Lincoln"
             draggable="false"
           />
-          <span className="hover:text-slate font-bold ml-5 text-xl">
+          <span className="hover:text-gray-400 font-bold ml-5 text-xl">
             Asgard
           </span>
         </a>

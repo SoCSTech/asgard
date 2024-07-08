@@ -20,6 +20,22 @@ interface ISearchResults {
   users: IUser[];
 }
 
+function useDebounce(value: string, delay: number) {
+  const [debouncedValue, setDebouncedValue] = React.useState(value);
+
+  React.useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedValue(value);
+    }, delay);
+
+    return () => {
+      clearTimeout(handler);
+    };
+  }, [value, delay]);
+
+  return debouncedValue;
+}
+
 export default function SearchPage() {
   const getQueryParam = (param: string) => {
     const urlParams = new URLSearchParams(window.location.search);
@@ -28,85 +44,96 @@ export default function SearchPage() {
 
   const initialQuery = getQueryParam("q") || "";
   const [searchQuery, setSearchQuery] = React.useState(initialQuery);
+  const debouncedSearchQuery = useDebounce(searchQuery, 300);
   const [results, setResults] = React.useState({} as ISearchResults);
 
-  React.useEffect(() => {
-    if (searchQuery) {
-      const fetchData = async () => {
-        try {
-          const response = await axios.get(
-            `${API_URL}/v2/search/${searchQuery}`,
-            {
-              headers: {
-                Authorization: `Bearer ${getCookie("token")}`,
-              },
-            }
-          );
-          setResults(response.data);
-          console.log(results);
-        } catch (error) {
-          toast("A problem occurred while trying to search");
-
-          console.error("There was a problem with the fetch operation:", error);
-        }
-      };
-
-      fetchData();
-    }
-  }, [searchQuery]);
-
-  const handleSubmit = (event: { preventDefault: () => void }) => {
-    event.preventDefault();
-    // Update the URL with the new query
-    window.history.pushState({}, "", `/search?q=${searchQuery}`);
-    // Fetch new data based on the query
-    const fetchData = async () => {
+  const fetchData = async (query: string) => {
+    if (query) {
+      window.history.pushState({}, "", `/search?q=${query}`);
       try {
-        const response = await axios.get(
-          `${API_URL}/v2/search/${searchQuery}`,
-          {
-            headers: {
-              Authorization: `Bearer ${getCookie("token")}`,
-            },
-          }
-        );
+        const response = await axios.get(`${API_URL}/v2/search/${query}`, {
+          headers: {
+            Authorization: `Bearer ${getCookie("token")}`,
+          },
+        });
         setResults(response.data);
-        console.log(results);
-        console.log(results.users);
       } catch (error) {
         toast("A problem occurred while trying to search");
         console.error("There was a problem with the fetch operation:", error);
       }
-    };
-    fetchData();
+    }
+  };
+
+  React.useEffect(() => {
+    fetchData(debouncedSearchQuery);
+  }, [debouncedSearchQuery]);
+
+  const handleSubmit = (event: { preventDefault: () => void }) => {
+    event.preventDefault();
+    fetchData(searchQuery);
   };
 
   return (
-    <div>
-      <form
-        className="flex align-middle items-center text-black w-screen px-10"
-        onSubmit={handleSubmit}
-      >
-        <Input
-          type="text"
-          placeholder="Search timetables, events, groups, and users"
-          name="q"
-          className="mr-5"
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-        />
-        <Button variant="primary">
-          <Search className="stroke-white dark:stroke-black" />
-        </Button>
-      </form>
+    <div className="mb-auto pb-10 tablet:mx-20 w-full max-w-[1500px] self-center">
+      <div className="mb-5" id="search-form">
+        <form
+          className="flex align-middle items-center text-black px-10"
+          onSubmit={handleSubmit}
+        >
+          <Input
+            type="text"
+            placeholder="Search timetables, events, groups, and users"
+            name="q"
+            className="mr-5"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+          />
+          <Button variant="primary" type="submit">
+            <Search className="stroke-white dark:stroke-black" />
+          </Button>
+        </form>
+      </div>
 
-      {/* LOADS OF TABLES HERE!!! */}
-      <h2>Timetables</h2>
-      {/* <TableList
-        headers={["spaceCode", "name", "capacity", "dataSource"]}
-        data={results.timetables}
-        urlBase="/timetables"
-      /> */}
+      <div className="mb-5">
+        <h2 className="text-2xl font-extrabold text-center">Timetables</h2>
+        <div className="relative overflow-x-auto tablet:shadow-md mt-5 rounded-xl">
+          <TableList
+            headers={["spaceCode", "name", "capacity", "dataSource"]}
+            data={results.timetables}
+            urlBase="/timetables"
+          />
+        </div>
+      </div>
+      <div className="mb-5">
+        <h2 className="text-2xl font-extrabold text-center">Groups</h2>
+        <div className="relative overflow-x-auto tablet:shadow-md mt-5 rounded-xl">
+          <TableList
+            headers={["internalName", "name", "subtitle"]}
+            data={results.groups}
+            urlBase="/groups"
+          />
+        </div>
+      </div>
+      <div className="mb-5">
+        <h2 className="text-2xl font-extrabold text-center">Users</h2>
+        <div className="relative overflow-x-auto tablet:shadow-md mt-5 rounded-xl">
+          <TableList
+            headers={["fullName", "username", "email", "role"]}
+            data={results.users}
+            urlBase="/users"
+          />
+        </div>
+      </div>
+      <div className="mb-5">
+        <h2 className="text-2xl font-extrabold text-center">Events</h2>
+        <div className="relative overflow-x-auto tablet:shadow-md mt-5 rounded-xl">
+          <TableList
+            headers={["name", "moduleCode", "staff", "start", "end"]}
+            data={results.events}
+            urlBase="/events"
+          />
+        </div>
+      </div>
     </div>
   );
 }

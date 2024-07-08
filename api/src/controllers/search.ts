@@ -10,14 +10,15 @@ dotenv.config();
 const searchQuery = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const query = `%${req.params.query}%` as string // fuzzy search
-        
+
         const timetables = await db.select().from(timetableSchema)
             .where(or(
                 like(timetableSchema.id, query),
                 like(timetableSchema.name, query),
                 like(timetableSchema.lab, query),
                 like(timetableSchema.spaceCode, query)
-            ));
+            ))
+            .limit(25);
 
         const events = await db.select().from(eventSchema)
             .where(or(
@@ -29,7 +30,9 @@ const searchQuery = async (req: Request, res: Response, next: NextFunction) => {
                 like(eventSchema.moduleCode, query),
                 like(eventSchema.type, query),
                 like(eventSchema.group, query),
-            ));
+            ))
+            .orderBy(eventSchema.start)
+            .limit(25);
 
         const users = await db.select(simplifiedUser).from(userSchema)
             .where(or(
@@ -39,7 +42,8 @@ const searchQuery = async (req: Request, res: Response, next: NextFunction) => {
                 like(userSchema.email, query),
                 like(userSchema.initials, query),
                 like(userSchema.role, query)
-            ));
+            ))
+            .limit(25);
 
         const groups = await db.select().from(groupSchema)
             .where(or(
@@ -52,7 +56,8 @@ const searchQuery = async (req: Request, res: Response, next: NextFunction) => {
                 like(groupSchema.object, query),
                 like(groupSchema.infoPaneQRUrl, query),
                 like(groupSchema.infoPaneText, query)
-            ));
+            ))
+            .limit(25);
 
         res.json({ query: req.params.query, timetables: timetables, events: events, users: users, groups: groups });
 

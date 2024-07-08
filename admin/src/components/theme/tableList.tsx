@@ -34,21 +34,28 @@ export default function TableList<T extends DataWithId>({
           ))}
         </tr>
       </thead>
-
       <tbody>
-        {data.map((row, rowIndex) => (
-          <tr
-            key={rowIndex}
-            className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 cursor-pointer"
-            onClick={() => (window.location.href = urlBase + "/" + row.id)}
-          >
-            {headers.map((header) => (
-              <td className="px-6 py-4" key={header as string}>
-                {row[header] as React.ReactNode}
-              </td>
-            ))}
+        {data && data.length > 0 ? (
+          data.map((row, rowIndex) => (
+            <tr
+              key={rowIndex}
+              className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 cursor-pointer"
+              onClick={() => (window.location.href = urlBase + "/" + row.id)}
+            >
+              {headers.map((header) => (
+                <td className="px-6 py-4" key={header as string}>
+                  {row[header] as React.ReactNode}
+                </td>
+              ))}
+            </tr>
+          ))
+        ) : (
+          <tr>
+            <td colSpan={headers.length} className="px-6 py-4 text-center">
+              No results
+            </td>
           </tr>
-        ))}
+        )}
       </tbody>
     </table>
   );
