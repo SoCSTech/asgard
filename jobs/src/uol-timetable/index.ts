@@ -1,0 +1,1 @@
+import { getCurrentWeekNumber } from "@/uol-timetable/utils";

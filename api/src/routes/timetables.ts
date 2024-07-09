@@ -3,6 +3,7 @@ import controller from "@/controllers/timetables";
 import { authenticate } from "@/middleware/authenticate";
 const router = express.Router();
 
+router.get('/timetable/type/:type', controller.getTimetablesByType);
 router.get('/timetable/deleted', authenticate, controller.getAllDeletedTimetables);
 router.get('/timetable/my', authenticate, controller.getMyTimetables);
 router.post('/timetable/my', authenticate, controller.addMyTimetables);

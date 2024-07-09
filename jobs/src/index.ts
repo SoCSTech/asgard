@@ -1,3 +1,4 @@
+import { getCurrentWeekNumber } from "@/uol-timetable/utils";
 
 var cron = require('node-cron');
 
@@ -11,4 +12,6 @@ cron.schedule('*/5 * * * *', () => {
 
 cron.schedule('*/15 * * * * *', () => {
     console.log('Running a task every 15 seconds');
+    const numberOfWeeks = getCurrentWeekNumber();
+    console.log(`Current week number is: ${numberOfWeeks}`);
 });

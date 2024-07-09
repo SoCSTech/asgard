@@ -2,7 +2,7 @@
   "name": "asgard-jobs",
   "version": "1.0.0",
   "description": "Job runner for the asgard system",
-  "main": "index.ts",
+  "main": "src/index.ts",
   "scripts": {
     "start": "nodemon",
     "dev": "npm start",

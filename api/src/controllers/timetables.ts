@@ -70,7 +70,7 @@ export const convertSpaceCodeToTimetableId = async (timetableId: string) => {
 const getMyTimetables = async (req: Request, res: Response, next: NextFunction) => {
     const token = getTokenFromAuthCookie(req, res);
     const currentUserId = getUserIdFromJWT(token);
-    
+
     try {
         const timetables = await db.select()
             .from(userTimetablesSchema)
@@ -199,6 +199,33 @@ const getAllTimetables = async (req: Request, res: Response, next: NextFunction)
         .orderBy(asc(timetableSchema.spaceCode));
 
     res.json({ timetables: timetables });
+};
+
+const getTimetablesByType = async (req: Request, res: Response, next: NextFunction) => {
+    // const types: string[] = ['MANUAL', "UOL_TIMETABLE", "ICAL", "MS_BOOKINGS"]
+
+
+    // let typeRequested = (req.params.type as string).toUpperCase()
+    // console.log(typeRequested)
+
+    // const validType: boolean = types.indexOf(timetableSchema.dataSource) !== -1; // return true if valid, or false if nah
+
+    // if (!validType) {
+    //     res.json({ "message": "Invalid type requested!"}).status(406)
+    //     return
+    // }
+
+    // const timetables = await db.select()
+    //     .from(timetableSchema)
+    //     .where(and(
+    //         eq(timetableSchema.isDeleted, false),
+    //         eq(timetableSchema.dataSource, typeRequested)
+    //     ))
+    //     .orderBy(asc(timetableSchema.spaceCode));
+
+    // res.json({ timetables: timetables });
+
+    res.json({ "lol": "xd" })
 };
 
 const getAllDeletedTimetables = async (req: Request, res: Response, next: NextFunction) => {
@@ -401,4 +428,4 @@ const updateTimetable = async (req: Request, res: Response, next: NextFunction) 
     res.status(201).json({ message: `Timetable for ${timetable[0].spaceCode} has been updated`, timetable: timetable[0].id });
 };
 
-export default { getMyTimetables, addMyTimetables, removeMyTimetables, getTimetableById, getAllTimetables, getAllDeletedTimetables, createTimetable, deleteTimetable, undeleteTimetable, updateTimetable };
+export default { getTimetablesByType, getMyTimetables, addMyTimetables, removeMyTimetables, getTimetableById, getAllTimetables, getAllDeletedTimetables, createTimetable, deleteTimetable, undeleteTimetable, updateTimetable };

@@ -2,7 +2,7 @@
   "name": "asgard-api",
   "version": "2.0.0",
   "description": "API for Asgard2",
-  "main": "index.ts",
+  "main": "src/server.ts",
   "scripts": {
     "start": "nodemon",
     "dev": "npm start",
