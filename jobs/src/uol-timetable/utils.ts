@@ -2,7 +2,6 @@ import { ITimetable } from "@/interfaces/timetable";
 import axios from "axios";
 
 require('dotenv').config();
-
 const apiUrl = process.env.API_URL as string;
 
 export function getCurrentWeekNumber(): number {
@@ -13,7 +12,7 @@ export function getCurrentWeekNumber(): number {
     }
 
     // Set the time up
-    const yearStart = new Date(academicYearStartDate); 
+    const yearStart = new Date(academicYearStartDate);
     const currentDate = new Date();
 
     // Check the admin has entered the time right
@@ -30,16 +29,28 @@ export function getCurrentWeekNumber(): number {
     return Math.floor(diffInWeeks);
 }
 
+export function getLastMonday(): Date {
+    const today = new Date();
+    const dayOfWeek = today.getUTCDay(); // Sunday - Saturday : 0 - 6
+
+    // If today is Sunday (0), set it to 7 to calculate the last Monday
+    const adjustedDayOfWeek = (dayOfWeek === 0) ? 7 : dayOfWeek;
+
+    // Calculate the number of days to subtract to get the last Monday
+    const daysToSubtract = adjustedDayOfWeek - 1;
+
+    // Create a new date object for last Monday
+    const lastMonday = new Date(today);
+    lastMonday.setUTCDate(today.getUTCDate() - daysToSubtract);
+    lastMonday.setUTCHours(0, 0, 0, 0); // Set time to 00:00:00 UTC
+
+    return lastMonday;
+}
+
 export async function getTimetablesWhichCanBeUpdated(): Promise<ITimetable[]> {
     const response = await axios.get(
         `${apiUrl}/v2/timetable/type/UOL_TIMETABLE`,
     );
     const data = response.data;
     return data.timetables as ITimetable[]
-}
-
-export async function deleteAllEventsFromTimetable(timetableId: string): Promise<void> {
-    const response = await axios.delete(
-        `${apiUrl}/v2/timetable/${timetableId}/events`,
-    );
 }
