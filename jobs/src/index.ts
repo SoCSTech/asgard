@@ -11,7 +11,7 @@ cron.schedule('*/5 * * * *', () => {
     console.log('running a task every five minutes');
 });
 
-cron.schedule('*/15 * * * * *', async () => {
-    console.log('running a task every 15 seconds');
+cron.schedule('*/30 * * * * *', async () => {
+    console.log('running a task every 30 seconds');
     await refreshTimetableData()
 });

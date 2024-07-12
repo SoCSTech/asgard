@@ -9,4 +9,5 @@ export interface ITimetable {
     combinedPartnerSpaceCode: string;
     isDeleted: boolean;
     dataSource: string;
+    defaultColour: string;
 }

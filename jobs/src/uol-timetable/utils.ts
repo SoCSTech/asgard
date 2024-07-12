@@ -78,8 +78,97 @@ export async function loadTimetableJsonFile(spaceCode: string): Promise<any> {
     });
 };
 
-export function getEventColour(moduleCode: string): string {
-    return "#FF5D73"
+export function getEventColour(moduleCode: string, defaultColour: string): string {
+    // Force upper case
+    moduleCode = moduleCode.toUpperCase()
+
+    // Remove multiple module codes if there is any
+    moduleCode = moduleCode.split(", ")[0]
+
+    if (!(/^[A-Z]{3}[0-9]{4}$/).test(moduleCode)){
+        // check if a module code is not valid!
+        return defaultColour
+    }
+
+    // Split out the programme and year group
+    let programme = moduleCode.slice(0, 3)
+    let yearGroup = parseInt(moduleCode.slice(3, 4))
+
+    // Games Computing
+    if (programme === "CGP") {
+        switch (yearGroup) {
+            case 1:
+                return '#FCC05F'
+            case 2:
+                return '#B68AE5'
+            case 3:
+                return '#E38178'
+            case 9:
+                return '#59D5D9'
+        }
+    }
+
+    // Computer Science
+    if (programme === "CMP") {
+        switch (yearGroup) {
+            case 1:
+                return '#7AF58F'
+            case 2:
+                return '#7AB4F5'
+            case 3:
+                return '#CF8BA3'
+            case 9:
+                return '#6AF0CA'
+        }
+    }
+
+    // Maths
+    if (programme === "MTH") {
+        switch (yearGroup) {
+            case 1:
+                return '#BDC667'
+            case 2:
+                return '#A4A4CB'
+            case 3:
+                return '#E58A92'
+            case 9:
+                return '#C293C8'
+        }
+    }
+
+    // Physics
+    if (programme === "PHY") {
+        switch (yearGroup) {
+            case 2:
+                return '#A2AEBB'
+            case 9:
+                return '#FF9B71'
+        }
+    }
+
+    // AGR - LIAT
+    if (programme === "AGR") {
+        switch (yearGroup) {
+            case 9:
+                return '#E481FC'
+        }
+    }
+
+    // Default Year Group Colours!
+    switch (yearGroup) {
+        case 0:
+            return '#6af0ca'
+        case 1:
+            return '#7AF58F'
+        case 2:
+            return '#7AB4F5'
+        case 3:
+            return '#CF8BA3'
+        case 9:
+            return '#6AF0CA'
+    }
+
+    return defaultColour
 }
 
 export function getEventType(rawEventType: string): IEventType {
@@ -143,6 +232,11 @@ export function getEventType(rawEventType: string): IEventType {
     else if (rawEventType == "CLASS") {
         returnableEventType.type = "WORKSHOP"
         returnableEventType.name = "Class"
+    }
+
+    else if (rawEventType == "IND_STUDY") {
+        returnableEventType.type = "WORKSHOP"
+        returnableEventType.name = "Independent Study"
     }
 
     else if (rawEventType == "REVIS") {
