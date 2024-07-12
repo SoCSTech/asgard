@@ -1,17 +1,9 @@
-import { getCurrentWeekNumber, getTimetablesWhichCanBeUpdated } from "@/uol-timetable/utils";
-import { refreshTimetableData } from "@/uol-timetable";
-
 var cron = require('node-cron');
 
-cron.schedule('* * * * *', () => {
-    console.log('running a task every minute');
-});
+import { refreshTimetableData } from "@/uol-timetable";
 
-cron.schedule('*/5 * * * *', () => {
-    console.log('running a task every five minutes');
-});
-
-cron.schedule('*/30 * * * * *', async () => {
-    console.log('running a task every 30 seconds');
+// Runs every minute
+cron.schedule('* * * * *', async () => {
+    console.log('⏰ Refreshing Timetable Data');
     await refreshTimetableData()
 });
