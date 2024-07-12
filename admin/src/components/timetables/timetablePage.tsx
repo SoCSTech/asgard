@@ -36,19 +36,15 @@ import {
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "../ui/checkbox";
 import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-} from "@/components/ui/command";
-import { cn } from "@/lib/utils";
-import { Calendar } from "../ui/calendar";
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import ColourSelector from "../theme/colourPicker";
 
 const eventTypes = [
   { label: "Other", value: "OTHER" },
@@ -147,7 +143,8 @@ export function TimetablePage(props: Props) {
     });
 
     const onSubmit = async (data: z.infer<typeof FormSchema>) => {
-      let response
+      console.log(data);
+      let response;
       try {
         response = await axios.post(
           API_URL + "/v2/event",
@@ -174,8 +171,16 @@ export function TimetablePage(props: Props) {
         setSheetIsOpen(false);
       } catch (error) {
         console.error("There was an error!", error);
-        toast(error.response.data.message || "Couldn't add the event");
+        toast(error?.response?.data?.message || "Couldn't add the event");
       }
+    };
+
+    const eventTypesSelect = (): React.ReactNode[] => {
+      return eventTypes.map((eventType) => (
+        <SelectItem key={eventType.value} value={eventType.value}>
+          {eventType.label}
+        </SelectItem>
+      ));
     };
 
     return (
@@ -228,64 +233,28 @@ export function TimetablePage(props: Props) {
           <FormField
             control={form.control}
             name="type"
-            render={({ field }) => (
-              <FormItem className="flex flex-col">
-                <FormLabel>Type</FormLabel>
-                <Popover>
-                  <PopoverTrigger asChild>
-                    <FormControl>
-                      <Button
-                        variant="primaryOutline"
-                        role="combobox"
-                        className={cn(
-                          "w-[200px] justify-between",
-                          !field.value && "text-muted-foreground"
-                        )}
-                      >
-                        {field.value
-                          ? eventTypes.find(
-                              (type) => type.value === field.value
-                            )?.label
-                          : "Select event type"}
-                        <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                      </Button>
-                    </FormControl>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-[200px] p-0">
-                    <Command>
-                      <CommandInput placeholder="Search types..." />
-                      <CommandEmpty>No event type found.</CommandEmpty>
-                      <CommandGroup>
-                        {eventTypes.map((type) => (
-                          <CommandItem
-                            value={type.label}
-                            key={type.value}
-                            onSelect={() => {
-                              form.setValue("type", type.value);
-                            }}
-                          >
-                            <Check
-                              className={cn(
-                                "mr-2 h-4 w-4",
-                                type.value === field.value
-                                  ? "opacity-100"
-                                  : "opacity-0"
-                              )}
-                            />
-                            {type.label}
-                          </CommandItem>
-                        ))}
-                      </CommandGroup>
-                    </Command>
-                  </PopoverContent>
-                </Popover>
-                <FormDescription>
-                  The types allows Yggdrasil to show different icons and act in
-                  different ways.
-                </FormDescription>
-                <FormMessage />
-              </FormItem>
-            )}
+            render={({ field }) => {
+              return (
+                <FormItem className="flex flex-col">
+                  <FormLabel>
+                    Type<span className="text-destructive">*</span>
+                  </FormLabel>
+                  <Select value={field.value} onValueChange={field.onChange}>
+                    <SelectTrigger className="w-full">
+                      <SelectValue placeholder="Select a event type" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectGroup>{eventTypesSelect()}</SelectGroup>
+                    </SelectContent>
+                  </Select>
+                  <FormDescription>
+                    The types allows Yggdrasil to show different icons and act
+                    in different ways.
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              );
+            }}
           />
           <FormField
             control={form.control}
@@ -296,7 +265,10 @@ export function TimetablePage(props: Props) {
                   Colour<span className="text-destructive">*</span>
                 </FormLabel>
                 <FormControl>
-                  <Input {...field} />
+                  <ColourSelector
+                    selectedColour={field.value}
+                    onChange={field.onChange}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>

@@ -1,5 +1,6 @@
 ---
 import TestComponent from "@/components/auth/test";
+import ColourPicker from "@/components/theme/colourPicker.tsx";
 import Layout from "@/layouts/Layout.astro";
 ---
 
@@ -9,5 +10,7 @@ import Layout from "@/layouts/Layout.astro";
     <p>
         Not yet implemented!
     </p>
+
+    <ColourPicker client:only="react"/>
   </main>
 </Layout>
