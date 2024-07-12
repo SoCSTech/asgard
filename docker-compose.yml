@@ -1,6 +1,17 @@
 version: "3"
 
 services:
+  asgard-jobs:
+    build: ./api
+    container_name: a2-asgard-jobs
+    restart: always
+    networks:
+      - asgard_internal
+    env_file:
+      - .env
+    depends_on:
+      - asgard-api
+
   asgard-api:
     build: ./api
     container_name: a2-asgard-api
