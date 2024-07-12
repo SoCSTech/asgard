@@ -479,6 +479,26 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "Timetable - Type",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{API_URL}}/v2/timetable/type/uol_timetable",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"v2",
+								"timetable",
+								"type",
+								"uol_timetable"
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		},
@@ -637,7 +657,7 @@
 					"response": []
 				},
 				{
-					"name": "Remove Events for Timetable",
+					"name": "Remove Events for Timetable (That I Added)",
 					"request": {
 						"method": "DELETE",
 						"header": [],
@@ -1132,6 +1152,112 @@
 					"response": []
 				}
 			]
+		},
+		{
+			"name": "Search",
+			"item": [
+				{
+					"name": "Search",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{API_URL}}/v2/search/my_query",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"v2",
+								"search",
+								"my_query"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Desks",
+			"item": [
+				{
+					"name": "Desks - All",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{API_URL}}/v2/desk",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"v2",
+								"desk"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Desks - ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{API_URL}}/v2/desk/e9xm66fm1pixfmi4hd4ndqtq",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"v2",
+								"desk",
+								"e9xm66fm1pixfmi4hd4ndqtq"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Desks - MAC Address",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{API_URL}}/v2/desk/mac/bcd0742ff654",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"v2",
+								"desk",
+								"mac",
+								"bcd0742ff654"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Desks - Timetable",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{API_URL}}/v2/timetable/INB1301/desks",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"v2",
+								"timetable",
+								"INB1301",
+								"desks"
+							]
+						}
+					},
+					"response": []
+				}
+			]
 		}
 	],
 	"auth": {
@@ -1139,7 +1265,7 @@
 		"bearer": [
 			{
 				"key": "token",
-				"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Iml1czdxYnJ6eG5jZHdvNXpjZGRoYWtneSIsInVzZXJuYW1lIjoiam9zaGNvb3BlciIsImlhdCI6MTcxOTU2MjgwMSwiZXhwIjoxNzE5NjQ5MjAxfQ.Bm8OuOxdglXaxSg9b5_44AqX8-_z-UVzIrrGbAaeaH4",
+				"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Iml1czdxYnJ6eG5jZHdvNXpjZGRoYWtneSIsInVzZXJuYW1lIjoiam9zaGNvb3BlciIsImlhdCI6MTcyMDc5ODY3OSwiZXhwIjoxNzIwODg1MDc5fQ.5AbfvVnTvGHZI8zhLWAOvhdtWr2gsAsGbhmrpnsPNKg",
 				"type": "string"
 			}
 		]
