@@ -426,7 +426,8 @@ const updateTimetable = async (req: Request, res: Response, next: NextFunction) 
             canCombine: req.body.canCombine || timetable[0].canCombine,
             combinedPartnerId: req.body.combinedPartnerId || timetable[0].combinedPartnerId,
             isDeleted: req.body.isDeleted || timetable[0].isDeleted,
-            dataSource: req.body.dataSource || timetable[0].dataSource
+            dataSource: req.body.dataSource || timetable[0].dataSource,
+            defaultColour: req.body.defaultColour || timetable[0].defaultColour,
         })
         .where(eq(timetableSchema.id, timetable[0].id));
 

@@ -1,0 +1,1 @@
+ALTER TABLE `timetables` ADD `default_colour` varchar(7) DEFAULT '#7ab4f5' NOT NULL;
