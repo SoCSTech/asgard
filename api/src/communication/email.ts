@@ -65,16 +65,13 @@ function formatMailTextAsHTML(rawText: string): string {
 </head>
 <body>
     <div class="email-content">
-        <h1>asgard<sup>2</sup></h1>
+        <h1>asgard</h1>
         <hr />
         <div class="inner">
           ${html}
         </div>
         <hr />
         <p class="footer" style="font-weight: bold; padding-top: 10px;">
-            SoCS Technicians
-        </p>
-        <p class="footer" style="font-weight: bold">
             University of Lincoln
         </p>
         <p class="footer">
@@ -92,8 +89,7 @@ export async function SendEmail(to: string, subject: string, body: string) {
     const plainEmailSignature = `
 
 ---
-asgard2 by SoCS Technicians
-University of Lincoln
+Asgard, University of Lincoln
 *Please reply to this email if you have any queries about this system.*`
 
     try {
