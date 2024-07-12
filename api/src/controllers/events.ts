@@ -186,17 +186,20 @@ const deleteEventsForTimetable = async (req: Request, res: Response, next: NextF
         res.status(401).json({ "message": "You don't have permission to update events" })
         return
     }
-    
+
     let timetableId: string = req.params.timetableId
     timetableId = await convertSpaceCodeToTimetableId(timetableId)
 
     const events = await db.delete(eventSchema)
-        .where(eq(eventSchema.timetableId, timetableId))
+        .where(and(
+            eq(eventSchema.timetableId, timetableId),
+            eq(eventSchema.modifiedBy, currentUserId)
+        ))
 
     await log(`Has deleted all events for timetable ${timetableId}`, currentUserId)
     await mqtt.SendTimetableRefresh(String(timetableId))
 
-    res.status(201).json({ message: `All events have bee removed from timetable ${timetableId}`});
+    res.status(201).json({ message: `All events have bee removed from timetable ${timetableId}` });
 }
 
 const getNowAndNextEventsForTimetable = async (req: Request, res: Response, next: NextFunction) => {

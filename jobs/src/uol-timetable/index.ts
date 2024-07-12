@@ -56,34 +56,39 @@ export async function refreshTimetableData(): Promise<void> {
             if (rawEvent.allRoomIds.length > timetable.spaceCode) { isCombinedSession = true; }
 
             // Add to asgard
-            const response = await axios.post(
-                apiUrl + "/v2/event",
-                {
-                    name: eventName,
-                    staff: (/^\d+$/.test(rawEvent.allLecturerNames) ? "" : rawEvent.allLecturerNames), // if the name is numbers - don't record it!
-                    moduleCode: (rawEvent.allModuleIds.length > 20 ? "" : rawEvent.allModuleIds), // if the module code is too long - don't record it!
-                    timetableId: timetable.id,
-                    type: eventType.type,
-                    colour: eventColour,
-                    start: startDateTime.format("YYYY-MM-DD HH:mm:ss"),
-                    end: endDateTime.format("YYYY-MM-DD HH:mm:ss"),
-                    isCombinedSession: isCombinedSession,
-                    group: rawEvent.allGroupCodes,
-                },
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
+            try {
+                const response = await axios.post(
+                    apiUrl + "/v2/event",
+                    {
+                        name: eventName,
+                        staff: (/^\d+$/.test(rawEvent.allLecturerNames) ? "" : rawEvent.allLecturerNames), // if the name is numbers - don't record it!
+                        moduleCode: (rawEvent.allModuleIds.length > 20 ? "" : rawEvent.allModuleIds), // if the module code is too long - don't record it!
+                        timetableId: timetable.id,
+                        type: eventType.type,
+                        colour: eventColour,
+                        start: startDateTime.format("YYYY-MM-DD HH:mm:ss"),
+                        end: endDateTime.format("YYYY-MM-DD HH:mm:ss"),
+                        isCombinedSession: isCombinedSession,
+                        group: rawEvent.allGroupCodes,
                     },
+                    {
+                        headers: {
+                            Authorization: `Bearer ${token}`,
+                        },
+                    }
+                );
+
+                if (response.status == 201) {
+                    console.log(`Created new event ${eventName} for ${startDateTime.format("YYYY-MM-DD HH:mm:ss")}`)
+                } else {
+                    console.error(`⛔️ ${response.status} -> ${eventName} on ${startDateTime.format("YYYY-MM-DD HH:mm:ss")}`)
                 }
-            );
 
-            if (response.status == 201) {
-                console.log(`Created new event ${eventName} for ${startDateTime.format("YYYY-MM-DD HH:mm:ss")}`)
-            } else {
-                console.error(`⛔️ ${response.status} -> ${eventName} on ${startDateTime.format("YYYY-MM-DD HH:mm:ss")}`)
+            } catch (error: any) {
+                console.error(error?.code, error?.data)
             }
-
         })
+
         console.log(`✅ All events added for ${timetable.spaceCode}!`)
     })
 }

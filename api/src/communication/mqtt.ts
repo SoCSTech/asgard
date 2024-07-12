@@ -33,16 +33,13 @@ export class MqttCommunicator {
     }
 
     async SendTimetableRefresh(timetableId: string) {
-        console.log(timetableId);
-        
+
         try{
             const timetable = await db.select().from(timetableSchema)
             .where(and(
                 eq(timetableSchema.id, String(timetableId)),
                 eq(timetableSchema.isDeleted, false)
             ));
-            
-            console.log(timetable[0]);
             
             this.SendMqttMessage(`asgard/timetable/refresh/${timetableId}`, "refresh")
             this.SendMqttMessage(`asgard/timetable/refresh/${timetable[0].spaceCode}`, "refresh")
