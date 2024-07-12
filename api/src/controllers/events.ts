@@ -79,7 +79,7 @@ const createEvent = async (req: Request, res: Response, next: NextFunction) => {
         lastModified: currentTimeStr,
         modifiedBy: getUserIdFromJWT(token),
         isCombinedSession: req.body.isCombinedSession || false,
-        group: req.body.group || null,
+        group: (req.body.group as string).toUpperCase() || null,
     });
 
     await log(`Has created event ${req.body.name} (${req.body.moduleCode || "none"}), starting ${req.body.start} and ending ${req.body.end} to Timetable ${timetableId}`, currentUserId)
