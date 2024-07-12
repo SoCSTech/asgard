@@ -66,6 +66,7 @@ const FormSchema = z.object({
   moduleCode: z.string(),
   type: z.string(),
   colour: z.string().min(7).max(7),
+  date: z.string(),
   start: z.string(),
   end: z.string(),
   isCombinedSession: z.boolean(),
@@ -143,7 +144,6 @@ export function TimetablePage(props: Props) {
     });
 
     const onSubmit = async (data: z.infer<typeof FormSchema>) => {
-      console.log(data);
       let response;
       try {
         response = await axios.post(
@@ -155,8 +155,8 @@ export function TimetablePage(props: Props) {
             timetableId: props.timetableId,
             type: data.type,
             colour: data.colour,
-            start: "2024-07-01 10:00:00",
-            end: "2024-07-01 12:00:00",
+            start: `${data.date} ${data.start}`,
+            end: `${data.date} ${data.end}`,
             isCombinedSession: data.isCombinedSession,
             group: data.group,
           },
@@ -276,14 +276,34 @@ export function TimetablePage(props: Props) {
           />
           <FormField
             control={form.control}
+            name="date"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>
+                  Date<span className="text-destructive">*</span>
+                </FormLabel>
+                <FormControl>
+                  <Input type="date" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
             name="start"
             render={({ field }) => (
               <FormItem>
                 <FormLabel>
-                  Start<span className="text-destructive">*</span>
+                  Start time<span className="text-destructive">*</span>
                 </FormLabel>
                 <FormControl>
-                  <Input {...field} />
+                  <Input
+                    type="time"
+                    min="09:00"
+                    max="18:00"
+                    {...field}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -295,10 +315,15 @@ export function TimetablePage(props: Props) {
             render={({ field }) => (
               <FormItem>
                 <FormLabel>
-                  End<span className="text-destructive">*</span>
+                  End time<span className="text-destructive">*</span>
                 </FormLabel>
                 <FormControl>
-                  <Input {...field} />
+                  <Input
+                    type="time"
+                    min="09:00"
+                    max="18:00"
+                    {...field}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
