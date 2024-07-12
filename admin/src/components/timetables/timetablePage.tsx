@@ -65,7 +65,16 @@ const FormSchema = z.object({
   staff: z.string(),
   moduleCode: z.string(),
   type: z.string(),
-  colour: z.string().min(7).max(7),
+  colour: z
+    .string()
+    .min(7, {
+      message:
+        "Select a colour from the list or select custom and enter a specific colour",
+    })
+    .max(7, {
+      message:
+        "Select a colour from the list or select custom and enter a specific colour",
+    }),
   date: z.string(),
   start: z.string(),
   end: z.string(),
@@ -135,6 +144,7 @@ export function TimetablePage(props: Props) {
         moduleCode: "",
         type: "OTHER",
         colour: "",
+        date: new Date().toLocaleDateString("en-CA"),
         start: "",
         end: "",
         isCombinedSession: false,
@@ -302,6 +312,7 @@ export function TimetablePage(props: Props) {
                     type="time"
                     min="09:00"
                     max="18:00"
+                    required
                     {...field}
                   />
                 </FormControl>
@@ -318,12 +329,7 @@ export function TimetablePage(props: Props) {
                   End time<span className="text-destructive">*</span>
                 </FormLabel>
                 <FormControl>
-                  <Input
-                    type="time"
-                    min="09:00"
-                    max="18:00"
-                    {...field}
-                  />
+                  <Input type="time" min="09:00" max="18:00" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
