@@ -15,8 +15,8 @@
         "eamodio.gitlens",
         "esbenp.prettier-vscode",
         "aaron-bond.better-comments",
-        "rangav.vscode-thunder-client",
-        "YoavBls.pretty-ts-errors"
+        "YoavBls.pretty-ts-errors",
+        "Postman.postman-for-vscode"
       ]
     }
   },

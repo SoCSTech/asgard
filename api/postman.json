@@ -1,0 +1,1154 @@
+{
+	"info": {
+		"_postman_id": "5f20b716-3701-46d7-9f4e-a7a4f48746be",
+		"name": "Asgard2",
+		"description": "All the needed actions to work with the Asgard Rest API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "34757026"
+	},
+	"item": [
+		{
+			"name": "Auth",
+			"item": [
+				{
+					"name": "Login",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"username\": \"joshcooper\",\n  \"password\": \"computing\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{API_URL}}/v2/auth/login",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"v2",
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Forgot Password",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"username\": \"svc-dataimporter1\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{API_URL}}/v2/auth/forgot-password",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"v2",
+								"auth",
+								"forgot-password"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Test User is Authed",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{API_URL}}/v2/tests/auth",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"v2",
+								"tests",
+								"auth"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Change Password",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"resetToken\": \"55611661\",\n  \"password\": \"computing\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{API_URL}}/v2/auth/change-password",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"v2",
+								"auth",
+								"change-password"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Users",
+			"item": [
+				{
+					"name": "User - Me",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{API_URL}}/v2/user/me",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"v2",
+								"user",
+								"me"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "User - ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{API_URL}}/v2/user/joshcooper",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"v2",
+								"user",
+								"joshcooper"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "User - All",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{API_URL}}/v2/user",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"v2",
+								"user"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create User",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"username\": \"joshcooper\",\n  \"shortName\": \"Josh\",\n  \"fullName\": \"Josh Cooper\",\n  \"role\": \"TECHNICIAN\",\n  \"email\": \"joshcooper@lincoln.ac.uk\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{API_URL}}/v2/user",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"v2",
+								"user"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "User - Profile Picture",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{API_URL}}/v2/user/joshcooper.jpg",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"v2",
+								"user",
+								"joshcooper.jpg"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "User - All Deleted",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{API_URL}}/v2/user/deleted",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"v2",
+								"user",
+								"deleted"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete User",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{API_URL}}/v2/user/jsmith",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"v2",
+								"user",
+								"jsmith"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update User",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"profilePictureUrl\": \"#\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{API_URL}}/v2/user/jappleseed",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"v2",
+								"user",
+								"jappleseed"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Undelete User",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{API_URL}}/v2/user/reactivate/jappleseed",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"v2",
+								"user",
+								"reactivate",
+								"jappleseed"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Timetables",
+			"item": [
+				{
+					"name": "Timetable - All",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{API_URL}}/v2/timetable",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"v2",
+								"timetable"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Timetable - ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{API_URL}}/v2/timetable/s0nssm54ft36fxovj0t2oxqp",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"v2",
+								"timetable",
+								"s0nssm54ft36fxovj0t2oxqp"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Timetable",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"spaceCode\": \"INB1111\",\n  \"name\": \"Compter Lab 1D\",\n  \"capacity\": 10,\n  \"dataSource\": \"UOL_TIMETABLE\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{API_URL}}/v2/timetable",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"v2",
+								"timetable"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Timetable",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{API_URL}}/v2/timetable/INB1111",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"v2",
+								"timetable",
+								"INB1111"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Undelete Timetable",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{API_URL}}/v2/timetable/reactivate/INB1111",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"v2",
+								"timetable",
+								"reactivate",
+								"INB1111"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Timetable",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"lab\": \"1C\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{API_URL}}/v2/timetable/INB1101",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"v2",
+								"timetable",
+								"INB1101"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Timetable - All Deleted",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{API_URL}}/v2/timetable/deleted",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"v2",
+								"timetable",
+								"deleted"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Timetable - My",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{API_URL}}/v2/timetable/my",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"v2",
+								"timetable",
+								"my"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Events",
+			"item": [
+				{
+					"name": "Event - All",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{API_URL}}/v2/event",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"v2",
+								"event"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Event - ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{API_URL}}/v2/event/b0948ec9-a410-465c-b746-5177c7b2e537",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"v2",
+								"event",
+								"b0948ec9-a410-465c-b746-5177c7b2e537"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Event",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Social: Computer Science for Noobs\",\n  \"staff\": \"Bob Smith, Derek Jones\",\n  \"moduleCode\": \"CMP0004\",\n  \"timetableId\": \"INB1301\",\n  \"type\": \"SOCIAL\",\n  \"colour\": \"#ff0077\",\n  \"start\": \"2024-06-17 10:00:00\",\n  \"end\": \"2024-06-17 12:00:00\",\n  \"isCombinedSession\": false,\n  \"group\": \"P\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{API_URL}}/v2/event",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"v2",
+								"event"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Event",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{API_URL}}/v2/event/taguwl437sgtwfqy2uakwjjz",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"v2",
+								"event",
+								"taguwl437sgtwfqy2uakwjjz"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Event",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"type\": \"PROJECT\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{API_URL}}/v2/event/98ced14b-596b-4e75-a4d1-755a5b2cc919",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"v2",
+								"event",
+								"98ced14b-596b-4e75-a4d1-755a5b2cc919"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Events for Timetable",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{API_URL}}/v2/timetable/a02e6de1-187b-4cd8-8729-1002c6bdc5a1/events",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"v2",
+								"timetable",
+								"a02e6de1-187b-4cd8-8729-1002c6bdc5a1",
+								"events"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Now and Next Events",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{API_URL}}/v2/timetable/INB1301/now-next",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"v2",
+								"timetable",
+								"INB1301",
+								"now-next"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Remove Events for Timetable",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{API_URL}}/v2/timetable/INB1111/events",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"v2",
+								"timetable",
+								"INB1111",
+								"events"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Timetable Groups",
+			"item": [
+				{
+					"name": "Timetable Group - ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{API_URL}}/v2/timetable-group/dthyuvt9mnwnufo4393po5qi",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"v2",
+								"timetable-group",
+								"dthyuvt9mnwnufo4393po5qi"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Timetable Groups - All",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{API_URL}}/v2/timetable-group",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"v2",
+								"timetable-group"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Timetable Groups",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"internalName\": \"INB 1st Floor Landing\",\n  \"name\": \"Today's Timetable\",\n  \"subtitle\": \"School of Computer Science\",\n  \"displayInfoPane\": true,\n  \"infoPaneText\": \"# Contactie a Techie \\nPlease OMG **__do not__** do that. \\nPlease leave me alone for goodness sake \\nOkay i guess you can open a ticket\",\n  \"infoPaneQR\": true,\n  \"infoPaneQRUrl\": \"https://lncn.ac/socssupport\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{API_URL}}/v2/timetable-group",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"v2",
+								"timetable-group"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Timetable Group",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"subtitle\": \"Today's Timetable\",\n  \"name\": \"School of Applied and Mathematical Science\",\n  \"displayInfoPane\": false,\n  \"verbAvailable\": \"free\",\n  \"verbUnavailable\": \"in use\",\n  \"object\": \"computing lab\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{API_URL}}/v2/timetable-group/xupu2x3py304qq7gcwwftrs4",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"v2",
+								"timetable-group",
+								"xupu2x3py304qq7gcwwftrs4"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Timetable Group",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{API_URL}}/v2/timetable-group/dthyuvt9mnwnufo4393po5qi",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"v2",
+								"timetable-group",
+								"dthyuvt9mnwnufo4393po5qi"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add Timetable to Timetable Group",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"timetableId\": \"INB1101\",\n  \"groupId\": \"dthyuvt9mnwnufo4393po5qi\",\n  \"location\": \"DOWNSTAIRS\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{API_URL}}/v2/timetable-group/add",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"v2",
+								"timetable-group",
+								"add"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Remove Timetable to Timetable Group",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"timetableId\": \"INB1102\",\n  \"groupId\": \"dthyuvt9mnwnufo4393po5qi\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{API_URL}}/v2/timetable-group/remove",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"v2",
+								"timetable-group",
+								"remove"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Timetable Group Member",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"timetableId\": \"INB1307\",\n  \"groupId\": \"dthyuvt9mnwnufo4393po5qi\",\n  \"location\": \"LEFT\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{API_URL}}/v2/timetable-group/member",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"v2",
+								"timetable-group",
+								"member"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Logs",
+			"item": [
+				{
+					"name": "Logs - All",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{API_URL}}/v2/log",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"v2",
+								"log"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Logs - ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{API_URL}}/v2/log/5f311266-73de-452b-a6f3-4964c8a2d91b",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"v2",
+								"log",
+								"5f311266-73de-452b-a6f3-4964c8a2d91b"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Carousels",
+			"item": [
+				{
+					"name": "Carousels - All",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{API_URL}}/v2/carousel",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"v2",
+								"carousel"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Carosuel - Id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{API_URL}}/v2/carousel/o7yl0dlfj1obknjobknju6kj",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"v2",
+								"carousel",
+								"o7yl0dlfj1obknjobknju6kj"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Carousel Item - Id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{API_URL}}/v2/carousel/item/vwbfr6c74kqx8k31nkrjfhft",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"v2",
+								"carousel",
+								"item",
+								"vwbfr6c74kqx8k31nkrjfhft"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Carousel Items - Timetable",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{API_URL}}/v2/timetable/INB1301/carousel",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"v2",
+								"timetable",
+								"INB1301",
+								"carousel"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Carousel",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"timetable\": \"INB1301\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{API_URL}}/v2/carousel",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"v2",
+								"carousel"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Carousel Item",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"carousel\": \"wx5gidvqo30t8cabk7lwok2r\",\n  \"type\": \"PICTURE\",\n  \"name\": \"Cat\",\n  \"contentUrl\": \"https://cataas.com/cat?=2\",\n  \"durationMs\": 3000\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{API_URL}}/v2/carousel/item",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"v2",
+								"carousel",
+								"item"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Carousel Item",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{API_URL}}/v2/carousel/item/txxy61320y0pw5m6g3c040q5",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"v2",
+								"carousel",
+								"item",
+								"txxy61320y0pw5m6g3c040q5"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Carousel",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{API_URL}}/v2/carousel/n0tqc78b7m2jjmcfav0ipvxf",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"v2",
+								"carousel",
+								"n0tqc78b7m2jjmcfav0ipvxf"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Carousel Item",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"isDeleted\": true\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{API_URL}}/v2/carousel/item/jf0mgya068ijpt3vsx8rmr8n",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"v2",
+								"carousel",
+								"item",
+								"jf0mgya068ijpt3vsx8rmr8n"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Carousel",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"timetable\": \"a02e6de1-187b-4cd8-8729-1002c6bdc5a1\",\n  \"isDeleted\": false\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{API_URL}}/v2/carousel/wx5gidvqo30t8cabk7lwok2r",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"v2",
+								"carousel",
+								"wx5gidvqo30t8cabk7lwok2r"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Iml1czdxYnJ6eG5jZHdvNXpjZGRoYWtneSIsInVzZXJuYW1lIjoiam9zaGNvb3BlciIsImlhdCI6MTcxOTU2MjgwMSwiZXhwIjoxNzE5NjQ5MjAxfQ.Bm8OuOxdglXaxSg9b5_44AqX8-_z-UVzIrrGbAaeaH4",
+				"type": "string"
+			}
+		]
+	},
+	"variable": [
+		{
+			"key": "API_URL",
+			"value": "http://localhost:3000",
+			"type": "string"
+		}
+	]
+}
