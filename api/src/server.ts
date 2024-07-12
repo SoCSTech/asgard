@@ -68,6 +68,7 @@ app.use('/v2', require('./routes/tests'));
 app.use('/v2', require('./routes/logs'));
 app.use('/v2', require('./routes/carousels'));
 app.use('/v2', require('./routes/search'));
+app.use('/v2', require('./routes/desks'));
 
 /* Error handling */
 app.use((req, res, next) => {

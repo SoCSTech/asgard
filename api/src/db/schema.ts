@@ -145,3 +145,12 @@ export const userTimetables = mysqlTable('user_timetables', {
     user: varchar('user', { length: 128 }).references(() => users.id),
     timetable: varchar('timetable', { length: 128 }).references(() => timetables.id),
 })
+
+export const desks = mysqlTable('desks', {
+    id: varchar('id', { length: 128 }).$defaultFn(() => createId()).primaryKey(),
+    timetableId: varchar('timetable_id', { length: 128 }).references(() => timetables.id),
+    desk: varchar('desk', { length: 5 }).notNull(),
+    macAddress: varchar('mac_address', { length: 12 }),
+    lastSeen: timestamp('last_seen').defaultNow().notNull(),
+    lastOs: mysqlEnum('last_os', ['UNKNOWN', "WINDOWS", "LINUX"]).default('UNKNOWN').notNull()
+});
