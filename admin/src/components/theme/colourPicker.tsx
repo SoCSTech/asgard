@@ -7,7 +7,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Input } from "@/components/ui/input";
 
 export const colours = [
   { name: "Apricot", hex: "#fcc05f" },
@@ -29,8 +28,7 @@ export const colours = [
   { name: "Mango", hex: "#ff8040" },
   { name: "Violet", hex: "#c65aed" },
   { name: "Emerald", hex: "#81ed5a" },
-  { name: "Amber", hex: "#f5e216" },
-  { name: "Custom", hex: "custom" },
+  { name: "Amber", hex: "#f5e216" }
 ];
 
 // Define a type for the colour map
@@ -55,82 +53,35 @@ const ColourSelector: React.FC<ColourSelectorProps> = ({
   onChange,
   defaultColour,
 }) => {
-  const [isCustom, setIsCustom] = React.useState(false);
-  const [customColour, setCustomColour] = React.useState("");
-
   // Normalize selectedColour to lowercase or use defaultColour if none provided
   const normalizedSelectedColour =
     selectedColour?.toLowerCase() || defaultColour.toLowerCase();
 
-  React.useEffect(() => {
-    // Check if the selected colour is in the colour list or if it's custom
-    setIsCustom(
-      !normalizedSelectedColour ||
-        normalizedSelectedColour === "custom" ||
-        !colourMap[normalizedSelectedColour]
-    );
-
-    // Update custom colour state when selectedColour changes
-    if (
-      normalizedSelectedColour &&
-      normalizedSelectedColour !== "custom" &&
-      !colourMap[normalizedSelectedColour]
-    ) {
-      setCustomColour(normalizedSelectedColour);
-    }
-  }, [normalizedSelectedColour]);
-
   const handleChange = (value: string) => {
-    if (value === "custom") {
-      setIsCustom(true);
-      // Pass "custom" as the value when "Custom" is selected
-      onChange("custom");
+    // Convert value to lowercase
+    const lowercaseValue = value.toLowerCase();
+    // Check if value is in the list or custom
+    if (colourMap[lowercaseValue]) {
+      onChange(lowercaseValue);
     } else {
-      setIsCustom(false);
-      // Convert value to lowercase
-      const lowercaseValue = value.toLowerCase();
-      // Check if value is in the list or custom
-      if (colourMap[lowercaseValue]) {
-        onChange(lowercaseValue);
-      } else {
-        console.error(`No matching colour found for hex value: ${value}`);
-      }
+      console.error("No matching colour found for hex value: ${value}");
     }
-  };
-
-  const handleCustomColorChange = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    const { value } = event.target;
-    setCustomColour(value.toLowerCase());
-    onChange(value.toLowerCase());
   };
 
   return (
-    <>
-      <Select onValueChange={handleChange} value={normalizedSelectedColour}>
-        <SelectTrigger className="w-full">
-          <SelectValue placeholder="Select a colour" />
-        </SelectTrigger>
-        <SelectContent>
-          <SelectGroup>{colourItems()}</SelectGroup>
-        </SelectContent>
-      </Select>
-
-      {isCustom && (
-        <Input
-          type="color"
-          value={customColour} // Use customColour state here
-          onChange={handleCustomColorChange}
-        />
-      )}
-    </>
+    <Select onValueChange={handleChange} value={normalizedSelectedColour}>
+      <SelectTrigger className="w-full">
+        <SelectValue placeholder="Select a colour" />
+      </SelectTrigger>
+      <SelectContent>
+        <SelectGroup>{colourItems()}</SelectGroup>
+      </SelectContent>
+    </Select>
   );
 };
 
 export default ColourSelector;
 
-// Helper function for rendering colour items
 const colourItems = () => {
   return colours.map((colour) => (
     <SelectItem key={colour.hex} value={colour.hex}>

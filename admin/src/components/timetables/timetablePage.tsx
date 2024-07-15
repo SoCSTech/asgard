@@ -179,7 +179,7 @@ export function TimetablePage(props: Props) {
         staff: event?.staff || "",
         moduleCode: event?.moduleCode || "",
         type: event?.type || "OTHER",
-        colour: event?.colour || timetable.defaultColour,
+        colour: event?.colour || "",
         date: event
           ? new Date(event.start).toISOString().substring(0, 10)
           : new Date().toISOString().substring(0, 10),
@@ -306,7 +306,7 @@ export function TimetablePage(props: Props) {
               <FormItem>
                 <FormLabel>
                   Colour
-                  <span className="text-destructive">* {field.value}</span>
+                  <span className="text-destructive">*</span>
                 </FormLabel>
                 <FormControl>
                   <ColourSelector
