@@ -79,7 +79,7 @@ const createEvent = async (req: Request, res: Response, next: NextFunction) => {
         lastModified: currentTimeStr,
         modifiedBy: getUserIdFromJWT(token),
         isCombinedSession: req.body.isCombinedSession || false,
-        group: (req.body.group as string).toUpperCase() || null,
+        group: (req.body.group as string || "").toUpperCase(),
     });
 
     await log(`Has created event ${req.body.name} (${req.body.moduleCode || "none"}), starting ${req.body.start} and ending ${req.body.end} to Timetable ${timetableId}`, currentUserId)
@@ -87,6 +87,8 @@ const createEvent = async (req: Request, res: Response, next: NextFunction) => {
     await mqtt.SendTimetableRefresh(timetableId)
     res.status(201).json({ timetableId: timetableId, message: 'Event has been created' });
 };
+
+
 
 
 const deleteEvent = async (req: Request, res: Response, next: NextFunction) => {

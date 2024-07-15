@@ -2,28 +2,26 @@ import * as React from "react";
 import axios from "axios";
 import { API_URL, Y2_URL } from "@/constants";
 import { getCookie } from "@/lib/cookie";
-import { CalendarIcon, Copy, Check, ChevronsUpDown } from "lucide-react";
 import { Button } from "../ui/button";
 import type { ITimetable } from "@/interfaces/timetable";
-import TableList from "../theme/tableList";
+import TimetableEventsTableList from "@/components/timetables/timetableEventsTableList";
 import type { IEvent } from "@/interfaces/event";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Sheet,
-  SheetClose,
   SheetContent,
   SheetDescription,
   SheetHeader,
   SheetTitle,
   SheetTrigger,
+  SheetClose,
 } from "@/components/ui/sheet";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Label } from "../ui/label";
 import { formatEnumValue } from "@/lib/enum";
 import { toast } from "sonner";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { boolean, z } from "zod";
+import { z } from "zod";
 import {
   Form,
   FormControl,
@@ -40,7 +38,6 @@ import {
   SelectContent,
   SelectGroup,
   SelectItem,
-  SelectLabel,
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
@@ -60,21 +57,16 @@ interface Props {
   timetableId: string;
 }
 
-const FormSchema = z.object({
+const EventFormSchema = z.object({
+  id: z.string(),
   name: z.string().min(2).max(128),
   staff: z.string(),
   moduleCode: z.string(),
   type: z.string(),
-  colour: z
-    .string()
-    .min(7, {
-      message:
-        "Select a colour from the list or select custom and enter a specific colour",
-    })
-    .max(7, {
-      message:
-        "Select a colour from the list or select custom and enter a specific colour",
-    }),
+  colour: z.string().length(7, {
+    message:
+      "Select a colour from the list or select custom and enter a specific colour",
+  }),
   date: z.string(),
   start: z.string(),
   end: z.string(),
@@ -84,24 +76,26 @@ const FormSchema = z.object({
 });
 
 export function TimetablePage(props: Props) {
-  const [timetable, setTimetable] = React.useState({} as ITimetable);
-  const [events, setEvents] = React.useState([{} as IEvent]);
-  const [sheetIsOpen, setSheetIsOpen] = React.useState(false);
+  const [timetable, setTimetable] = React.useState<ITimetable>(
+    {} as ITimetable
+  );
+  const [events, setEvents] = React.useState<IEvent[]>([]);
+  const [eventSheetIsOpen, setEventSheetIsOpen] = React.useState(false);
+  const [selectedEvent, setSelectedEvent] = React.useState<IEvent | null>(null);
 
   const fetchTimetableData = async () => {
     try {
       const response = await axios.get(
-        API_URL + "/v2/timetable/" + props.timetableId,
+        `${API_URL}/v2/timetable/${props.timetableId}`,
         {
-          headers: {
-            Authorization: `Bearer ${getCookie("token")}`,
-          },
+          headers: { Authorization: `Bearer ${getCookie("token")}` },
         }
       );
-      if (response.data.timetables.length === 0) {
-        toast("No timetables are found");
+      const timetables = response.data.timetables;
+      if (timetables.length === 0) {
+        toast("No timetables found");
       } else {
-        setTimetable(response.data.timetables[0]);
+        setTimetable(timetables[0]);
       }
     } catch (error) {
       console.error("There was an error!", error);
@@ -112,17 +106,16 @@ export function TimetablePage(props: Props) {
   const fetchEventsData = async () => {
     try {
       const response = await axios.get(
-        API_URL + "/v2/timetable/" + props.timetableId + "/events",
+        `${API_URL}/v2/timetable/${props.timetableId}/events`,
         {
-          headers: {
-            Authorization: `Bearer ${getCookie("token")}`,
-          },
+          headers: { Authorization: `Bearer ${getCookie("token")}` },
         }
       );
-      if (response.data.events.length === 0) {
-        toast("No events are found");
+      const events = response.data.events;
+      if (events.length === 0) {
+        toast("No events found");
       } else {
-        setEvents(response.data.events);
+        setEvents(events);
       }
     } catch (error) {
       console.error("There was an error!", error);
@@ -135,269 +128,334 @@ export function TimetablePage(props: Props) {
     fetchEventsData();
   }, []);
 
-  const newEventForm = () => {
-    const form = useForm<z.infer<typeof FormSchema>>({
-      resolver: zodResolver(FormSchema),
-      defaultValues: {
+  const handleEventSubmit = async (data: z.infer<typeof EventFormSchema>) => {
+    try {
+      if (selectedEvent) {
+        // Update existing event
+        await axios.put(
+          `${API_URL}/v2/event/${selectedEvent.id}`,
+          {
+            ...data,
+            timetableId: props.timetableId,
+            start: `${data.date} ${data.start}`,
+            end: `${data.date} ${data.end}`,
+          },
+          {
+            headers: { Authorization: `Bearer ${getCookie("token")}` },
+          }
+        );
+        toast("Event updated!");
+      } else {
+        // Create new event
+        await axios.post(
+          `${API_URL}/v2/event`,
+          {
+            ...data,
+            timetableId: props.timetableId,
+            start: `${data.date} ${data.start}`,
+            end: `${data.date} ${data.end}`,
+          },
+          {
+            headers: { Authorization: `Bearer ${getCookie("token")}` },
+          }
+        );
+        toast("New event created!");
+      }
+      fetchEventsData();
+      setEventSheetIsOpen(false);
+      setSelectedEvent(null);
+    } catch (error) {
+      console.error("There was an error!", error);
+      toast(error?.response?.data?.message || "Couldn't save the event");
+    }
+  };
+
+const newEventForm = (event: IEvent | null) => {
+  const form = useForm<z.infer<typeof EventFormSchema>>({
+    resolver: zodResolver(EventFormSchema),
+    defaultValues: {
+      id: event?.id || "",
+      name: event?.name || "",
+      staff: event?.staff || "",
+      moduleCode: event?.moduleCode || "",
+      type: event?.type || "OTHER",
+      colour: event?.colour || "",
+      date: event
+        ? new Date(event.start).toISOString().substring(0, 10)
+        : new Date().toISOString().substring(0, 10),
+      start: event ? new Date(event.start).toISOString().substring(11, 16) : "",
+      end: event ? new Date(event.end).toISOString().substring(11, 16) : "",
+      isCombinedSession: event?.isCombinedSession || false,
+      group: event?.group || "",
+      externalId: event?.externalId || "",
+    },
+  });
+
+  React.useEffect(() => {
+    if (event) {
+      form.reset({
+        id: event.id,
+        name: event.name,
+        staff: event.staff,
+        moduleCode: event.moduleCode,
+        type: event.type,
+        colour: event.colour,
+        date: new Date(event.start).toISOString().substring(0, 10),
+        start: new Date(event.start).toISOString().substring(11, 16),
+        end: new Date(event.end).toISOString().substring(11, 16),
+        isCombinedSession: event.isCombinedSession,
+        group: event.group,
+        externalId: event.externalId,
+      });
+    } else {
+      form.reset({
+        id: "",
         name: "",
         staff: "",
         moduleCode: "",
         type: "OTHER",
         colour: "",
-        date: new Date().toLocaleDateString("en-CA"),
+        date: new Date().toISOString().substring(0, 10),
         start: "",
         end: "",
         isCombinedSession: false,
         group: "",
         externalId: "",
-      },
-    });
+      });
+    }
+  }, [event]);
 
-    const onSubmit = async (data: z.infer<typeof FormSchema>) => {
-      let response;
-      try {
-        response = await axios.post(
-          API_URL + "/v2/event",
-          {
-            name: data.name,
-            staff: data.staff,
-            moduleCode: data.moduleCode,
-            timetableId: props.timetableId,
-            type: data.type,
-            colour: data.colour,
-            start: `${data.date} ${data.start}`,
-            end: `${data.date} ${data.end}`,
-            isCombinedSession: data.isCombinedSession,
-            group: data.group,
-          },
-          {
-            headers: {
-              Authorization: `Bearer ${getCookie("token")}`,
-            },
-          }
-        );
-        toast("New event created!");
-        fetchEventsData();
-        setSheetIsOpen(false);
-      } catch (error) {
-        console.error("There was an error!", error);
-        toast(error?.response?.data?.message || "Couldn't add the event");
-      }
-    };
-
-    const eventTypesSelect = (): React.ReactNode[] => {
-      return eventTypes.map((eventType) => (
-        <SelectItem key={eventType.value} value={eventType.value}>
-          {eventType.label}
-        </SelectItem>
-      ));
-    };
-
-    return (
-      <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 px-1">
-          <FormField
-            control={form.control}
-            name="name"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>
-                  Name<span className="text-destructive">*</span>
-                </FormLabel>
-                <FormControl>
-                  <Input {...field} />
-                </FormControl>
-                <FormDescription>
-                  This is the name for the event displayed on the screens.
-                </FormDescription>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="moduleCode"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Module Code</FormLabel>
-                <FormControl>
-                  <Input {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="staff"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Staff</FormLabel>
-                <FormControl>
-                  <Input {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="type"
-            render={({ field }) => {
-              return (
-                <FormItem className="flex flex-col">
-                  <FormLabel>
-                    Type<span className="text-destructive">*</span>
-                  </FormLabel>
-                  <Select value={field.value} onValueChange={field.onChange}>
-                    <SelectTrigger className="w-full">
-                      <SelectValue placeholder="Select a event type" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectGroup>{eventTypesSelect()}</SelectGroup>
-                    </SelectContent>
-                  </Select>
-                  <FormDescription>
-                    The types allows Yggdrasil to show different icons and act
-                    in different ways.
-                  </FormDescription>
-                  <FormMessage />
-                </FormItem>
-              );
-            }}
-          />
-          <FormField
-            control={form.control}
-            name="colour"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>
-                  Colour<span className="text-destructive">*</span>
-                </FormLabel>
-                <FormControl>
-                  <ColourSelector
-                    selectedColour={field.value}
-                    onChange={field.onChange}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="date"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>
-                  Date<span className="text-destructive">*</span>
-                </FormLabel>
-                <FormControl>
-                  <Input type="date" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="start"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>
-                  Start time<span className="text-destructive">*</span>
-                </FormLabel>
-                <FormControl>
-                  <Input
-                    type="time"
-                    min="09:00"
-                    max="18:00"
-                    required
-                    {...field}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="end"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>
-                  End time<span className="text-destructive">*</span>
-                </FormLabel>
-                <FormControl>
-                  <Input type="time" min="09:00" max="18:00" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="group"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Group</FormLabel>
-                <FormControl>
-                  <Input {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          {timetable.combinedPartnerSpaceCode && (
-            <FormField
-              control={form.control}
-              name="isCombinedSession"
-              render={({ field }) => (
-                <FormItem className="flex flex-row items-start space-x-3 space-y-0">
-                  <FormControl>
-                    <Checkbox
-                      checked={field.value}
-                      onCheckedChange={field.onChange}
-                    />
-                  </FormControl>
-                  <div className="space-y-1 leading-none">
-                    <FormLabel>
-                      Session is combined with{" "}
-                      {timetable.combinedPartnerSpaceCode}
-                    </FormLabel>
-                  </div>
-                </FormItem>
-              )}
-            />
+  return (
+    <Form {...form}>
+      <form
+        onSubmit={form.handleSubmit(handleEventSubmit)}
+        className="space-y-6 px-1"
+      >
+        <FormField
+          control={form.control}
+          name="name"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>
+                Name<span className="text-destructive">*</span>
+              </FormLabel>
+              <FormControl>
+                <Input {...field} />
+              </FormControl>
+              <FormDescription>
+                This is the name for the event displayed on the screens.
+              </FormDescription>
+              <FormMessage />
+            </FormItem>
           )}
-          <Button variant={"constructive"} type="submit">
-            Create
-          </Button>
-        </form>
-      </Form>
-    );
-  };
+        />
+        <FormField
+          control={form.control}
+          name="moduleCode"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Module Code</FormLabel>
+              <FormControl>
+                <Input {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="staff"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Staff</FormLabel>
+              <FormControl>
+                <Input {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="type"
+          render={({ field }) => (
+            <FormItem className="flex flex-col">
+              <FormLabel>
+                Type<span className="text-destructive">*</span>
+              </FormLabel>
+              <Select value={field.value} onValueChange={field.onChange}>
+                <SelectTrigger className="w-full">
+                  <SelectValue placeholder="Select an event type" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectGroup>
+                    {eventTypes.map((eventType) => (
+                      <SelectItem key={eventType.value} value={eventType.value}>
+                        {eventType.label}
+                      </SelectItem>
+                    ))}
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
+              <FormDescription>
+                The types allow Yggdrasil to show different icons and act in
+                different ways.
+              </FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="colour"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>
+                Colour<span className="text-destructive">*</span>
+              </FormLabel>
+              <FormControl>
+                <ColourSelector
+                  selectedColour={field.value}
+                  onChange={field.onChange}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="date"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Date</FormLabel>
+              <FormControl>
+                <Input {...field} type="date" />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="start"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Start Time</FormLabel>
+              <FormControl>
+                <Input {...field} type="time" />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="end"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>End Time</FormLabel>
+              <FormControl>
+                <Input {...field} type="time" />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="externalId"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>External ID</FormLabel>
+              <FormControl>
+                <Input {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="group"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Group</FormLabel>
+              <FormControl>
+                <Input {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        {timetable.combinedPartnerSpaceCode && (
+          <FormField
+            control={form.control}
+            name="isCombinedSession"
+            render={({ field }) => (
+              <FormItem className="flex flex-row items-start space-x-3 space-y-0">
+                <FormControl>
+                  <Checkbox
+                    checked={field.value}
+                    onCheckedChange={field.onChange}
+                  />
+                </FormControl>
+                <div className="space-y-1 leading-none">
+                  <FormLabel>
+                    Session is combined with{" "}
+                    {timetable.combinedPartnerSpaceCode}
+                  </FormLabel>
+                </div>
+              </FormItem>
+            )}
+          />
+        )}
+        <Button variant={"constructive"} type="submit">
+          {selectedEvent ? "Update" : "Create"}
+        </Button>
 
-  const newEventWindow = () => {
-    return (
-      <Sheet open={sheetIsOpen} onOpenChange={setSheetIsOpen}>
-        <SheetTrigger asChild>
-          <Button variant={"constructive"}>New Event</Button>
-        </SheetTrigger>
-        <SheetContent className="w-full max-w-[540px]">
-          <SheetHeader>
-            <SheetTitle>New Event</SheetTitle>
-            <SheetDescription>
-              Create a new event for the timetable {timetable.spaceCode}.
-            </SheetDescription>
-          </SheetHeader>
-          <ScrollArea className="h-[calc(100vh-150px)]">
-            {newEventForm()}
-          </ScrollArea>
-        </SheetContent>
-      </Sheet>
-    );
-  };
+        {selectedEvent ? (
+          <Button
+            variant={"destructive"}
+            className="ml-2"
+            onClick={(event) => {
+              event.preventDefault();
+              alert("deleting " + selectedEvent.name);
+            }}
+          >
+            Delete
+          </Button>
+        ) : (
+          <></>
+        )}
+      </form>
+    </Form>
+  );
+};
+
+ const newEventWindow = () => (
+   <Sheet open={eventSheetIsOpen} onOpenChange={setEventSheetIsOpen}>
+     <SheetTrigger asChild>
+       <Button variant={"constructive"} onClick={() => setSelectedEvent(null)}>
+         New Event
+       </Button>
+     </SheetTrigger>
+     <SheetContent className="w-full max-w-[540px]">
+       <SheetHeader>
+         <SheetTitle>{selectedEvent ? "Edit Event" : "New Event"}</SheetTitle>
+         <SheetDescription>
+           {selectedEvent
+             ? `Edit the event for the timetable ${timetable.spaceCode}.`
+             : `Create a new event for the timetable ${timetable.spaceCode}.`}
+         </SheetDescription>
+       </SheetHeader>
+       <ScrollArea className="h-[calc(100vh-150px)]">
+         {newEventForm(selectedEvent)}
+       </ScrollArea>
+     </SheetContent>
+   </Sheet>
+ );
+
 
   return (
     <div className="w-full text-xl flex flex-col items-center text-center p-10 pt-0">
@@ -459,10 +517,14 @@ export function TimetablePage(props: Props) {
         </TabsList>
         <TabsContent value="list">
           <div className="relative overflow-x-auto tablet:shadow-md mt-5 rounded-xl w-full items-center">
-            <TableList
+            <TimetableEventsTableList
               headers={["name", "moduleCode", "staff", "start", "end"]}
               data={events}
-              urlBase="/events"
+              onEdit={(event) => {
+                console.log(event);
+                setSelectedEvent(event);
+                setEventSheetIsOpen(true);
+              }}
             />
           </div>
         </TabsContent>
@@ -470,8 +532,8 @@ export function TimetablePage(props: Props) {
           <div className="w-full">
             <h1>Not yet implemented!!!</h1>
             <p>
-              Calendar view is gonna be a little bit more tricky so its not been
-              done yet. But fear not it will be done soon :P
+              Calendar view is gonna be a little bit more tricky so it's not
+              been done yet. But fear not it will be done soon :P
             </p>
           </div>
         </TabsContent>

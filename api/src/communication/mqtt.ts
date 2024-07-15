@@ -29,11 +29,11 @@ export class MqttCommunicator {
     }
  
     SendMqttMessage(topic: string, payload: string) {
+        console.log("sending mqtt message to " + topic)
         this.client.publish(topic, payload);
     }
 
     async SendTimetableRefresh(timetableId: string) {
-
         try{
             const timetable = await db.select().from(timetableSchema)
             .where(and(
