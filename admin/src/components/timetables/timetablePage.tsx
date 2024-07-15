@@ -305,7 +305,8 @@ export function TimetablePage(props: Props) {
             render={({ field }) => (
               <FormItem>
                 <FormLabel>
-                  Colour<span className="text-destructive">* {field.value}</span>
+                  Colour
+                  <span className="text-destructive">* {field.value}</span>
                 </FormLabel>
                 <FormControl>
                   <ColourSelector
@@ -317,7 +318,7 @@ export function TimetablePage(props: Props) {
                 <FormMessage />
               </FormItem>
             )}
-            />
+          />
           <FormField
             control={form.control}
             name="date"
@@ -413,10 +414,7 @@ export function TimetablePage(props: Props) {
             <Button
               variant={"destructive"}
               className="ml-2"
-              onClick={(event) => {
-                event.preventDefault();
-                alert("deleting " + selectedEvent.name);
-              }}
+              onClick={(e) => deleteEvent(e, event?.id)}
             >
               Delete
             </Button>
@@ -426,6 +424,33 @@ export function TimetablePage(props: Props) {
         </form>
       </Form>
     );
+  };
+
+  const deleteEvent = async (
+    event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
+    id: string | undefined
+  ) => {
+    event.preventDefault();
+
+    if (id === undefined) {
+      console.error(
+        "Trying to delete event but the ID is undefined, not doing that!"
+      );
+      return;
+    }
+
+    try {
+      await axios.delete(`${API_URL}/v2/event/${id}`, {
+        headers: { Authorization: `Bearer ${getCookie("token")}` },
+      });
+      toast("Event deleted!");
+    } catch (error) {
+      toast("Event couldn't be deleted...");
+      console.error(error)
+    }
+    fetchEventsData();
+    setEventSheetIsOpen(false);
+    setSelectedEvent(null);
   };
 
   const newEventWindow = () => (
