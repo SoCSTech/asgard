@@ -170,292 +170,285 @@ export function TimetablePage(props: Props) {
     }
   };
 
-const newEventForm = (event: IEvent | null) => {
-  const form = useForm<z.infer<typeof EventFormSchema>>({
-    resolver: zodResolver(EventFormSchema),
-    defaultValues: {
-      id: event?.id || "",
-      name: event?.name || "",
-      staff: event?.staff || "",
-      moduleCode: event?.moduleCode || "",
-      type: event?.type || "OTHER",
-      colour: event?.colour || "",
-      date: event
-        ? new Date(event.start).toISOString().substring(0, 10)
-        : new Date().toISOString().substring(0, 10),
-      start: event ? new Date(event.start).toISOString().substring(11, 16) : "",
-      end: event ? new Date(event.end).toISOString().substring(11, 16) : "",
-      isCombinedSession: event?.isCombinedSession || false,
-      group: event?.group || "",
-      externalId: event?.externalId || "",
-    },
-  });
+  const newEventForm = (event: IEvent | null) => {
+    const form = useForm<z.infer<typeof EventFormSchema>>({
+      resolver: zodResolver(EventFormSchema),
+      defaultValues: {
+        id: event?.id || "",
+        name: event?.name || "",
+        staff: event?.staff || "",
+        moduleCode: event?.moduleCode || "",
+        type: event?.type || "OTHER",
+        colour: event?.colour || "",
+        date: event
+          ? new Date(event.start).toISOString().substring(0, 10)
+          : new Date().toISOString().substring(0, 10),
+        start: event
+          ? new Date(event.start).toISOString().substring(11, 16)
+          : "",
+        end: event ? new Date(event.end).toISOString().substring(11, 16) : "",
+        isCombinedSession: event?.isCombinedSession || false,
+        group: event?.group || "",
+        externalId: event?.externalId || "",
+      },
+    });
 
-  React.useEffect(() => {
-    if (event) {
+    React.useEffect(() => {
       form.reset({
-        id: event.id,
-        name: event.name,
-        staff: event.staff,
-        moduleCode: event.moduleCode,
-        type: event.type,
-        colour: event.colour,
-        date: new Date(event.start).toISOString().substring(0, 10),
-        start: new Date(event.start).toISOString().substring(11, 16),
-        end: new Date(event.end).toISOString().substring(11, 16),
-        isCombinedSession: event.isCombinedSession,
-        group: event.group,
-        externalId: event.externalId,
+        id: event?.id || "",
+        name: event?.name || "",
+        staff: event?.staff || "",
+        moduleCode: event?.moduleCode || "",
+        type: event?.type || "OTHER",
+        colour: event?.colour || "",
+        date: event?.start
+          ? new Date(event.start).toISOString().substring(0, 10)
+          : "",
+        start: event?.start
+          ? new Date(event.start).toISOString().substring(11, 16)
+          : "",
+        end: event?.end
+          ? new Date(event.end).toISOString().substring(11, 16)
+          : "",
+        isCombinedSession: event?.isCombinedSession || false,
+        group: event?.group || "",
+        externalId: event?.externalId || "",
       });
-    } else {
-      form.reset({
-        id: "",
-        name: "",
-        staff: "",
-        moduleCode: "",
-        type: "OTHER",
-        colour: "",
-        date: new Date().toISOString().substring(0, 10),
-        start: "",
-        end: "",
-        isCombinedSession: false,
-        group: "",
-        externalId: "",
-      });
-    }
-  }, [event]);
+    }, [event]);
 
-  return (
-    <Form {...form}>
-      <form
-        onSubmit={form.handleSubmit(handleEventSubmit)}
-        className="space-y-6 px-1"
-      >
-        <FormField
-          control={form.control}
-          name="name"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>
-                Name<span className="text-destructive">*</span>
-              </FormLabel>
-              <FormControl>
-                <Input {...field} />
-              </FormControl>
-              <FormDescription>
-                This is the name for the event displayed on the screens.
-              </FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="moduleCode"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Module Code</FormLabel>
-              <FormControl>
-                <Input {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="staff"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Staff</FormLabel>
-              <FormControl>
-                <Input {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="type"
-          render={({ field }) => (
-            <FormItem className="flex flex-col">
-              <FormLabel>
-                Type<span className="text-destructive">*</span>
-              </FormLabel>
-              <Select value={field.value} onValueChange={field.onChange}>
-                <SelectTrigger className="w-full">
-                  <SelectValue placeholder="Select an event type" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectGroup>
-                    {eventTypes.map((eventType) => (
-                      <SelectItem key={eventType.value} value={eventType.value}>
-                        {eventType.label}
-                      </SelectItem>
-                    ))}
-                  </SelectGroup>
-                </SelectContent>
-              </Select>
-              <FormDescription>
-                The types allow Yggdrasil to show different icons and act in
-                different ways.
-              </FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="colour"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>
-                Colour<span className="text-destructive">*</span>
-              </FormLabel>
-              <FormControl>
-                <ColourSelector
-                  selectedColour={field.value}
-                  onChange={field.onChange}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="date"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Date</FormLabel>
-              <FormControl>
-                <Input {...field} type="date" />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="start"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Start Time</FormLabel>
-              <FormControl>
-                <Input {...field} type="time" />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="end"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>End Time</FormLabel>
-              <FormControl>
-                <Input {...field} type="time" />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="externalId"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>External ID</FormLabel>
-              <FormControl>
-                <Input {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="group"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Group</FormLabel>
-              <FormControl>
-                <Input {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        {timetable.combinedPartnerSpaceCode && (
+    return (
+      <Form {...form}>
+        <form
+          onSubmit={form.handleSubmit(handleEventSubmit)}
+          className="space-y-6 px-1"
+        >
           <FormField
             control={form.control}
-            name="isCombinedSession"
+            name="name"
             render={({ field }) => (
-              <FormItem className="flex flex-row items-start space-x-3 space-y-0">
+              <FormItem>
+                <FormLabel>
+                  Name<span className="text-destructive">*</span>
+                </FormLabel>
                 <FormControl>
-                  <Checkbox
-                    checked={field.value}
-                    onCheckedChange={field.onChange}
-                  />
+                  <Input {...field} />
                 </FormControl>
-                <div className="space-y-1 leading-none">
-                  <FormLabel>
-                    Session is combined with{" "}
-                    {timetable.combinedPartnerSpaceCode}
-                  </FormLabel>
-                </div>
+                <FormDescription>
+                  This is the name for the event displayed on the screens.
+                </FormDescription>
+                <FormMessage />
               </FormItem>
             )}
           />
-        )}
-        <Button variant={"constructive"} type="submit">
-          {selectedEvent ? "Update" : "Create"}
-        </Button>
-
-        {selectedEvent ? (
-          <Button
-            variant={"destructive"}
-            className="ml-2"
-            onClick={(event) => {
-              event.preventDefault();
-              alert("deleting " + selectedEvent.name);
-            }}
-          >
-            Delete
+          <FormField
+            control={form.control}
+            name="moduleCode"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Module Code</FormLabel>
+                <FormControl>
+                  <Input {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="staff"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Staff</FormLabel>
+                <FormControl>
+                  <Input {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="type"
+            render={({ field }) => (
+              <FormItem className="flex flex-col">
+                <FormLabel>
+                  Type<span className="text-destructive">*</span>
+                </FormLabel>
+                <Select value={field.value} onValueChange={field.onChange}>
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="Select an event type" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectGroup>
+                      {eventTypes.map((eventType) => (
+                        <SelectItem
+                          key={eventType.value}
+                          value={eventType.value}
+                        >
+                          {eventType.label}
+                        </SelectItem>
+                      ))}
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
+                <FormDescription>
+                  The types allow Yggdrasil to show different icons and act in
+                  different ways.
+                </FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="colour"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>
+                  Colour<span className="text-destructive">*</span>
+                </FormLabel>
+                <FormControl>
+                  <ColourSelector
+                    selectedColour={field.value}
+                    onChange={field.onChange}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="date"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Date</FormLabel>
+                <FormControl>
+                  <Input {...field} type="date" />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="start"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Start Time</FormLabel>
+                <FormControl>
+                  <Input {...field} type="time" />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="end"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>End Time</FormLabel>
+                <FormControl>
+                  <Input {...field} type="time" />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="externalId"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>External ID</FormLabel>
+                <FormControl>
+                  <Input {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="group"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Group</FormLabel>
+                <FormControl>
+                  <Input {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          {timetable.combinedPartnerSpaceCode && (
+            <FormField
+              control={form.control}
+              name="isCombinedSession"
+              render={({ field }) => (
+                <FormItem className="flex flex-row items-start space-x-3 space-y-0">
+                  <FormControl>
+                    <Checkbox
+                      checked={field.value}
+                      onCheckedChange={field.onChange}
+                    />
+                  </FormControl>
+                  <div className="space-y-1 leading-none">
+                    <FormLabel>
+                      Session is combined with{" "}
+                      {timetable.combinedPartnerSpaceCode}
+                    </FormLabel>
+                  </div>
+                </FormItem>
+              )}
+            />
+          )}
+          <Button variant={"constructive"} type="submit">
+            {selectedEvent ? "Update" : "Create"}
           </Button>
-        ) : (
-          <></>
-        )}
-      </form>
-    </Form>
+
+          {selectedEvent ? (
+            <Button
+              variant={"destructive"}
+              className="ml-2"
+              onClick={(event) => {
+                event.preventDefault();
+                alert("deleting " + selectedEvent.name);
+              }}
+            >
+              Delete
+            </Button>
+          ) : (
+            <></>
+          )}
+        </form>
+      </Form>
+    );
+  };
+
+  const newEventWindow = () => (
+    <Sheet open={eventSheetIsOpen} onOpenChange={setEventSheetIsOpen}>
+      <SheetTrigger asChild>
+        <Button variant={"constructive"} onClick={() => setSelectedEvent(null)}>
+          New Event
+        </Button>
+      </SheetTrigger>
+      <SheetContent className="w-full max-w-[540px]">
+        <SheetHeader>
+          <SheetTitle>{selectedEvent ? "Edit Event" : "New Event"}</SheetTitle>
+          <SheetDescription>
+            {selectedEvent
+              ? `Edit the event for the timetable ${timetable.spaceCode}.`
+              : `Create a new event for the timetable ${timetable.spaceCode}.`}
+          </SheetDescription>
+        </SheetHeader>
+        <ScrollArea className="h-[calc(100vh-150px)]">
+          {newEventForm(selectedEvent)}
+        </ScrollArea>
+      </SheetContent>
+    </Sheet>
   );
-};
-
- const newEventWindow = () => (
-   <Sheet open={eventSheetIsOpen} onOpenChange={setEventSheetIsOpen}>
-     <SheetTrigger asChild>
-       <Button variant={"constructive"} onClick={() => setSelectedEvent(null)}>
-         New Event
-       </Button>
-     </SheetTrigger>
-     <SheetContent className="w-full max-w-[540px]">
-       <SheetHeader>
-         <SheetTitle>{selectedEvent ? "Edit Event" : "New Event"}</SheetTitle>
-         <SheetDescription>
-           {selectedEvent
-             ? `Edit the event for the timetable ${timetable.spaceCode}.`
-             : `Create a new event for the timetable ${timetable.spaceCode}.`}
-         </SheetDescription>
-       </SheetHeader>
-       <ScrollArea className="h-[calc(100vh-150px)]">
-         {newEventForm(selectedEvent)}
-       </ScrollArea>
-     </SheetContent>
-   </Sheet>
- );
-
 
   return (
     <div className="w-full text-xl flex flex-col items-center text-center p-10 pt-0">
@@ -521,7 +514,6 @@ const newEventForm = (event: IEvent | null) => {
               headers={["name", "moduleCode", "staff", "start", "end"]}
               data={events}
               onEdit={(event) => {
-                console.log(event);
                 setSelectedEvent(event);
                 setEventSheetIsOpen(true);
               }}
