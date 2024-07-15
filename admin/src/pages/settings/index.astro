@@ -1,15 +1,10 @@
 ---
+import UserSettings from "@/components/users/userSettings";
 import Layout from "@/layouts/Layout.astro";
 ---
 
-<Layout title="Welcome to Astro.">
+<Layout title="Settings">
   <main>
-    <h1>
-      User settings not implemented yet to asgard, but you can do one thing here
-      and thats....
-    </h1>
-    <div class="text-3xl text-mango font-bold font-mono p-5">
-      <a href="/logout">Logout!</a>
-    </div>
+      <UserSettings client:only="react" />
   </main>
 </Layout>
