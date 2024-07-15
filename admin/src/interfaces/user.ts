@@ -9,3 +9,8 @@ export interface IUser {
     creationDate: Date;
     profilePictureUrl?: string;
 }
+
+export const UserRoles = [
+    { label: "Standard", value: "STANDARD" },
+    { label: "Technician", value: "TECHNICIAN" },
+]

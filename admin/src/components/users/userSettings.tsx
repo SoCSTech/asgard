@@ -16,6 +16,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import { UserRoles } from "@/interfaces/user";
 import { Input } from "@/components/ui/input";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -122,6 +123,9 @@ export default function UserSettings() {
                 <FormControl>
                   <Input {...field} />
                 </FormControl>
+                <FormDescription>
+                  Hi {field.value}!
+                </FormDescription>
                 <FormMessage />
               </FormItem>
             )}
@@ -135,6 +139,10 @@ export default function UserSettings() {
                 <FormControl>
                   <Input {...field} />
                 </FormControl>
+                <FormDescription>
+                  This is the email address we use to send you system
+                  notifications, use your work email.
+                </FormDescription>
                 <FormMessage />
               </FormItem>
             )}
@@ -148,6 +156,9 @@ export default function UserSettings() {
                 <FormControl>
                   <Input {...field} />
                 </FormControl>
+                <FormDescription>
+                    Used to sign you into Asgard, this should be your corporate username.
+                </FormDescription>
                 <FormMessage />
               </FormItem>
             )}
@@ -190,24 +201,21 @@ export default function UserSettings() {
                     Use Gravatar
                   </Button>
                 </div>
+                <FormDescription>
+                  We don't currently have a way to store profile images within
+                  Asgard. You can configure a{" "}
+                  <a className="underline hover:no-underline" href="https://gravatar.com/" target="_blank">
+                    Gravatar
+                  </a> which will host your image for you and it will display all across the web. Or you can give us your GitHub profile picture by setting the URL to <code>https://github.com/your-username.png</code>
+                </FormDescription>
               </FormItem>
             )}
           />
-          <FormField
-            control={form.control}
-            name="role"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Role</FormLabel>
-                <FormControl>
-                  <Input {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <Button className="w-full mt-20" variant={"constructive"} type="submit">
+          <Button
+            className="w-full mt-20"
+            variant={"constructive"}
+            type="submit"
+          >
             Save Changes
           </Button>
         </form>
