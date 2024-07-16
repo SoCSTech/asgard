@@ -64,7 +64,23 @@ export default function UserSettings() {
   });
 
   const handleSubmit = async (data: z.infer<typeof UserFormSchema>) => {
-    console.log(data);
+     await axios
+       .put(API_URL + "/v2/user/" + data.id, {
+        ...data
+       }, {
+         headers: {
+           Authorization: `Bearer ${getCookie("token")}`,
+         },
+       })
+       .then((response) => {
+         toast(response.data.message)
+         fetchData()
+       })
+       .catch((error) => {
+         console.error("There was an error!", error);
+         toast(error.message || "Something went wrong");
+         fetchData()
+       });
   };
 
   const newUserForm = (user: IUser | null) => {
