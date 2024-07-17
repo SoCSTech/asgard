@@ -64,23 +64,27 @@ export default function UserSettings() {
   });
 
   const handleSubmit = async (data: z.infer<typeof UserFormSchema>) => {
-     await axios
-       .put(API_URL + "/v2/user/" + data.id, {
-        ...data
-       }, {
-         headers: {
-           Authorization: `Bearer ${getCookie("token")}`,
-         },
-       })
-       .then((response) => {
-         toast(response.data.message)
-         fetchData()
-       })
-       .catch((error) => {
-         console.error("There was an error!", error);
-         toast(error.message || "Something went wrong");
-         fetchData()
-       });
+    await axios
+      .put(
+        API_URL + "/v2/user/" + data.id,
+        {
+          ...data,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${getCookie("token")}`,
+          },
+        }
+      )
+      .then((response) => {
+        toast(response.data.message);
+        fetchData();
+      })
+      .catch((error) => {
+        console.error("There was an error!", error);
+        toast(error.message || "Something went wrong");
+        fetchData();
+      });
   };
 
   const newUserForm = (user: IUser | null) => {
@@ -139,9 +143,7 @@ export default function UserSettings() {
                 <FormControl>
                   <Input {...field} />
                 </FormControl>
-                <FormDescription>
-                  Hi {field.value}!
-                </FormDescription>
+                <FormDescription>Hi {field.value}!</FormDescription>
                 <FormMessage />
               </FormItem>
             )}
@@ -173,7 +175,8 @@ export default function UserSettings() {
                   <Input {...field} />
                 </FormControl>
                 <FormDescription>
-                    Used to sign you into Asgard, this should be your corporate username.
+                  Used to sign you into Asgard, this should be your corporate
+                  username.
                 </FormDescription>
                 <FormMessage />
               </FormItem>
@@ -220,9 +223,17 @@ export default function UserSettings() {
                 <FormDescription>
                   We don't currently have a way to store profile images within
                   Asgard. You can configure a{" "}
-                  <a className="underline hover:no-underline" href="https://gravatar.com/" target="_blank">
+                  <a
+                    className="underline hover:no-underline"
+                    href="https://gravatar.com/"
+                    target="_blank"
+                  >
                     Gravatar
-                  </a> which will host your image for you and it will display all across the web. Or you can give us your GitHub profile picture by setting the URL to <code>https://github.com/your-username.png</code>
+                  </a>{" "}
+                  which will host your image for you and it will display all
+                  across the web. Or you can give us your GitHub profile picture
+                  by setting the URL to{" "}
+                  <code>https://github.com/your-username.png</code>
                 </FormDescription>
               </FormItem>
             )}
@@ -242,27 +253,33 @@ export default function UserSettings() {
   return (
     <div className="w-full text-xl flex flex-col p-10 pt-0">
       <div className="flex items-center">
-        <Avatar className="w-[250px] h-[250px] mb-5 p-10">
-          <AvatarImage src={user.profilePictureUrl} alt={user.fullName} />
-          <AvatarFallback className="text-7xl">{user.initials}</AvatarFallback>
-        </Avatar>
+        <div className="flex items-center flex-1">
+          <Avatar className="w-[250px] h-[250px] mb-5 p-10">
+            <AvatarImage src={user.profilePictureUrl} alt={user.fullName} />
+            <AvatarFallback className="text-7xl">
+              {user.initials}
+            </AvatarFallback>
+          </Avatar>
 
-        <div className="flex flex-col">
-          <h1 className="font-extrabold text-4xl">{user.fullName}</h1>
-          <h2 className="font-medium text 3xl">
-            {user.role} - Joined{" "}
-            {new Date(user.creationDate).toLocaleDateString()}
-          </h2>
+          <div className="flex flex-col">
+            <h1 className="font-extrabold text-4xl">{user.fullName}</h1>
+            <h2 className="font-medium text 3xl">
+              {user.role} - Joined{" "}
+              {new Date(user.creationDate).toLocaleDateString()}
+            </h2>
+          </div>
         </div>
 
         <div className="ml-5">
-          <Button
-            className="mx-2"
-            variant={"destructive"}
-            onClick={() => (window.location.href = "/logout")}
-          >
-            Logout
-          </Button>
+          <div className="flex flex-row justify-evenly gap-2 mt-5 laptop:mt-0 bg-black p-5 rounded-xl">
+            <Button
+              className="mx-2"
+              variant={"destructive"}
+              onClick={() => (window.location.href = "/logout")}
+            >
+              Logout
+            </Button>
+          </div>
         </div>
       </div>
 

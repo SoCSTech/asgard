@@ -1,7 +1,7 @@
 import * as React from "react";
 import axios from "axios";
 import { API_URL } from "@/constants";
-import { getCookie } from "@/lib/cookie";
+import { getCookie, getCurrentUserId } from "@/lib/cookie";
 import type { IUser } from "@/interfaces/user";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { formatEnumValue } from "@/lib/enum";
@@ -66,6 +66,10 @@ export function UserPage(props: Props) {
 
         if (data.length == 0) {
           toast("Can't find user");
+        }
+
+        if (data.id == getCurrentUserId()) {
+          window.location.href = "/settings"
         }
       })
       .catch((error) => {
@@ -286,12 +290,11 @@ export function UserPage(props: Props) {
     );
   };
 
-   const handlePasswordReset = async () => {
+  const handlePasswordReset = async () => {
     //  if (!currentUserIsTechnician) {
     //    toast("You're not a technician! You cannot modify other users.");
     //    return;
     //  }
-
     //  await axios
     //    .put(API_URL + "/v2/auth/forgot\-password", {
     //      username: user.id,
@@ -306,12 +309,12 @@ export function UserPage(props: Props) {
     //      fetchData();
     //    });
     // not yet implemented!
-   };
+  };
 
   const deactivateUser = async () => {
     if (!currentUserIsTechnician) {
-      toast("You're not a technician! You cannot modify other users.")
-      return
+      toast("You're not a technician! You cannot modify other users.");
+      return;
     }
     await axios
       .delete(API_URL + "/v2/user/" + props.userId, {
@@ -331,22 +334,26 @@ export function UserPage(props: Props) {
   return (
     <div className="w-full text-xl flex flex-col p-10 pt-0">
       <div className="flex items-center">
-        <Avatar className="w-[250px] h-[250px] mb-5 p-10">
-          <AvatarImage src={user.profilePictureUrl} alt={user.fullName} />
-          <AvatarFallback className="text-7xl">{user.initials}</AvatarFallback>
-        </Avatar>
+        <div className="flex items-center flex-1">
+          <Avatar className="w-[250px] h-[250px] mb-5 p-10">
+            <AvatarImage src={user.profilePictureUrl} alt={user.fullName} />
+            <AvatarFallback className="text-7xl">
+              {user.initials}
+            </AvatarFallback>
+          </Avatar>
 
-        <div className="flex flex-col">
-          <h1 className="font-extrabold text-4xl">{user.fullName}</h1>
-          <h2 className="font-medium text 3xl">
-            {user.role} - Joined{" "}
-            {new Date(user.creationDate).toLocaleDateString()}
-          </h2>
+          <div className="flex flex-col">
+            <h1 className="font-extrabold text-4xl">{user.fullName}</h1>
+            <h2 className="font-medium text 3xl">
+              {user.role} - Joined{" "}
+              {new Date(user.creationDate).toLocaleDateString()}
+            </h2>
+          </div>
         </div>
 
         <div className="ml-5">
           {currentUserIsTechnician ? (
-            <>
+            <div className="flex flex-row justify-evenly gap-2 mt-5 laptop:mt-0 bg-black p-5 rounded-xl">
               <Button
                 className="mx-2"
                 variant={"primaryOutline"}
@@ -361,7 +368,7 @@ export function UserPage(props: Props) {
               >
                 Deactivate
               </Button>
-            </>
+            </div>
           ) : (
             ""
           )}

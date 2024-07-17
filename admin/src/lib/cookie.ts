@@ -15,3 +15,12 @@ export function getCookie(name: string): string | null {
     if (parts.length === 2) return parts.pop()!.split(';').shift()!;
     return null;
 }
+
+export function getCurrentUserId(): string | null {
+    // Get the token, split out the data and then return the id
+    let token = getCookie("token")?.toString().split(".")
+    if (token?.length != 3)
+        return null
+
+    return JSON.parse(atob(token[1]))?.id
+}
