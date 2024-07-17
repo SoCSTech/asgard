@@ -296,6 +296,15 @@ export function UserPage(props: Props) {
       return;
     }
 
+    if (
+      !confirm(
+        `Are you sure you want to reset the password for ${user.fullName}'s account?`
+      )
+    ) {
+      toast("Action has been cancelled");
+      return;
+    }
+
     await axios
       .post(API_URL + "/v2/auth/forgot-password", {
         username: user.id,
@@ -316,6 +325,16 @@ export function UserPage(props: Props) {
       toast("You're not a technician! You cannot modify other users.");
       return;
     }
+
+    if (
+      !confirm(
+        `Are you sure you want to deactivate ${user.fullName}'s account?`
+      )
+    ) {
+      toast("Action has been cancelled");
+      return;
+    }
+
     await axios
       .delete(API_URL + "/v2/user/" + props.userId, {
         headers: {
