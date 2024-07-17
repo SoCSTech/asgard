@@ -291,24 +291,24 @@ export function UserPage(props: Props) {
   };
 
   const handlePasswordReset = async () => {
-    //  if (!currentUserIsTechnician) {
-    //    toast("You're not a technician! You cannot modify other users.");
-    //    return;
-    //  }
-    //  await axios
-    //    .put(API_URL + "/v2/auth/forgot\-password", {
-    //      username: user.id,
-    //    })
-    //    .then((response) => {
-    //      toast(response.data.message);
-    //      fetchData();
-    //    })
-    //    .catch((error) => {
-    //      console.error("There was an error!", error);
-    //      toast(error.message || "Something went wrong");
-    //      fetchData();
-    //    });
-    // not yet implemented!
+    if (!currentUserIsTechnician) {
+      toast("You're not a technician! You cannot modify other users.");
+      return;
+    }
+
+    await axios
+      .post(API_URL + "/v2/auth/forgot-password", {
+        username: user.id,
+      })
+      .then(function (response) {
+        toast(
+          `Please inform ${user.shortName} that their to check their email!`
+        );
+      })
+      .catch(function (error) {
+        console.error(error);
+        toast(error.respose.data.message || "Could'nt reset their password!");
+      });
   };
 
   const deactivateUser = async () => {
@@ -324,7 +324,7 @@ export function UserPage(props: Props) {
       })
       .then(() => {
         toast("User has been deactivated");
-        fetchData()
+        fetchData();
       })
       .catch((error) => {
         console.error("There was an error!", error);
@@ -355,7 +355,6 @@ export function UserPage(props: Props) {
       toast(error?.message || "Could not reactivate the user");
     }
   };
-
 
   return (
     <div className="w-full text-xl flex flex-col p-10 pt-0">

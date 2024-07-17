@@ -20,7 +20,8 @@ const login = async (req: Request, res: Response, next: NextFunction) => {
             eq(userSchema.isDeleted, false),
             or(
                 eq(userSchema.username, String(username).toLowerCase()),
-                eq(userSchema.email, String(username).toLowerCase())
+                eq(userSchema.email, String(username).toLowerCase()),
+                eq(userSchema.id, String(username))
             )
         ));
 
@@ -51,6 +52,7 @@ const login = async (req: Request, res: Response, next: NextFunction) => {
 };
 
 const forgotPassword = async (req: Request, res: Response, next: NextFunction) => {
+    console.log("You hit forgot password!")
     const { username } = req.body;
     const ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress 
 
@@ -69,7 +71,8 @@ const forgotPassword = async (req: Request, res: Response, next: NextFunction) =
             eq(userSchema.isDeleted, false),
             or(
                 eq(userSchema.username, String(username)),
-                eq(userSchema.email, String(username))
+                eq(userSchema.email, String(username)),
+                eq(userSchema.id, String(username))
             )
         ));
 
