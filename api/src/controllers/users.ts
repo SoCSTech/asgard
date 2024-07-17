@@ -20,12 +20,10 @@ const getUserById = async (req: Request, res: Response, next: NextFunction) => {
 
     const user = await db.select(simplifiedUser).from(userSchema)
         .where(
-            and(
-                or(
-                    eq(userSchema.id, String(userId)),
-                    eq(userSchema.username, String(userId)),
-                ),
-                eq(userSchema.isDeleted, false))
+            or(
+                eq(userSchema.id, String(userId)),
+                eq(userSchema.username, String(userId)),
+            )
         );
 
     res.json({ users: user });
@@ -46,12 +44,10 @@ const getUserProfilePicture = async (req: Request, res: Response, next: NextFunc
 
     const user = await db.select({ profilePictureUrl: userSchema.profilePictureUrl }).from(userSchema)
         .where(
-            and(
-                or(
-                    eq(userSchema.id, String(userId)),
-                    eq(userSchema.username, String(userId)),
-                ),
-                eq(userSchema.isDeleted, false))
+            or(
+                eq(userSchema.id, String(userId)),
+                eq(userSchema.username, String(userId)),
+            )
         );
 
     if (user.length !== 1) {
@@ -63,7 +59,7 @@ const getUserProfilePicture = async (req: Request, res: Response, next: NextFunc
         res.status(404).json({ "message": "User hasn't set profile picture" })
         return
     }
-    
+
     axios.get(user[0].profilePictureUrl as string, {
         responseType: 'arraybuffer',
         headers: {
@@ -193,6 +189,8 @@ const undeleteUser = async (req: Request, res: Response, next: NextFunction) => 
     let userId: string = req.params.id
     const token = getTokenFromAuthCookie(req, res)
 
+    console.log(req.headers.authorization)
+
     // This is the id of the person who is logged in sending the invite out.
     const currentUserId = getUserIdFromJWT(token);
 
@@ -208,6 +206,7 @@ const undeleteUser = async (req: Request, res: Response, next: NextFunction) => 
 
     if (user.length !== 1) {
         res.status(404).json({ "message": "Cannot find account or account is already active" })
+        return
     }
 
     const admin = await db.select(simplifiedUser).from(userSchema)

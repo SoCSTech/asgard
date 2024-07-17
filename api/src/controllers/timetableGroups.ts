@@ -355,8 +355,7 @@ const getTimetableGroupById = async (req: Request, res: Response, next: NextFunc
     const groups = await db.select().from(groupsSchema)
         .where(
             and(
-                eq(groupsSchema.id, String(groupId)),
-                eq(groupsSchema.isDeleted, false)
+                eq(groupsSchema.id, String(groupId))
             )
         )
 

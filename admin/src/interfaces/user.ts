@@ -8,6 +8,7 @@ export interface IUser {
     email: string;
     creationDate: Date;
     profilePictureUrl?: string;
+    isDeleted: boolean;
 }
 
 export const UserRoles = [

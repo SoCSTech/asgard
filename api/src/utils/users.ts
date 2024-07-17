@@ -14,6 +14,7 @@ export const simplifiedUser = {
     email: userSchema.email,
     creationDate: userSchema.creationDate,
     profilePictureUrl: userSchema.profilePictureUrl,
+    isDeleted: userSchema.isDeleted
 };
 
 // // Schema of New User

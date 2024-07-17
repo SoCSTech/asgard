@@ -170,12 +170,10 @@ const getTimetableById = async (req: Request, res: Response, next: NextFunction)
 
         const timetables: TimetableWithPartner[] = await db.select().from(timetableSchema)
             .where(
-                and(
-                    or(
-                        eq(timetableSchema.id, String(timetableId)),
-                        eq(timetableSchema.spaceCode, String(timetableId)),
-                    ),
-                    eq(timetableSchema.isDeleted, false))
+                or(
+                    eq(timetableSchema.id, String(timetableId)),
+                    eq(timetableSchema.spaceCode, String(timetableId)),
+                )
             );
 
         const returnedTimetables: TimetableWithPartner[] = await Promise.all(timetables.map(async (tt) => {

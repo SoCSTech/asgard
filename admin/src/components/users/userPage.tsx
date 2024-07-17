@@ -69,7 +69,7 @@ export function UserPage(props: Props) {
         }
 
         if (data.id == getCurrentUserId()) {
-          window.location.href = "/settings"
+          window.location.href = "/settings";
         }
       })
       .catch((error) => {
@@ -324,6 +324,7 @@ export function UserPage(props: Props) {
       })
       .then(() => {
         toast("User has been deactivated");
+        fetchData()
       })
       .catch((error) => {
         console.error("There was an error!", error);
@@ -331,8 +332,43 @@ export function UserPage(props: Props) {
       });
   };
 
+  const reactivateUser = async () => {
+    if (!currentUserIsTechnician) {
+      toast("You're not a technician! You cannot modify other users.");
+      return;
+    }
+
+    try {
+      await axios.post(
+        `${API_URL}/v2/user/reactivate/${props.userId}`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${getCookie("token")}`,
+          },
+        }
+      );
+      toast("User has been reactivated");
+      fetchData();
+    } catch (error) {
+      console.error("There was an error!", error);
+      toast(error?.message || "Could not reactivate the user");
+    }
+  };
+
+
   return (
     <div className="w-full text-xl flex flex-col p-10 pt-0">
+      {user.isDeleted ? (
+        <div className="bg-destructive px-10 text-center py-5 rounded-xl text-white">
+          <p>
+            User is deleted, they will need to be reactivated before they can
+            use Asgard.
+          </p>
+        </div>
+      ) : (
+        ""
+      )}
       <div className="flex items-center">
         <div className="flex items-center flex-1">
           <Avatar className="w-[250px] h-[250px] mb-5 p-10">
@@ -361,13 +397,23 @@ export function UserPage(props: Props) {
               >
                 Reset Password
               </Button>
-              <Button
-                className="mx-2"
-                variant={"destructive"}
-                onClick={() => deactivateUser()}
-              >
-                Deactivate
-              </Button>
+              {user.isDeleted ? (
+                <Button
+                  className="mx-2"
+                  variant={"constructive"}
+                  onClick={() => reactivateUser()}
+                >
+                  Reactivate
+                </Button>
+              ) : (
+                <Button
+                  className="mx-2"
+                  variant={"destructive"}
+                  onClick={() => deactivateUser()}
+                >
+                  Deactivate
+                </Button>
+              )}
             </div>
           ) : (
             ""
