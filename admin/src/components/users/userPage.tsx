@@ -245,11 +245,12 @@ export function UserPage(props: Props) {
                   <Button
                     variant={"primaryOutline"}
                     className="ml-5"
-                    onClick={() => {
+                    onClick={(e) => {
+                      e.preventDefault()
                       const email = md5(form.getValues("email"));
                       form.setValue(
                         "profilePictureUrl",
-                        `https://www.gravatar.com/avatar/${email}`
+                        `https://www.gravatar.com/avatar/${email}?s=100&r=pg&d=retro`
                       );
                     }}
                   >
