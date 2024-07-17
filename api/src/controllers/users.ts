@@ -108,11 +108,14 @@ const createUser = async (req: Request, res: Response, next: NextFunction) => {
     // Check the user doesn't already exist
     const oldUsers = await db.select(simplifiedUser).from(userSchema)
         .where(
-            eq(userSchema.username, String(req.body.username))
+            or(
+                eq(userSchema.username, String(req.body.username)),
+                eq(userSchema.email, String(req.body.email))
+            )
         );
 
     if (oldUsers.length != 0) {
-        res.status(409).json({ "message": "User with that username already exists." })
+        res.status(409).json({ "message": "User with that username or email already exists." })
         return;
     }
 

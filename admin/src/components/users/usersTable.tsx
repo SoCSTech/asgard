@@ -1,5 +1,5 @@
 import * as React from "react";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import { API_URL } from "@/constants";
 import { getCookie } from "@/lib/cookie";
 import { UserRoles, type IUser } from "@/interfaces/user";
@@ -47,7 +47,11 @@ const UserFormSchema = z.object({
   email: z.string().email().max(256),
 });
 
-function CreateNewUser() {
+interface CreateNewUserProps {
+  fetchData: () => void;
+}
+
+const CreateNewUser: React.FC<CreateNewUserProps> = ({ fetchData }) => {
   const [newUserSheetIsOpen, setNewUserSheetIsOpen] = React.useState(false);
 
   const form = useForm<z.infer<typeof UserFormSchema>>({
@@ -97,9 +101,10 @@ function CreateNewUser() {
       });
       toast("User created successfully");
       setNewUserSheetIsOpen(false);
-    } catch (error) {
+      fetchData()
+    } catch (error: any) {
       console.error("There was an error!", error);
-      toast(error?.message || "Something went wrong");
+      toast(error.response.data.message || "Something went wrong");
     }
   };
 
@@ -248,7 +253,7 @@ export function UsersTable() {
       <div className="flex flex-row justify-between">
         <div></div>
         <h1 className="text-3xl font-extrabold text-center">Users</h1>
-        <CreateNewUser />
+        <CreateNewUser fetchData={fetchData} />
       </div>
       <div className="relative overflow-x-auto tablet:shadow-md mt-5 rounded-xl">
         <TableList
