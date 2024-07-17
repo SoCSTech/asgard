@@ -367,8 +367,7 @@ export function TimetablesTable() {
           newTimetable.dataSource = formatEnumValue(tt.dataSource);
           newData.push(newTimetable);
         });
-
-        console.log(newData);
+        
         setTimetables(newData);
       })
       .catch((error) => {
