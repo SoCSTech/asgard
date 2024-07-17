@@ -357,6 +357,15 @@ export function UserPage(props: Props) {
       return;
     }
 
+    if (
+      !confirm(
+        `Are you sure you want to reactivate ${user.fullName}'s account?`
+      )
+    ) {
+      toast("Action has been cancelled");
+      return;
+    }
+
     try {
       await axios.post(
         `${API_URL}/v2/user/reactivate/${props.userId}`,
