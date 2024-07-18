@@ -97,6 +97,8 @@ export function TimetablePage(props: Props) {
       } else {
         setTimetable(timetables[0]);
       }
+
+      console.log(timetables[0]);
     } catch (error) {
       console.error("There was an error!", error);
       toast(error.message);
@@ -123,9 +125,33 @@ export function TimetablePage(props: Props) {
     }
   };
 
+  const [currentUserIsTechnician, setCurrentUserIsTechnician] =
+    React.useState(false);
+
+  const checkIfUserIsTech = async () => {
+    await axios
+      .get(API_URL + "/v2/user/me", {
+        headers: {
+          Authorization: `Bearer ${getCookie("token")}`,
+        },
+      })
+      .then((response) => {
+        if (response.data.users[0].role === "TECHNICIAN") {
+          setCurrentUserIsTechnician(true);
+        } else {
+          setCurrentUserIsTechnician(false);
+        }
+      })
+      .catch((error) => {
+        console.error("There was an error!", error);
+        toast("Error checking if you have permission " + error.message);
+      });
+  };
+
   React.useEffect(() => {
     fetchTimetableData();
     fetchEventsData();
+    checkIfUserIsTech();
   }, []);
 
   const handleEventSubmit = async (data: z.infer<typeof EventFormSchema>) => {
@@ -446,7 +472,7 @@ export function TimetablePage(props: Props) {
       toast("Event deleted!");
     } catch (error) {
       toast("Event couldn't be deleted...");
-      console.error(error)
+      console.error(error);
     }
     fetchEventsData();
     setEventSheetIsOpen(false);
@@ -476,86 +502,180 @@ export function TimetablePage(props: Props) {
     </Sheet>
   );
 
+  const deactivateTimetable = async () => {
+    if (!currentUserIsTechnician) {
+      toast(
+        "You're not a technician! A technician is the only person who can delete timetables."
+      );
+      return;
+    }
+
+    if (
+      !confirm(`Are you sure you want to deactivate ${timetable.spaceCode}?`)
+    ) {
+      toast("Action has been cancelled");
+      return;
+    }
+
+    await axios
+      .delete(API_URL + "/v2/timetable/" + timetable.id, {
+        headers: {
+          Authorization: `Bearer ${getCookie("token")}`,
+        },
+      })
+      .then(() => {
+        toast("Timetable has been deactivated");
+        fetchTimetableData();
+        // fetchEventsData();
+      })
+      .catch((error) => {
+        console.error("There was an error!", error);
+        toast(error.message);
+      });
+  };
+
+  const reactivateTimetable = async () => {
+    if (!currentUserIsTechnician) {
+      toast("You're not a technician! You cannot re-enable timetables.");
+      return;
+    }
+
+    if (
+      !confirm(`Are you sure you want to reactivate ${timetable.spaceCode}?`)
+    ) {
+      toast("Action has been cancelled");
+      return;
+    }
+
+    await axios
+      .post(
+        `${API_URL}/v2/timetable/reactivate/${timetable.id}`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${getCookie("token")}`,
+          },
+        }
+      )
+      .then(() => {
+        toast("Timetable has been reactivated");
+        fetchTimetableData();
+        fetchEventsData();
+      })
+      .catch((error) => {
+        console.error("There was an error!", error);
+        toast(error?.message || "Could not reactivate the timetable");
+      });
+  };
+
   return (
-    <div className="w-full text-xl flex flex-col items-center text-center p-10 pt-0">
-      <div className="flex flex-col laptop:flex-row w-full justify-between items-center">
-        <div className="flex flex-col">
-          <h1 className="text-3xl mb-5">
-            <strong>{timetable.spaceCode}:</strong> {timetable.name}
-          </h1>
-          <ul className="text-left">
-            <li>
-              <strong>Capacity:</strong> {timetable.capacity}
-            </li>
-            <li>
-              <strong>Can Combine:</strong>{" "}
-              {timetable.canCombine ? (
-                <span>
-                  Yes with{" "}
-                  <a
-                    className="hover:underline"
-                    href={`/timetables/${timetable.combinedPartnerId}`}
-                  >
-                    {timetable.combinedPartnerSpaceCode}
-                  </a>
-                </span>
-              ) : (
-                <span>No</span>
-              )}
-            </li>
-            <li>
-              <strong>Data Source:</strong>{" "}
-              {formatEnumValue(String(timetable.dataSource))}
-            </li>
-          </ul>
-        </div>
-        <div className="flex flex-row justify-evenly gap-2 mt-5 laptop:mt-0 bg-black p-5 rounded-xl">
-          <Button
-            variant="primaryOutline"
-            onClick={() => {
-              const newWindow = window.open(
-                `${Y2_URL}/#/room/${timetable.id}`,
-                "_blank"
-              );
-              if (newWindow) {
-                newWindow.focus();
-              }
-            }}
-          >
-            Open in Y2
-          </Button>
-          <Button variant={"primaryOutline"}>Edit</Button>
-          {newEventWindow()}
-        </div>
-      </div>
-      <h2 className="my-5 text-3xl w-full text-left">Events</h2>
-      <Tabs defaultValue="list" className="w-full">
-        <TabsList className="grid w-[200px] grid-cols-2">
-          <TabsTrigger value="calendar">Calendar</TabsTrigger>
-          <TabsTrigger value="list">List</TabsTrigger>
-        </TabsList>
-        <TabsContent value="list">
-          <div className="relative overflow-x-auto tablet:shadow-md mt-5 rounded-xl w-full items-center">
-            <TimetableEventsTableList
-              headers={["name", "moduleCode", "staff", "start", "end"]}
-              data={events}
-              onEdit={(event) => {
-                setSelectedEvent(event);
-                setEventSheetIsOpen(true);
-              }}
-            />
-          </div>
-        </TabsContent>
-        <TabsContent value="calendar">
-          <div className="w-full">
-            <h1>Not yet implemented!!!</h1>
+    <>
+      <div className="w-full text-xl flex flex-col p-10 pt-0">
+        {timetable.isDeleted && (
+          <div className="bg-destructive px-10 text-center py-5 rounded-xl text-white">
             <p>
-              Calendar view is gonna be a little bit more tricky so it's not
-              been done yet. But fear not it will be done soon :P
+              This timetable is deleted, it will need to be reactivated before
+              you can use it.
             </p>
           </div>
-        </TabsContent>
-      </Tabs>
-    </div>
+        )}
+      </div>
+      <div className="w-full text-xl flex flex-col items-center text-center p-10 pt-0">
+        <div className="flex flex-col laptop:flex-row w-full justify-between items-center">
+          <div className="flex flex-col">
+            <h1 className="text-3xl mb-5">
+              <strong>{timetable.spaceCode}:</strong> {timetable.name}
+            </h1>
+            <ul className="text-left">
+              <li>
+                <strong>Capacity:</strong> {timetable.capacity}
+              </li>
+              <li>
+                <strong>Can Combine:</strong>{" "}
+                {timetable.canCombine ? (
+                  <span>
+                    Yes with{" "}
+                    <a
+                      className="hover:underline"
+                      href={`/timetables/${timetable.combinedPartnerId}`}
+                    >
+                      {timetable.combinedPartnerSpaceCode}
+                    </a>
+                  </span>
+                ) : (
+                  <span>No</span>
+                )}
+              </li>
+              <li>
+                <strong>Data Source:</strong>{" "}
+                {formatEnumValue(String(timetable.dataSource))}
+              </li>
+            </ul>
+          </div>
+          <div className="flex flex-row justify-evenly gap-2 mt-5 laptop:mt-0 bg-black p-5 rounded-xl">
+            <Button
+              variant="primaryOutline"
+              onClick={() => {
+                const newWindow = window.open(
+                  `${Y2_URL}/#/room/${timetable.id}`,
+                  "_blank"
+                );
+                if (newWindow) {
+                  newWindow.focus();
+                }
+              }}
+            >
+              Open in Y2
+            </Button>
+            <Button variant={"primaryOutline"}>Edit</Button>
+
+            {timetable.isDeleted ? (
+              <Button
+                variant={"constructive"}
+                onClick={() => reactivateTimetable()}
+              >
+                Reactivate
+              </Button>
+            ) : (
+              <Button
+                variant={"destructive"}
+                onClick={() => deactivateTimetable()}
+              >
+                Deactivate
+              </Button>
+            )}
+            {newEventWindow()}
+          </div>
+        </div>
+        <h2 className="my-5 text-3xl w-full text-left">Events</h2>
+        <Tabs defaultValue="list" className="w-full">
+          <TabsList className="grid w-[200px] grid-cols-2">
+            <TabsTrigger value="calendar">Calendar</TabsTrigger>
+            <TabsTrigger value="list">List</TabsTrigger>
+          </TabsList>
+          <TabsContent value="list">
+            <div className="relative overflow-x-auto tablet:shadow-md mt-5 rounded-xl w-full items-center">
+              <TimetableEventsTableList
+                headers={["name", "moduleCode", "staff", "start", "end"]}
+                data={events}
+                onEdit={(event) => {
+                  setSelectedEvent(event);
+                  setEventSheetIsOpen(true);
+                }}
+              />
+            </div>
+          </TabsContent>
+          <TabsContent value="calendar">
+            <div className="w-full">
+              <h1>Not yet implemented!!!</h1>
+              <p>
+                Calendar view is gonna be a little bit more tricky so it's not
+                been done yet. But fear not it will be done soon :P
+              </p>
+            </div>
+          </TabsContent>
+        </Tabs>
+      </div>
+    </>
   );
 }
