@@ -118,7 +118,9 @@ const CreateNewTimetable: React.FC<CreateNewTimetableProps> = ({
     }
 
     if (
-      !confirm(`Are you sure you want to create the timetable ${submissionData.spaceCode} (${submissionData.name}) to Asgard?`)
+      !confirm(
+        `Are you sure you want to create the timetable ${submissionData.spaceCode} (${submissionData.name}) to Asgard?`
+      )
     ) {
       toast("Action has been cancelled");
       return;
@@ -381,12 +383,12 @@ export function TimetablesTable() {
 
   return (
     <>
-      <div className="flex flex-row justify-between">
+      <div className="flex flex-row justify-between p-10 pt-0">
         <div></div>
         <h1 className="text-3xl font-extrabold text-center">Timetables</h1>
         <CreateNewTimetable fetchData={fetchData} timetables={timetables} />
       </div>
-      <div className="relative overflow-x-auto tablet:shadow-md mt-5 rounded-xl">
+      <div className="relative overflow-x-auto tablet:shadow-md mt-5 rounded-xl m-10 mt-0">
         <TableList
           headers={["spaceCode", "name", "capacity", "dataSource"]}
           data={timetables}

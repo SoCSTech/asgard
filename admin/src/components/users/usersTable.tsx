@@ -250,12 +250,12 @@ export function UsersTable() {
 
   return (
     <>
-      <div className="flex flex-row justify-between">
+      <div className="flex flex-row justify-between p-10 pt-0">
         <div></div>
         <h1 className="text-3xl font-extrabold text-center">Users</h1>
         <CreateNewUser fetchData={fetchData} />
       </div>
-      <div className="relative overflow-x-auto tablet:shadow-md mt-5 rounded-xl">
+      <div className="relative overflow-x-auto tablet:shadow-md mt-5 rounded-xl m-10 mt-0">
         <TableList
           headers={["fullName", "username", "email", "role"]}
           data={users}

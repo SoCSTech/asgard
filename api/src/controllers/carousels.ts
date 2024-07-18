@@ -68,6 +68,11 @@ const getAllCarouselsAndItemsForATimetable = async (req: Request, res: Response,
             )
         )
 
+    if (carousel.length == 0) {
+        res.status(404).json({ message: "Carousel could not be found!" });
+        return
+    }
+
     const items = await db.select()
         .from(carouselItemsSchema)
         .where(
