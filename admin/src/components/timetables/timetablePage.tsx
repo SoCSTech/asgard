@@ -86,41 +86,43 @@ export function TimetablePage(props: Props) {
   const [selectedEvent, setSelectedEvent] = React.useState<IEvent | null>(null);
 
   const handleFavouriteChange = async (newFavouriteStatus: boolean) => {
-    if (newFavouriteStatus) {
-      // I want to favourite it!
-      const response = await axios
-        .post(
-          `${API_URL}/v2/timetable/my`,
-          {
-            user: "me",
-            timetable: timetable.id,
-          },
-          {
-            headers: { Authorization: `Bearer ${getCookie("token")}` },
-          }
-        )
-        .then(() => {
+    if (timetable) {
+      if (newFavouriteStatus) {
+        // I want to favourite it!
+        try {
+          await axios.post(
+            `${API_URL}/v2/timetable/my`,
+            {
+              user: "me",
+              timetable: timetable.id,
+            },
+            {
+              headers: { Authorization: `Bearer ${getCookie("token")}` },
+            }
+          );
           toast("Added to Favourites");
-        })
-        .catch((error) => {
-          toast(error.response.data.message || "Couldn't favourite it");
-        });
-    } else {
-      // I want to unfavourite it!
-     const response = await axios
-       .delete(`${API_URL}/v2/timetable/my`, {
-         data: {
-           user: "me",
-           timetable: timetable.id,
-         },
-         headers: { Authorization: `Bearer ${getCookie("token")}` },
-       })
-       .then(() => {
-         toast("Removed from Favourites");
-       })
-       .catch((error) => {
-         toast(error.response.data.message || "Couldn't unfavourite it");
-       });
+        } catch (error) {
+          toast(error.response?.data?.message || "Couldn't favourite it");
+        }
+      } else {
+        // I want to unfavourite it!
+        try {
+          await axios.delete(`${API_URL}/v2/timetable/my`, {
+            data: {
+              user: "me",
+              timetable: timetable.id,
+            },
+            headers: { Authorization: `Bearer ${getCookie("token")}` },
+          });
+          toast("Removed from Favourites");
+        } catch (error) {
+          toast(error.response?.data?.message || "Couldn't unfavourite it");
+        }
+      }
+      // Update the local state after the API call
+      setTimetable((prev) =>
+        prev ? { ...prev, isFavourite: newFavouriteStatus } : prev
+      );
     }
   };
 
@@ -138,8 +140,6 @@ export function TimetablePage(props: Props) {
       } else {
         setTimetable(timetables[0]);
       }
-
-      console.log(timetables[0]);
     } catch (error) {
       console.error("There was an error!", error);
       toast(error.message);

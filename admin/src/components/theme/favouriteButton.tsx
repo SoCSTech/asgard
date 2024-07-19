@@ -9,14 +9,10 @@ interface FavouriteButtonProps {
 
 const FavouriteButton: React.FC<FavouriteButtonProps> = ({
   onFavouriteChange,
-  defaultValue
+  defaultValue,
 }) => {
   const [isFavourite, setIsFavourite] = useState(defaultValue);
   const [isHovered, setIsHovered] = useState(false);
-
-  React.useEffect(() => {
-    onFavouriteChange(isFavourite);
-  }, [isFavourite, onFavouriteChange]);
 
   const handleMouseEnter = () => {
     setIsHovered(true);
@@ -27,8 +23,9 @@ const FavouriteButton: React.FC<FavouriteButtonProps> = ({
   };
 
   const toggleFavourite = () => {
-    console.log("fav " + isFavourite);
-    setIsFavourite(!isFavourite);
+    const newFavouriteStatus = !isFavourite;
+    setIsFavourite(newFavouriteStatus);
+    onFavouriteChange(newFavouriteStatus);
   };
 
   return (
