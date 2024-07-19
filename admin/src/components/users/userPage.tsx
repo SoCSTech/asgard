@@ -397,8 +397,8 @@ export function UserPage(props: Props) {
       ) : (
         ""
       )}
-      <div className="flex items-center">
-        <div className="flex items-center flex-1">
+      <div className="flex items-center flex-col tablet:flex-row mb-5 tablet:mb-0">
+        <div className="flex tablet:flex-row flex-col items-center flex-1">
           <Avatar className="w-[250px] h-[250px] mb-5 p-10">
             <AvatarImage src={user.profilePictureUrl} alt={user.fullName} />
             <AvatarFallback className="text-7xl">
