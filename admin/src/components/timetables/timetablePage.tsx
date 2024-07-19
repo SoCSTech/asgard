@@ -42,6 +42,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import ColourSelector from "../theme/colourPicker";
+import { Heart } from "lucide-react";
+import FavouriteButton from "../theme/favouriteButton";
 
 const eventTypes = [
   { label: "Other", value: "OTHER" },
@@ -82,6 +84,45 @@ export function TimetablePage(props: Props) {
   const [events, setEvents] = React.useState<IEvent[]>([]);
   const [eventSheetIsOpen, setEventSheetIsOpen] = React.useState(false);
   const [selectedEvent, setSelectedEvent] = React.useState<IEvent | null>(null);
+
+  const handleFavouriteChange = async (newFavouriteStatus: boolean) => {
+    if (newFavouriteStatus) {
+      // I want to favourite it!
+      const response = await axios
+        .post(
+          `${API_URL}/v2/timetable/my`,
+          {
+            user: "me",
+            timetable: timetable.id,
+          },
+          {
+            headers: { Authorization: `Bearer ${getCookie("token")}` },
+          }
+        )
+        .then(() => {
+          toast("Added to Favourites");
+        })
+        .catch((error) => {
+          toast(error.response.data.message || "Couldn't favourite it");
+        });
+    } else {
+      // I want to unfavourite it!
+     const response = await axios
+       .delete(`${API_URL}/v2/timetable/my`, {
+         data: {
+           user: "me",
+           timetable: timetable.id,
+         },
+         headers: { Authorization: `Bearer ${getCookie("token")}` },
+       })
+       .then(() => {
+         toast("Removed from Favourites");
+       })
+       .catch((error) => {
+         toast(error.response.data.message || "Couldn't unfavourite it");
+       });
+    }
+  };
 
   const fetchTimetableData = async () => {
     try {
@@ -613,6 +654,12 @@ export function TimetablePage(props: Props) {
             </ul>
           </div>
           <div className="flex flex-row justify-evenly gap-2 mt-5 laptop:mt-0 bg-black p-5 rounded-xl">
+            {currentUserIsTechnician && (
+              <FavouriteButton
+                onFavouriteChange={handleFavouriteChange}
+                defaultValue={timetable.isFavourite}
+              />
+            )}
             <Button
               variant="primaryOutline"
               onClick={() => {

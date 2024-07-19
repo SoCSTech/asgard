@@ -8,6 +8,7 @@ export interface ITimetable {
     combinedPartnerId: string;
     combinedPartnerSpaceCode: string;
     isDeleted: boolean;
+    isFavourite: boolean;
     dataSource: string;
     defaultColour: string;
 }
