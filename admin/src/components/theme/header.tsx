@@ -5,13 +5,16 @@ import { getCookie } from "@/lib/cookie";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import type { IUser } from "@/interfaces/user";
+import { HeaderLink, HeaderLinkGroup } from "./headerLink";
 import {
-  HeaderLink,
-  HeaderLinkGroup
-} from "./headerLink";
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible";
 
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
+import { ChevronDown, CircleChevronDown, User } from "lucide-react";
 
 export default function Header() {
   const [user, setUser] = React.useState({} as IUser);
@@ -19,7 +22,6 @@ export default function Header() {
   const fetchData = async () => {
     await axios
       .get(API_URL + "/v2/user/me", {
-        
         headers: {
           Authorization: `Bearer ${getCookie("token")}`,
         },
@@ -62,6 +64,27 @@ export default function Header() {
         <HeaderLink href="/desks">Desks</HeaderLink>
         <HeaderLink href="/users">Users</HeaderLink>
       </HeaderLinkGroup>
+
+      <Collapsible className="tablet:hidden">
+        <CollapsibleTrigger className="flex flex-col items-center w-full">
+          <ChevronDown size={25} />
+        </CollapsibleTrigger>
+        <CollapsibleContent>
+          <ul>
+            <HeaderLink href="/timetables">Timetables</HeaderLink>
+            <HeaderLink href="/groups">Groups</HeaderLink>
+            <HeaderLink href="/desks">Desks</HeaderLink>
+            <HeaderLink href="/users">Users</HeaderLink>
+            <HeaderLink href="/search">Search</HeaderLink>
+
+            <HeaderLink href="/settings">
+              <div className="flex border px-2 py-1 mt-4 rounded-xl">
+                <User className="mr-2" /> {user.fullName}
+              </div>
+            </HeaderLink>
+          </ul>
+        </CollapsibleContent>
+      </Collapsible>
 
       <div className="hidden tablet:flex tablet:justify-end justify-center items-center">
         <form
