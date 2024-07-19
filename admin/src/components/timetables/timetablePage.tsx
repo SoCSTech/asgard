@@ -59,6 +59,28 @@ interface Props {
   timetableId: string;
 }
 
+const TimetableFormSchema = z.object({
+  spaceCode: z.string().min(1).max(10),
+  lab: z.string().max(4),
+  name: z.string().min(1).max(256),
+  capacity: z.string().min(1),
+  canCombine: z.boolean(),
+  combinedPartnerId: z.string(),
+  dataSource: z.string().min(1).max(128),
+  defaultColour: z.string().length(7, {
+    message:
+      "Select a colour from the list or select custom and enter a specific colour",
+  }),
+});
+
+export const TimetableDataSources = [
+  { label: "Manual", value: "MANUAL" },
+  { label: "UoL Timetable", value: "UOL_TIMETABLE" },
+  { label: "Internet Calendar Stream", value: "ICAL" },
+  { label: "Microsoft Bookings", value: "MS_BOOKINGS" },
+];
+
+
 const EventFormSchema = z.object({
   id: z.string(),
   name: z.string().min(2).max(128),
@@ -76,6 +98,331 @@ const EventFormSchema = z.object({
   group: z.string().max(10),
   externalId: z.string().max(128),
 });
+
+interface EditTimetableProps {
+  fetchData: () => void;
+  timetable: ITimetable;
+}
+
+const EditTimetable: React.FC<EditTimetableProps> = ({
+  fetchData,
+  timetable,
+}) => {
+  const [editTimetableSheetIsOpen, setEditTimetableSheetIsOpen] =
+    React.useState(false);
+
+  const form = useForm<z.infer<typeof TimetableFormSchema>>({
+    resolver: zodResolver(TimetableFormSchema),
+    defaultValues: {
+      spaceCode: "",
+      lab: "",
+      name: "",
+      capacity: 0,
+      canCombine: false,
+      combinedPartnerId: "",
+      dataSource: "",
+      defaultColour: "",
+    },
+  });
+
+  const canCombine = form.watch("canCombine", false);
+
+  const [timetables, setTimetables] = React.useState<ITimetable[]>([]);
+  
+  React.useEffect(() => {
+    fetchTimetables();
+  }, []);
+
+  const fetchTimetables = async () => {
+    try {
+      const response = await axios.get(
+        `${API_URL}/v2/timetable`,
+        {
+          headers: { Authorization: `Bearer ${getCookie("token")}` },
+        }
+      );
+      const timetables = response.data.timetables;
+      if (timetables.length === 0) {
+        toast("No timetables found");
+      } else {
+        setTimetables(timetables);
+      }
+    } catch (error) {
+      console.error("There was an error!", error);
+      toast(error.message);
+    }
+  };
+
+  React.useEffect(() => {
+    form.reset({
+      spaceCode: timetable.spaceCode || "",
+      lab: timetable.lab || "",
+      name: timetable.name || "",
+      capacity: (timetable.capacity || 0).toString(),
+      canCombine: timetable.canCombine || false,
+      combinedPartnerId: timetable.combinedPartnerId || "",
+      dataSource: timetable.dataSource || "",
+      defaultColour: timetable.defaultColour || "",
+    });
+  }, [timetable]);
+
+  const checkIfUserIsTech = async () => {
+    try {
+      const response = await axios.get(API_URL + "/v2/user/me", {
+        headers: {
+          Authorization: `Bearer ${getCookie("token")}`,
+        },
+      });
+      return response.data.users[0].role === "TECHNICIAN";
+    } catch (error) {
+      console.error("There was an error!", error);
+      toast("Error checking if you have permission " + error?.message);
+      return false;
+    }
+  };
+
+  const onSubmit = async (data: any) => {
+    // Blank out partner ID if cant combine
+    let submissionData = data;
+    if (!canCombine) {
+      submissionData.combinedPartnerId = null;
+    }
+
+    if (!checkIfUserIsTech()) {
+      toast("You're not a technician! You cannot modify other users.");
+      return;
+    }
+
+    if (
+      !confirm(
+        `Are you sure you want to create the timetable ${submissionData.spaceCode} (${submissionData.name}) to Asgard?`
+      )
+    ) {
+      toast("Action has been cancelled");
+      return;
+    }
+
+    try {
+      // await axios.post(API_URL + "/v2/timetable", submissionData, {
+      //   headers: {
+      //     Authorization: `Bearer ${getCookie("token")}`,
+      //   },
+      // });
+      // toast("Timetable created successfully");
+      // setEditTimetableSheetIsOpen(false);
+      // fetchData();
+      console.log(submissionData)
+      throw new Error("Not yet implemented!");
+    } catch (error: any) {
+      console.error("There was an error!", error);
+      toast(error.response.data.message || "Something went wrong");
+    }
+  };
+
+  return (
+    <Sheet
+      open={editTimetableSheetIsOpen}
+      onOpenChange={setEditTimetableSheetIsOpen}
+    >
+      <SheetTrigger asChild>
+        <Button variant={"primaryOutline"}>Edit</Button>
+      </SheetTrigger>
+      <SheetContent className="w-full max-w-[540px]">
+        <SheetHeader>
+          <SheetTitle>Edit Timetable</SheetTitle>
+          <SheetDescription>
+            Editing the details for {timetable.spaceCode}'s timetable.
+          </SheetDescription>
+        </SheetHeader>
+        <ScrollArea className="h-[calc(100vh-150px)]">
+          <Form {...form}>
+            <form
+              onSubmit={form.handleSubmit(onSubmit)}
+              className="space-y-6 px-1"
+            >
+              <FormField
+                control={form.control}
+                name="spaceCode"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Space Code</FormLabel>
+                    <FormControl>
+                      <Input {...field} />
+                    </FormControl>
+                    <FormDescription>
+                      This is the rooms official name which has been given to us
+                      by estates, such as <strong>INB1201</strong>, but also may
+                      be slightly different for specific bookable booths.
+                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="lab"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Lab Code</FormLabel>
+                    <FormControl>
+                      <Input {...field} />
+                    </FormControl>
+                    <FormDescription>
+                      This is the internal "SoCS" name for the lab, such as
+                      INB1102 is known as 1A.
+                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="name"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Display Name</FormLabel>
+                    <FormControl>
+                      <Input {...field} />
+                    </FormControl>
+                    <FormDescription>
+                      This is the long name for a room, e.g. "Computing Lab 1A".
+                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="capacity"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Capacity</FormLabel>
+                    <FormControl>
+                      <Input type="number" {...field} />
+                    </FormControl>
+                    <FormDescription>
+                      How many people can you fit in this timetable?
+                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="defaultColour"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>
+                      Default Event Colour
+                      <span className="text-destructive">*</span>
+                    </FormLabel>
+                    <FormControl>
+                      <ColourSelector
+                        selectedColour={field.value}
+                        onChange={field.onChange}
+                        defaultColour={""}
+                      />
+                    </FormControl>
+                    <FormDescription>
+                      What colour would you like the events to be if you don't
+                      explicitly set a colour?
+                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="dataSource"
+                render={({ field }) => (
+                  <FormItem className="flex flex-col">
+                    <FormLabel>Data Source</FormLabel>
+                    <Select value={field.value} onValueChange={field.onChange}>
+                      <SelectTrigger className="w-full">
+                        <SelectValue placeholder="Select how this timetable gets it's data" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectGroup>
+                          {TimetableDataSources.map((source) => (
+                            <SelectItem key={source.value} value={source.value}>
+                              {source.label}
+                            </SelectItem>
+                          ))}
+                        </SelectGroup>
+                      </SelectContent>
+                    </Select>
+                    <FormDescription>
+                      How are you entering data into this timetable? Are you
+                      doing it manually for each event? Are you using the
+                      University's room bookings? Or are you subscribing to a
+                      calendar?
+                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="canCombine"
+                render={({ field }) => (
+                  <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
+                    <FormControl>
+                      <Checkbox
+                        checked={field.value}
+                        onCheckedChange={field.onChange}
+                      />
+                    </FormControl>
+                    <div className="space-y-1 leading-none">
+                      <FormLabel>
+                        This timetable can combine with another timetable that
+                        already exists.
+                      </FormLabel>
+                    </div>
+                  </FormItem>
+                )}
+              />
+
+              {canCombine && (
+                <FormField
+                  control={form.control}
+                  name="combinedPartnerId"
+                  render={({ field }) => (
+                    <FormItem className="flex flex-col">
+                      <FormLabel>Partner Timetable</FormLabel>
+                      <Select
+                        value={field.value}
+                        onValueChange={field.onChange}
+                      >
+                        <SelectTrigger className="w-full">
+                          <SelectValue placeholder="Select which timetable we are paired with" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectGroup>
+                            {timetables.map((tt: ITimetable) => (
+                              <SelectItem key={tt.id} value={tt.id}>
+                                {tt.spaceCode}: {tt.name}
+                              </SelectItem>
+                            ))}
+                          </SelectGroup>
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              )}
+
+              <Button variant={"constructive"} type="submit">
+                Update
+              </Button>
+            </form>
+          </Form>
+        </ScrollArea>
+      </SheetContent>
+    </Sheet>
+  );
+};
 
 export function TimetablePage(props: Props) {
   const [timetable, setTimetable] = React.useState<ITimetable>(
@@ -611,16 +958,16 @@ export function TimetablePage(props: Props) {
 
   return (
     <>
-      <div className="w-full text-xl flex flex-col p-0 tablet:p-10 pt-0">
-        {timetable.isDeleted && (
+      {timetable.isDeleted && (
+        <div className="w-full text-xl flex flex-col p-0 tablet:p-10 pt-0">
           <div className="bg-destructive px-10 text-center py-5 rounded-xl text-white">
             <p>
               This timetable is deleted, it will need to be reactivated before
               you can use it.
             </p>
           </div>
-        )}
-      </div>
+        </div>
+      )}
       <div className="w-full text-xl flex flex-col items-center text-center p-2 tablet:p-10 pt-0">
         <div className="flex flex-col laptop:flex-row w-full justify-between items-center">
           <div className="flex flex-col">
@@ -674,7 +1021,7 @@ export function TimetablePage(props: Props) {
             >
               Open in Y2
             </Button>
-            <Button variant={"primaryOutline"}>Edit</Button>
+            <EditTimetable fetchData={fetchTimetableData} timetable={timetable} />
 
             {timetable.isDeleted ? (
               <Button

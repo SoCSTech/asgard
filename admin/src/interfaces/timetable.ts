@@ -1,6 +1,7 @@
 export interface ITimetable {
     id: string;
     spaceCode: string;
+    lab: string;
     name: string;
     creationDate: Date;
     capacity: number;
