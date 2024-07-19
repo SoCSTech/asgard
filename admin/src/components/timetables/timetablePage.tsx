@@ -203,14 +203,14 @@ const EditTimetable: React.FC<EditTimetableProps> = ({
     }
 
     try {
-      // await axios.post(API_URL + "/v2/timetable", submissionData, {
-      //   headers: {
-      //     Authorization: `Bearer ${getCookie("token")}`,
-      //   },
-      // });
-      // toast("Timetable created successfully");
-      // setEditTimetableSheetIsOpen(false);
-      // fetchData();
+      await axios.put(API_URL + "/v2/timetable/" + timetable.id, submissionData, {
+        headers: {
+          Authorization: `Bearer ${getCookie("token")}`,
+        },
+      });
+      toast("Timetable updated successfully");
+      setEditTimetableSheetIsOpen(false);
+      fetchData();
       console.log(submissionData)
       throw new Error("Not yet implemented!");
     } catch (error: any) {
