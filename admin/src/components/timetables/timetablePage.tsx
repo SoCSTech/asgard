@@ -80,7 +80,6 @@ export const TimetableDataSources = [
   { label: "Microsoft Bookings", value: "MS_BOOKINGS" },
 ];
 
-
 const EventFormSchema = z.object({
   id: z.string(),
   name: z.string().min(2).max(128),
@@ -128,19 +127,16 @@ const EditTimetable: React.FC<EditTimetableProps> = ({
   const canCombine = form.watch("canCombine", false);
 
   const [timetables, setTimetables] = React.useState<ITimetable[]>([]);
-  
+
   React.useEffect(() => {
     fetchTimetables();
   }, []);
 
   const fetchTimetables = async () => {
     try {
-      const response = await axios.get(
-        `${API_URL}/v2/timetable`,
-        {
-          headers: { Authorization: `Bearer ${getCookie("token")}` },
-        }
-      );
+      const response = await axios.get(`${API_URL}/v2/timetable`, {
+        headers: { Authorization: `Bearer ${getCookie("token")}` },
+      });
       const timetables = response.data.timetables;
       if (timetables.length === 0) {
         toast("No timetables found");
@@ -203,16 +199,18 @@ const EditTimetable: React.FC<EditTimetableProps> = ({
     }
 
     try {
-      await axios.put(API_URL + "/v2/timetable/" + timetable.id, submissionData, {
-        headers: {
-          Authorization: `Bearer ${getCookie("token")}`,
-        },
-      });
+      await axios.put(
+        API_URL + "/v2/timetable/" + timetable.id,
+        submissionData,
+        {
+          headers: {
+            Authorization: `Bearer ${getCookie("token")}`,
+          },
+        }
+      );
       toast("Timetable updated successfully");
       setEditTimetableSheetIsOpen(false);
       fetchData();
-      console.log(submissionData)
-      throw new Error("Not yet implemented!");
     } catch (error: any) {
       console.error("There was an error!", error);
       toast(error.response.data.message || "Something went wrong");
@@ -998,6 +996,14 @@ export function TimetablePage(props: Props) {
                 <strong>Data Source:</strong>{" "}
                 {formatEnumValue(String(timetable.dataSource))}
               </li>
+              <li className="flex flex-row items-center">
+                <strong>Default Event Colour:</strong>
+                <div
+                  className="w-5 h-5 rounded-full ml-2"
+                  style={{ backgroundColor: timetable.defaultColour }}
+                ></div>
+                <span className="ml-2"> {timetable.defaultColour}</span>
+              </li>
             </ul>
           </div>
           <div className="flex flex-col tablet:flex-row justify-evenly gap-2 mt-5 laptop:mt-0 bg-black p-5 rounded-xl">
@@ -1021,7 +1027,10 @@ export function TimetablePage(props: Props) {
             >
               Open in Y2
             </Button>
-            <EditTimetable fetchData={fetchTimetableData} timetable={timetable} />
+            <EditTimetable
+              fetchData={fetchTimetableData}
+              timetable={timetable}
+            />
 
             {timetable.isDeleted ? (
               <Button
