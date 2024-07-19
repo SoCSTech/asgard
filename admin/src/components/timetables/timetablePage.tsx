@@ -957,7 +957,7 @@ export function TimetablePage(props: Props) {
   return (
     <>
       {timetable.isDeleted && (
-        <div className="w-full text-xl flex flex-col p-0 tablet:p-10 pt-0">
+        <div className="w-full text-xl flex flex-col p-2 tablet:p-10 pt-0">
           <div className="bg-destructive px-10 text-center py-5 rounded-xl text-white">
             <p>
               This timetable is deleted, it will need to be reactivated before
