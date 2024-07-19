@@ -45,7 +45,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"username\": \"svc-dataimporter1\"\n}",
+							"raw": "{\n  \"username\": \"steepbill\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -92,7 +92,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"resetToken\": \"55611661\",\n  \"password\": \"computing\"\n}",
+							"raw": "{\n  \"resetToken\": \"010723F7\",\n  \"password\": \"computing\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -181,7 +181,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"username\": \"joshcooper\",\n  \"shortName\": \"Josh\",\n  \"fullName\": \"Josh Cooper\",\n  \"role\": \"TECHNICIAN\",\n  \"email\": \"joshcooper@lincoln.ac.uk\"\n}",
+							"raw": "{\n  \"username\": \"steepbill\",\n  \"shortName\": \"Billiam\",\n  \"fullName\": \"Steep Billiam\",\n  \"role\": \"STANDARD\",\n  \"email\": \"joshcooper+steepbill@lincoln.ac.uk\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -292,7 +292,7 @@
 						"method": "POST",
 						"header": [],
 						"url": {
-							"raw": "{{API_URL}}/v2/user/reactivate/jappleseed",
+							"raw": "{{API_URL}}/v2/user/reactivate/zvonby3nvxi9xz27ws3bxrdt",
 							"host": [
 								"{{API_URL}}"
 							],
@@ -300,7 +300,7 @@
 								"v2",
 								"user",
 								"reactivate",
-								"jappleseed"
+								"zvonby3nvxi9xz27ws3bxrdt"
 							]
 						}
 					},
@@ -335,14 +335,14 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{API_URL}}/v2/timetable/s0nssm54ft36fxovj0t2oxqp",
+							"raw": "{{API_URL}}/v2/timetable/INB9999",
 							"host": [
 								"{{API_URL}}"
 							],
 							"path": [
 								"v2",
 								"timetable",
-								"s0nssm54ft36fxovj0t2oxqp"
+								"INB9999"
 							]
 						}
 					},
@@ -466,6 +466,62 @@
 					"request": {
 						"method": "GET",
 						"header": [],
+						"url": {
+							"raw": "{{API_URL}}/v2/timetable/my",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"v2",
+								"timetable",
+								"my"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Timetable - My",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"user\": \"me\",\n    \"timetable\": \"INB9999\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{API_URL}}/v2/timetable/my",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"v2",
+								"timetable",
+								"my"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Timetable - My",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"user\": \"me\",\n    \"timetable\": \"INB9999\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
 						"url": {
 							"raw": "{{API_URL}}/v2/timetable/my",
 							"host": [
@@ -1265,11 +1321,33 @@
 		"bearer": [
 			{
 				"key": "token",
-				"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Iml1czdxYnJ6eG5jZHdvNXpjZGRoYWtneSIsInVzZXJuYW1lIjoiam9zaGNvb3BlciIsImlhdCI6MTcyMDc5ODY3OSwiZXhwIjoxNzIwODg1MDc5fQ.5AbfvVnTvGHZI8zhLWAOvhdtWr2gsAsGbhmrpnsPNKg",
+				"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Iml1czdxYnJ6eG5jZHdvNXpjZGRoYWtneSIsInVzZXJuYW1lIjoiam9zaGNvb3BlciIsImlhdCI6MTcyMTM4MzU0NywiZXhwIjoxNzIxNDY5OTQ3fQ.lEkTU3l--CxZcDjKhJCNUy_Rtoznsb-ld4Z1GOs3qS8",
 				"type": "string"
 			}
 		]
 	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
 	"variable": [
 		{
 			"key": "API_URL",

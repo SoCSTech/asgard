@@ -29,6 +29,7 @@ type TimetableWithPartner = {
     canCombine: boolean;
     combinedPartnerId: string | null;
     isDeleted: boolean;
+    isFavourite?: boolean;
     dataSource: "MANUAL" | "UOL_TIMETABLE" | "ICAL" | "MS_BOOKINGS";
     combinedPartnerSpaceCode?: string;
 };
@@ -52,10 +53,9 @@ export const convertSpaceCodeToTimetableId = async (timetableId: string) => {
     const isSpaceCode: RegExp = /^[A-Za-z]{3}\d{4}$/; // Three Letters - 4 Numbers
     if (isSpaceCode.test(timetableId)) {
         const timetable = await db.select().from(timetableSchema)
-            .where(and(
-                eq(timetableSchema.spaceCode, String(timetableId)),
-                eq(timetableSchema.isDeleted, false)
-            ));
+            .where(
+                eq(timetableSchema.spaceCode, String(timetableId))
+            );
 
         if (timetable.length !== 1) {
             console.error("Couldn't find timetable for that Id???")
@@ -120,12 +120,19 @@ const addMyTimetables = async (req: Request, res: Response, next: NextFunction) 
     }
 
     const timetableId = await convertSpaceCodeToTimetableId(req.body.timetable)
+    console.log(timetableId)
+
+    // Allow for username to be "me"
+    let userId: string = req.body.user
+    if (userId == "me") {
+        userId = currentUserId
+    }
 
     // Check if user exists
     const user = await db.select().from(userSchema).where(or(
-        eq(userSchema.id, String(req.body.user)),
-        eq(userSchema.username, String(req.body.user)),
-        eq(userSchema.email, String(req.body.user)),
+        eq(userSchema.id, String(userId)),
+        eq(userSchema.username, String(userId)),
+        eq(userSchema.email, String(userId)),
     ))
 
     if (user.length !== 1) {
@@ -156,17 +163,80 @@ const addMyTimetables = async (req: Request, res: Response, next: NextFunction) 
 };
 
 const removeMyTimetables = async (req: Request, res: Response, next: NextFunction) => {
-    const timetables = await db.select()
-        .from(timetableSchema)
-        .where(eq(timetableSchema.isDeleted, false))
-        .orderBy(asc(timetableSchema.spaceCode));
+    const token = getTokenFromAuthCookie(req, res)
+    const currentUserId = getUserIdFromJWT(token);
+    if (await isUserATechnician(currentUserId) == false) {
+        res.status(401).json({ "message": "You don't have permission to add timetables to users" })
+        return
+    }
 
-    res.json({ timetables: timetables });
+    const timetableId = await convertSpaceCodeToTimetableId(req.body.timetable)
+
+    // Allow for username to be "me"
+    let userId: string = req.body.user
+    if (userId == "me") {
+        userId = currentUserId
+    }
+
+    // Check if user exists
+    const user = await db.select().from(userSchema).where(or(
+        eq(userSchema.id, String(userId)),
+        eq(userSchema.username, String(userId)),
+        eq(userSchema.email, String(userId)),
+    ))
+
+    if (user.length !== 1) {
+        res.status(404).json({ "message": "User does not exist" })
+        return;
+    }
+
+    // Check if user has access/"my" to that timetable already
+    const oldLink = await db.select().from(userTimetablesSchema)
+        .where(and(
+            eq(userTimetablesSchema.user, user[0].id),
+            eq(userTimetablesSchema.timetable, timetableId)
+        ))
+
+    if (oldLink.length !== 1) {
+        res.status(409).json({ "message": "User does not have access to that timetable anyway!" })
+        return;
+    }
+
+    // Push to DB new timetable
+    const link = await db.delete(userTimetablesSchema).where(and(
+        eq(userTimetablesSchema.timetable, timetableId),
+        eq(userTimetablesSchema.user, user[0].id),
+    ))
+
+    await log(`Unlinked user ${user[0].username} with timetable ${timetableId}`, currentUserId)
+    res.status(201).json({ message: `Unlinked user ${user[0].username} with timetable ${timetableId}` });
 };
 
 const getTimetableById = async (req: Request, res: Response, next: NextFunction) => {
     try {
+        let timetableIsFavourite = false
         const timetableId: string = req.params.id;
+
+        // If the user is logged in check if they are,
+        // check if they have this timetable as a favourite
+        // if they do add it to the return value
+        if (req.headers.authorization) {
+            console.log("USER IS SIGNED IN!! YIPPPIEE :3")
+            const token = getTokenFromAuthCookie(req, res)
+            const currentUserId = getUserIdFromJWT(token);
+
+            const link = await db.select().from(userTimetablesSchema)
+                .where(and(
+                    eq(userTimetablesSchema.user, currentUserId),
+                    eq(userTimetablesSchema.timetable, timetableId)
+                ))
+
+            console.log(link)
+
+            if (link.length == 1) {
+                timetableIsFavourite = true
+            }
+        }
 
         const timetables: TimetableWithPartner[] = await db.select().from(timetableSchema)
             .where(
@@ -178,6 +248,7 @@ const getTimetableById = async (req: Request, res: Response, next: NextFunction)
 
         const returnedTimetables: TimetableWithPartner[] = await Promise.all(timetables.map(async (tt) => {
             const extendedTimetable = { ...tt } as TimetableWithPartner;
+            extendedTimetable.isFavourite = timetableIsFavourite
             if (tt.combinedPartnerId) {
                 extendedTimetable.combinedPartnerSpaceCode = await convertTimetableIdToSpaceCode(tt.combinedPartnerId);
             }
