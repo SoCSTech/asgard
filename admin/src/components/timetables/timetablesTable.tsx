@@ -383,12 +383,12 @@ export function TimetablesTable() {
 
   return (
     <>
-      <div className="flex flex-row justify-between p-10 pt-0">
+      <div className="flex flex-row justify-between px-2 tablet:px-10 py-0">
         <div></div>
         <h1 className="text-3xl font-extrabold text-center">Timetables</h1>
         <CreateNewTimetable fetchData={fetchData} timetables={timetables} />
       </div>
-      <div className="relative overflow-x-auto tablet:shadow-md mt-5 rounded-xl m-10 mt-0">
+      <div className="relative overflow-x-auto tablet:shadow-md rounded-xl m-2 tablet:m-10">
         <TableList
           headers={["spaceCode", "name", "capacity", "dataSource"]}
           data={timetables}

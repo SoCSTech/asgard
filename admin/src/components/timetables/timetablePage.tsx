@@ -611,7 +611,7 @@ export function TimetablePage(props: Props) {
 
   return (
     <>
-      <div className="w-full text-xl flex flex-col p-10 pt-0">
+      <div className="w-full text-xl flex flex-col p-0 tablet:p-10 pt-0">
         {timetable.isDeleted && (
           <div className="bg-destructive px-10 text-center py-5 rounded-xl text-white">
             <p>
@@ -621,7 +621,7 @@ export function TimetablePage(props: Props) {
           </div>
         )}
       </div>
-      <div className="w-full text-xl flex flex-col items-center text-center p-10 pt-0">
+      <div className="w-full text-xl flex flex-col items-center text-center p-2 tablet:p-10 pt-0">
         <div className="flex flex-col laptop:flex-row w-full justify-between items-center">
           <div className="flex flex-col">
             <h1 className="text-3xl mb-5">
@@ -653,7 +653,7 @@ export function TimetablePage(props: Props) {
               </li>
             </ul>
           </div>
-          <div className="flex flex-row justify-evenly gap-2 mt-5 laptop:mt-0 bg-black p-5 rounded-xl">
+          <div className="flex flex-col tablet:flex-row justify-evenly gap-2 mt-5 laptop:mt-0 bg-black p-5 rounded-xl">
             {currentUserIsTechnician && (
               <FavouriteButton
                 onFavouriteChange={handleFavouriteChange}
