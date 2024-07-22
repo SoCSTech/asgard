@@ -3,21 +3,6 @@ import axios from "axios";
 import { API_URL, Y2_URL } from "@/constants";
 import { getCookie } from "@/lib/cookie";
 import { Button } from "../ui/button";
-import type { ITimetable } from "@/interfaces/timetable";
-import TimetableEventsTableList from "@/components/timetables/timetableEventsTableList";
-import type { IEvent } from "@/interfaces/event";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import {
-  Sheet,
-  SheetContent,
-  SheetDescription,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-  SheetClose,
-} from "@/components/ui/sheet";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { formatEnumValue } from "@/lib/enum";
 import { toast } from "sonner";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -101,40 +86,37 @@ function timetableCard(
   item: TimetableListData,
   groupId: string
 ): React.ReactElement {
-  // const form = useForm<z.infer<typeof GroupMemberFormSchema>>({
-  //   resolver: zodResolver(GroupMemberFormSchema),
-  //   defaultValues: {
-  //     location: item.location || "",
-  //     order: item.order || 0,
-  //   },
-  // });
-
-  // console.log(item);
-  // console.log(groupId);
-
-  // React.useEffect(() => {
-  //   form.reset({
-  //     location: item.location || "",
-  //     order: item.order || 0,
-  //   });
-  // }, [item, form]);
-
   const onSubmit = async (data: any) => {
     console.log(data);
-    return;
-    try {
-      await axios.post(API_URL + "/v2/timetable-group", data, {
+  };
+
+  const removeTimetable = async () => {
+    if (
+      !confirm(
+        `Are you sure you want to remove ${item.timetable.spaceCode} from the group?`
+      )
+    ) {
+      toast("Action has been cancelled");
+      return;
+    }
+
+    await axios
+      .delete(API_URL + "/v2/timetable-group/remove", {
         headers: {
           Authorization: `Bearer ${getCookie("token")}`,
         },
+        data: {
+          timetableId: item.timetable.id,
+          groupId: groupId,
+        },
+      })
+      .then(() => {
+        toast("Timetable has been removed from group!");
+      })
+      .catch((error) => {
+        console.error("There was an error!", error);
+        toast(error.message);
       });
-      toast("Timetable group created successfully");
-      //  setNewGroupSheetIsOpen(false);
-      //  fetchData();
-    } catch (error: any) {
-      console.error("There was an error!", error);
-      toast(error.response.data.message || "Something went wrong");
-    }
   };
 
   return (
@@ -154,7 +136,10 @@ function timetableCard(
           )}
           <Button
             variant={"ghost"}
-            onClick={() => alert("nyi! delete " + item.timetable.spaceCode)}
+            onClick={(event) => {
+              event.preventDefault();
+              removeTimetable();
+            }}
           >
             <Trash className="text-red-500" />
           </Button>
@@ -167,9 +152,7 @@ function timetableCard(
           </Button>
         </div>
       </div>
-      <div className="border border-destructive w-full p-2">
-        This is the bottom mlem
-      </div>
+      <div className="w-full p-2">This is the bottom mlem</div>
     </div>
   );
 }
@@ -531,7 +514,8 @@ export function GroupsPage(props: Props) {
                 <Button
                   variant="primaryOutline"
                   className="text-black dark:text-white"
-                  onClick={() => {
+                  onClick={(event) => {
+                    event.preventDefault()
                     const newWindow = window.open(
                       `${Y2_URL}/#/group/${group.id}`,
                       "_blank"
