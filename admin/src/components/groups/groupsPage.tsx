@@ -392,14 +392,14 @@ export function GroupsPage(props: Props) {
           </div>
         </div>
       )}
-      <div className="w-full text-xl flex flex-col items-center p-2 tablet:p-10 pt-0 mt-0 pb-0 mb-0">
+      <div className="w-full text-xl flex flex-row tablet:flex-col items-center p-2 tablet:p-10 pt-0 mt-0 pb-0 mb-0">
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="w-full">
-            <div className="flex justify-between bg-black dark:bg-muted text-white rounded-2xl p-10 mt-10 w-full items-center text-left">
+            <div className="flex flex-col tablet:flex-row justify-between bg-black dark:bg-muted text-white rounded-2xl p-10 w-full items-center text-left">
               <img
                 src="/images/logos/uol-white-text.svg"
                 alt="University of Lincoln"
-                className="w-20 h-20 mr-10 self-start"
+                className="w-20 h-20 mr-10 self-start hidden tablet:block"
               />
               <div>
                 <FormField
@@ -444,7 +444,7 @@ export function GroupsPage(props: Props) {
                       <FormLabel>Group Title</FormLabel>
                       <FormControl>
                         <Input
-                          className="bg-black border-dashed text-5xl font-semibold h-20"
+                          className="bg-black border-dashed text-2xl tablet:text-4xl font-semibold h-20"
                           placeholder={"Today's Timetable"}
                           {...field}
                         />
@@ -520,14 +520,14 @@ export function GroupsPage(props: Props) {
 
                 <Button
                   variant={"primaryOutline"}
-                  className="text-black w-full mt-5"
+                  className="text-black w-full mt-5 dark:text-white"
                   type="submit"
                 >
                   Update
                 </Button>
               </div>
 
-              <div className="flex flex-col tablet:flex-row justify-evenly gap-2 mt-5 laptop:mt-0 p-5 self-start">
+              <div className="flex flex-row justify-evenly gap-2 mt-5 laptop:mt-0 p-5 self-start">
                 <Button
                   variant="primaryOutline"
                   className="text-black dark:text-white"

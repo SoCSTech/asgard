@@ -77,7 +77,7 @@ function TimetableCard({ timetable }: { timetable: ITimetable }) {
 
   return (
     <a href={`/timetables/${timetable.id}`}>
-      <div className="flex flex-col relative overflow-x-auto tablet:shadow-md m-5 rounded-xl bg-gray-100 hover:bg-gray-200 p-10 min-w-15 min-h-[360px]">
+      <div className="flex flex-col relative overflow-x-auto tablet:shadow-md m-5 rounded-xl bg-gray-100 hover:bg-gray-200 dark:bg-muted dark:hover:bg-muted-foreground p-10 min-w-15 min-h-[360px]">
         <div className="mb-5">
           <h2 className="text-xl font-semibold">{timetable.spaceCode}</h2>
           <p className="text-md">{timetable.name}</p>

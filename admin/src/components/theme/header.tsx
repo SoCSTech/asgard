@@ -78,7 +78,7 @@ export default function Header() {
             <HeaderLink href="/search">Search</HeaderLink>
 
             <HeaderLink href="/settings">
-              <div className="flex border px-2 py-1 mt-4 rounded-xl">
+              <div className="flex px-2 py-1 mt-4 rounded-xl">
                 <User className="mr-2" /> {user.fullName}
               </div>
             </HeaderLink>
