@@ -7,6 +7,7 @@ export interface ITimetableGroup {
     modifiedBy: string;
     isDeleted: boolean;
     displayInfoPane: boolean;
+    displayInfoPaneQR: boolean;
     infoPaneText: string;
     infoPaneQRUrl: string;
     object: string;
