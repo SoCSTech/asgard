@@ -33,143 +33,8 @@ import type {
   TimetableListData,
 } from "@/interfaces/timetableGroup";
 import { GripHorizontal, Save, Trash } from "lucide-react";
+import { timetablesList } from "./groupTimetableCard";
 
-interface Direction {
-  icon: string;
-  label: string;
-}
-
-type TimetableDirectionsType = {
-  [key: string]: Direction;
-};
-
-const TimetableDirections: TimetableDirectionsType = {
-  UPSTAIRS: {
-    icon: "fa-solid:level-up-alt",
-    label: "Upstairs",
-  },
-  DOWNSTAIRS: {
-    icon: "fa-solid:level-down-alt",
-    label: "Downstairs",
-  },
-  LEFT: {
-    icon: "fa-solid:arrow-left",
-    label: "Left",
-  },
-  RIGHT: {
-    icon: "fa-solid:arrow-right",
-    label: "Right",
-  },
-  FORWARD: {
-    icon: "fa-solid:arrow-up",
-    label: "Forward",
-  },
-  BACKWARD: {
-    icon: "fa-solid:arrow-down",
-    label: "Backward",
-  },
-};
-
-function getDirectionIcon(direction: string): string {
-  if (direction === null || direction === undefined) {
-    return "";
-  }
-  return TimetableDirections[direction].icon;
-}
-
-const GroupMemberFormSchema = z.object({
-  location: z.string(),
-  order: z.number(),
-});
-
-function timetableCard(
-  item: TimetableListData,
-  groupId: string
-): React.ReactElement {
-  const onSubmit = async (data: any) => {
-    console.log(data);
-  };
-
-  const removeTimetable = async () => {
-    if (
-      !confirm(
-        `Are you sure you want to remove ${item.timetable.spaceCode} from the group?`
-      )
-    ) {
-      toast("Action has been cancelled");
-      return;
-    }
-
-    await axios
-      .delete(API_URL + "/v2/timetable-group/remove", {
-        headers: {
-          Authorization: `Bearer ${getCookie("token")}`,
-        },
-        data: {
-          timetableId: item.timetable.id,
-          groupId: groupId,
-        },
-      })
-      .then(() => {
-        toast("Timetable has been removed from group!");
-      })
-      .catch((error) => {
-        console.error("There was an error!", error);
-        toast(error.message);
-      });
-  };
-
-  return (
-    <div
-      key={item.timetable.spaceCode}
-      className="flex flex-col bg-black dark:bg-muted text-white rounded-2xl p-10 mt-10 w-full items-center text-left justify-between"
-    >
-      <div className="flex items-center justify-between w-full">
-        <div className="flex items-center">
-          <GripHorizontal className="mr-5" />
-          <h1 className="font-semibold">{item.timetable.spaceCode}</h1>
-        </div>
-
-        <div className="flex items-center">
-          {item.location && (
-            <Icon icon={getDirectionIcon(item.location)} className="mr-5" />
-          )}
-          <Button
-            variant={"ghost"}
-            onClick={(event) => {
-              event.preventDefault();
-              removeTimetable();
-            }}
-          >
-            <Trash className="text-red-500" />
-          </Button>
-          <Button
-            variant={"ghost"}
-            type="submit"
-            onClick={() => alert("nyi! update " + item.timetable.spaceCode)}
-          >
-            <Save className="text-green-500" />
-          </Button>
-        </div>
-      </div>
-      <div className="w-full p-2">This is the bottom mlem</div>
-    </div>
-  );
-}
-
-function timetablesList(
-  data: ITimetableGroup | undefined | null
-): React.ReactElement[] {
-  // Ensure data is an array
-  if (!Array.isArray(data?.timetables)) {
-    console.error("Invalid data passed to timetablesList:", data);
-    return [];
-  }
-  console.log(data.timetables);
-  return data.timetables.map((item: TimetableListData) => {
-    return timetableCard(item, data.id);
-  });
-}
 
 interface Props {
   groupId: string;
@@ -233,8 +98,6 @@ export function GroupsPage(props: Props) {
         },
       });
       toast("Timetable group created successfully");
-      //  setNewGroupSheetIsOpen(false);
-      //  fetchData();
     } catch (error: any) {
       console.error("There was an error!", error);
       toast(error.response.data.message || "Something went wrong");
@@ -515,7 +378,7 @@ export function GroupsPage(props: Props) {
                   variant="primaryOutline"
                   className="text-black dark:text-white"
                   onClick={(event) => {
-                    event.preventDefault()
+                    event.preventDefault();
                     const newWindow = window.open(
                       `${Y2_URL}/#/group/${group.id}`,
                       "_blank"
@@ -556,7 +419,6 @@ export function GroupsPage(props: Props) {
       </div>
       <div className="w-full text-xl flex flex-col items-center p-2 tablet:p-10 pt-0 pb-0">
         {timetablesList(group)}
-        {group.id}
       </div>
     </>
   );
