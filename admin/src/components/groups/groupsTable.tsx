@@ -299,7 +299,7 @@ export function GroupsTable() {
     <>
       <div className="flex flex-row justify-between px-2 tablet:px-10 py-0">
         <div></div>
-        <h1 className="text-3xl font-extrabold text-center">Timetables</h1>
+        <h1 className="text-3xl font-extrabold text-center">Timetable Groups</h1>
         <CreateNewGroup fetchData={fetchData} />
       </div>
       <div className="relative overflow-x-auto tablet:shadow-md rounded-xl m-2 tablet:m-10">

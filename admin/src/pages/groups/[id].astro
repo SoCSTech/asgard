@@ -1,0 +1,12 @@
+---
+import Layout from "@/layouts/Layout.astro";
+import { GroupsPage } from "@/components/groups/groupsPage";
+
+const { id } = Astro.params;
+---
+
+<Layout title="Groups">
+  <main>
+    <GroupsPage groupId={id as string} client:only="react" />
+  </main>
+</Layout>

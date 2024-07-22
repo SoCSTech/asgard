@@ -54,6 +54,7 @@
     "zod": "^3.23.8"
   },
   "devDependencies": {
+    "@iconify/react": "^5.0.1",
     "@types/js-cookie": "^3.0.6",
     "@types/md5": "^2.3.5"
   }
