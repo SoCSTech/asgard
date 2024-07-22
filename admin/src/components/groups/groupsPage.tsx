@@ -140,7 +140,7 @@ function timetableCard(
   return (
     <div
       key={item.timetable.spaceCode}
-      className="flex flex-col bg-black text-white rounded-2xl p-10 mt-10 w-full items-center text-left justify-between"
+      className="flex flex-col bg-black dark:bg-muted text-white rounded-2xl p-10 mt-10 w-full items-center text-left justify-between"
     >
       <div className="flex items-center justify-between w-full">
         <div className="flex items-center">
@@ -156,7 +156,7 @@ function timetableCard(
             variant={"ghost"}
             onClick={() => alert("nyi! delete " + item.timetable.spaceCode)}
           >
-            <Trash className="text-destructive" />
+            <Trash className="text-red-500" />
           </Button>
           <Button
             variant={"ghost"}
@@ -173,7 +173,6 @@ function timetableCard(
     </div>
   );
 }
-
 
 function timetablesList(
   data: ITimetableGroup | undefined | null
@@ -396,7 +395,7 @@ export function GroupsPage(props: Props) {
       <div className="w-full text-xl flex flex-col items-center p-2 tablet:p-10 pt-0 mt-0 pb-0 mb-0">
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="w-full">
-            <div className="flex justify-between bg-black text-white rounded-2xl p-10 mt-10 w-full items-center text-left">
+            <div className="flex justify-between bg-black dark:bg-muted text-white rounded-2xl p-10 mt-10 w-full items-center text-left">
               <img
                 src="/images/logos/uol-white-text.svg"
                 alt="University of Lincoln"
@@ -531,7 +530,7 @@ export function GroupsPage(props: Props) {
               <div className="flex flex-col tablet:flex-row justify-evenly gap-2 mt-5 laptop:mt-0 p-5 self-start">
                 <Button
                   variant="primaryOutline"
-                  className="text-black"
+                  className="text-black dark:text-white"
                   onClick={() => {
                     const newWindow = window.open(
                       `${Y2_URL}/#/group/${group.id}`,
@@ -548,14 +547,20 @@ export function GroupsPage(props: Props) {
                 {group.isDeleted ? (
                   <Button
                     variant={"constructive"}
-                    onClick={() => reactivateTimetableGroup()}
+                    onClick={(event) => {
+                      event.preventDefault();
+                      reactivateTimetableGroup();
+                    }}
                   >
                     Reactivate
                   </Button>
                 ) : (
                   <Button
                     variant={"destructive"}
-                    onClick={() => deactivateTimetableGroup()}
+                    onClick={(event) => {
+                      event.preventDefault();
+                      deactivateTimetableGroup();
+                    }}
                   >
                     Deactivate
                   </Button>

@@ -43,7 +43,7 @@ export default function Header() {
   }, []);
 
   return (
-    <header className="bg-black tablet:grid tablet:grid-rows-1 tablet:grid-cols-3 pb-5 tablet:pb-2 py-2 px-5 text-white rounded-b-xl tablet:rounded-none mb-5 drop-shadow-md">
+    <header className="bg-black dark:bg-muted tablet:grid tablet:grid-rows-1 tablet:grid-cols-3 pb-5 tablet:pb-2 py-2 px-5 text-white rounded-b-xl tablet:rounded-none mb-5 drop-shadow-md">
       <div className="ml-2 mt-2 tablet:m-0 h-full">
         <a href="/" className="flex items-center h-full">
           <img
