@@ -43,7 +43,151 @@ import {
 } from "@/components/ui/select";
 import ColourSelector from "../theme/colourPicker";
 import { Icon } from "@iconify/react";
-import type { ITimetableGroup } from "@/interfaces/timetableGroup";
+import type {
+  ITimetableGroup,
+  TimetableListData,
+} from "@/interfaces/timetableGroup";
+import { GripHorizontal, Save, Trash } from "lucide-react";
+
+interface Direction {
+  icon: string;
+  label: string;
+}
+
+type TimetableDirectionsType = {
+  [key: string]: Direction;
+};
+
+const TimetableDirections: TimetableDirectionsType = {
+  UPSTAIRS: {
+    icon: "fa-solid:level-up-alt",
+    label: "Upstairs",
+  },
+  DOWNSTAIRS: {
+    icon: "fa-solid:level-down-alt",
+    label: "Downstairs",
+  },
+  LEFT: {
+    icon: "fa-solid:arrow-left",
+    label: "Left",
+  },
+  RIGHT: {
+    icon: "fa-solid:arrow-right",
+    label: "Right",
+  },
+  FORWARD: {
+    icon: "fa-solid:arrow-up",
+    label: "Forward",
+  },
+  BACKWARD: {
+    icon: "fa-solid:arrow-down",
+    label: "Backward",
+  },
+};
+
+function getDirectionIcon(direction: string): string {
+  if (direction === null || direction === undefined) {
+    return "";
+  }
+  return TimetableDirections[direction].icon;
+}
+
+const GroupMemberFormSchema = z.object({
+  location: z.string(),
+  order: z.number(),
+});
+
+function timetableCard(
+  item: TimetableListData,
+  groupId: string
+): React.ReactElement {
+  // const form = useForm<z.infer<typeof GroupMemberFormSchema>>({
+  //   resolver: zodResolver(GroupMemberFormSchema),
+  //   defaultValues: {
+  //     location: item.location || "",
+  //     order: item.order || 0,
+  //   },
+  // });
+
+  // console.log(item);
+  // console.log(groupId);
+
+  // React.useEffect(() => {
+  //   form.reset({
+  //     location: item.location || "",
+  //     order: item.order || 0,
+  //   });
+  // }, [item, form]);
+
+  const onSubmit = async (data: any) => {
+    console.log(data);
+    return;
+    try {
+      await axios.post(API_URL + "/v2/timetable-group", data, {
+        headers: {
+          Authorization: `Bearer ${getCookie("token")}`,
+        },
+      });
+      toast("Timetable group created successfully");
+      //  setNewGroupSheetIsOpen(false);
+      //  fetchData();
+    } catch (error: any) {
+      console.error("There was an error!", error);
+      toast(error.response.data.message || "Something went wrong");
+    }
+  };
+
+  return (
+    <div
+      key={item.timetable.spaceCode}
+      className="flex flex-col bg-black text-white rounded-2xl p-10 mt-10 w-full items-center text-left justify-between"
+    >
+      <div className="flex items-center justify-between w-full">
+        <div className="flex items-center">
+          <GripHorizontal className="mr-5" />
+          <h1 className="font-semibold">{item.timetable.spaceCode}</h1>
+        </div>
+
+        <div className="flex items-center">
+          {item.location && (
+            <Icon icon={getDirectionIcon(item.location)} className="mr-5" />
+          )}
+          <Button
+            variant={"ghost"}
+            onClick={() => alert("nyi! delete " + item.timetable.spaceCode)}
+          >
+            <Trash className="text-destructive" />
+          </Button>
+          <Button
+            variant={"ghost"}
+            type="submit"
+            onClick={() => alert("nyi! update " + item.timetable.spaceCode)}
+          >
+            <Save className="text-green-500" />
+          </Button>
+        </div>
+      </div>
+      <div className="border border-destructive w-full p-2">
+        This is the bottom mlem
+      </div>
+    </div>
+  );
+}
+
+
+function timetablesList(
+  data: ITimetableGroup | undefined | null
+): React.ReactElement[] {
+  // Ensure data is an array
+  if (!Array.isArray(data?.timetables)) {
+    console.error("Invalid data passed to timetablesList:", data);
+    return [];
+  }
+  console.log(data.timetables);
+  return data.timetables.map((item: TimetableListData) => {
+    return timetableCard(item, data.id);
+  });
+}
 
 interface Props {
   groupId: string;
@@ -124,7 +268,6 @@ export function GroupsPage(props: Props) {
         }
       );
       setGroup(response.data);
-      console.log(response.data);
     } catch (error) {
       console.error("There was an error!", error);
       toast(error.message);
@@ -250,68 +393,32 @@ export function GroupsPage(props: Props) {
           </div>
         </div>
       )}
-      <div className="w-full text-xl flex flex-col items-center p-2 tablet:p-10 pt-0">
+      <div className="w-full text-xl flex flex-col items-center p-2 tablet:p-10 pt-0 mt-0 pb-0 mb-0">
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="w-full">
-            <div className="flex flex-col laptop:flex-row w-full justify-between items-center ">
-              <FormField
-                control={form.control}
-                name="internalName"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Internal Name</FormLabel>
-                    <FormControl>
-                      <Input
-                        className="text-xl font-bold mb-2 h-10"
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <div className="flex flex-col tablet:flex-row justify-evenly gap-2 mt-5 laptop:mt-0 bg-black p-5 rounded-xl drop-shadow-xl">
-                <Button
-                  variant="primaryOutline"
-                  onClick={() => {
-                    const newWindow = window.open(
-                      `${Y2_URL}/#/group/${group.id}`,
-                      "_blank"
-                    );
-                    if (newWindow) {
-                      newWindow.focus();
-                    }
-                  }}
-                >
-                  Open in Y2
-                </Button>
-
-                {group.isDeleted ? (
-                  <Button
-                    variant={"constructive"}
-                    onClick={() => reactivateTimetableGroup()}
-                  >
-                    Reactivate
-                  </Button>
-                ) : (
-                  <Button
-                    variant={"destructive"}
-                    onClick={() => deactivateTimetableGroup()}
-                  >
-                    Deactivate
-                  </Button>
-                )}
-              </div>
-            </div>
-            {/* ^^^ Top Bar ^^^ */}
-
-            <div className="flex bg-black text-white rounded-2xl p-10 mt-10 w-full items-center text-left">
+            <div className="flex justify-between bg-black text-white rounded-2xl p-10 mt-10 w-full items-center text-left">
               <img
                 src="/images/logos/uol-white-text.svg"
                 alt="University of Lincoln"
                 className="w-20 h-20 mr-10 self-start"
               />
               <div>
+                <FormField
+                  control={form.control}
+                  name="internalName"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Internal Name</FormLabel>
+                      <FormControl>
+                        <Input
+                          className="bg-black border-dashed text-xl font-bold mb-2 h-10"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
                 <FormField
                   control={form.control}
                   name="name"
@@ -356,7 +463,7 @@ export function GroupsPage(props: Props) {
                       <FormLabel>Timetable Object</FormLabel>
                       <FormControl>
                         <Input
-                          className="bg-black border-dashed w-1/2"
+                          className="bg-black border-dashed"
                           placeholder={"room"}
                           {...field}
                         />
@@ -374,7 +481,7 @@ export function GroupsPage(props: Props) {
                       <FormLabel>Available Verb</FormLabel>
                       <FormControl>
                         <Input
-                          className="bg-black border-dashed w-1/2"
+                          className="bg-black border-dashed"
                           placeholder={"free"}
                           {...field}
                         />
@@ -385,8 +492,8 @@ export function GroupsPage(props: Props) {
                 />
 
                 <p className="italic text-sm pt-2 ml-5 text-azure">
-                  "5 {form.watch("object", "")}s{" "}
-                  {form.watch("verbAvailable", "")}"
+                  "5 {form.watch("object", "room")}s{" "}
+                  {form.watch("verbAvailable", "free")}"
                 </p>
 
                 <FormField
@@ -397,7 +504,7 @@ export function GroupsPage(props: Props) {
                       <FormLabel>Unavailable Verb</FormLabel>
                       <FormControl>
                         <Input
-                          className="bg-black border-dashed w-1/2"
+                          className="bg-black border-dashed"
                           placeholder={"in use"}
                           {...field}
                         />
@@ -408,16 +515,59 @@ export function GroupsPage(props: Props) {
                 />
 
                 <p className="italic text-sm pt-2 ml-5 text-azure">
-                  "1 {form.watch("object", "")}{" "}
-                  {form.watch("verbUnavailable", "")}"
+                  "1 {form.watch("object", "room")}{" "}
+                  {form.watch("verbUnavailable", "in use")}"
                 </p>
+
+                <Button
+                  variant={"primaryOutline"}
+                  className="text-black w-full mt-5"
+                  type="submit"
+                >
+                  Update
+                </Button>
+              </div>
+
+              <div className="flex flex-col tablet:flex-row justify-evenly gap-2 mt-5 laptop:mt-0 p-5 self-start">
+                <Button
+                  variant="primaryOutline"
+                  className="text-black"
+                  onClick={() => {
+                    const newWindow = window.open(
+                      `${Y2_URL}/#/group/${group.id}`,
+                      "_blank"
+                    );
+                    if (newWindow) {
+                      newWindow.focus();
+                    }
+                  }}
+                >
+                  Open in Y2
+                </Button>
+
+                {group.isDeleted ? (
+                  <Button
+                    variant={"constructive"}
+                    onClick={() => reactivateTimetableGroup()}
+                  >
+                    Reactivate
+                  </Button>
+                ) : (
+                  <Button
+                    variant={"destructive"}
+                    onClick={() => deactivateTimetableGroup()}
+                  >
+                    Deactivate
+                  </Button>
+                )}
               </div>
             </div>
-            <Button variant={"constructive"} type="submit" className="mt-5">
-              Update
-            </Button>
           </form>
         </Form>
+      </div>
+      <div className="w-full text-xl flex flex-col items-center p-2 tablet:p-10 pt-0 pb-0">
+        {timetablesList(group)}
+        {group.id}
       </div>
     </>
   );

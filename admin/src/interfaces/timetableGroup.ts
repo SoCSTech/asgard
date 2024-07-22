@@ -1,3 +1,14 @@
+import type { IEvent } from "./event";
+import type { ITimetable } from "./timetable";
+
+export interface TimetableListData {
+    groupId: string;
+    timetable: ITimetable;
+    order: number;
+    location: string;
+    events: IEvent[];
+}
+
 export interface ITimetableGroup {
     id: string;
     internalName: string;
@@ -13,4 +24,5 @@ export interface ITimetableGroup {
     object: string;
     verbAvailable: string;
     verbUnavailable: string;
+    timetables: TimetableListData[];
 }
