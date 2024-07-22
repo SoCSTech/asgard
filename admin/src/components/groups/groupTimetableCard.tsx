@@ -86,9 +86,11 @@ const GroupMemberFormSchema = z.object({
 export function TimetableCard({
   item,
   groupId,
+  refreshData,
 }: {
   item: TimetableListData;
   groupId: string;
+  refreshData: () => void;
 }): React.ReactElement {
   const itemForm = useForm<z.infer<typeof GroupMemberFormSchema>>({
     resolver: zodResolver(GroupMemberFormSchema),
@@ -120,6 +122,7 @@ export function TimetableCard({
       })
       .then(() => {
         toast("Timetable has been removed from group!");
+        refreshData();
       })
       .catch((error) => {
         console.error("There was an error!", error);
@@ -128,9 +131,6 @@ export function TimetableCard({
   };
 
   async function onItemSubmit(values: z.infer<typeof GroupMemberFormSchema>) {
-    // Do something with the form values.
-    console.log(values);
-
     await axios
       .put(
         `${API_URL}/v2/timetable-group/member`,
@@ -148,6 +148,7 @@ export function TimetableCard({
       )
       .then(() => {
         toast("Timetable group has been updated");
+        refreshData();
       })
       .catch((error) => {
         console.error("There was an error!", error);
@@ -228,7 +229,8 @@ export function TimetableCard({
 }
 
 export function timetablesList(
-  data: ITimetableGroup | undefined | null
+  data: ITimetableGroup | undefined | null,
+  refreshData: () => void
 ): React.ReactElement[] {
   if (!data || !Array.isArray(data.timetables)) {
     console.error("Invalid data passed to timetablesList:", data);
@@ -236,7 +238,12 @@ export function timetablesList(
   }
   return data.timetables.map((item: TimetableListData) => {
     return (
-      <TimetableCard key={item.timetable.id} item={item} groupId={data.id} />
+      <TimetableCard
+        key={item.timetable.id}
+        item={item}
+        groupId={data.id}
+        refreshData={refreshData}
+      />
     );
   });
 }

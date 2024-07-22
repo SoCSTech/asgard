@@ -418,7 +418,7 @@ export function GroupsPage(props: Props) {
         </Form>
       </div>
       <div className="w-full text-xl flex flex-col items-center p-2 tablet:p-10 pt-0 pb-0">
-        {timetablesList(group)}
+        {timetablesList(group, fetchGroupData)}
       </div>
     </>
   );
