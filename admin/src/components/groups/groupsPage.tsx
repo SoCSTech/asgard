@@ -34,7 +34,7 @@ import type {
 } from "@/interfaces/timetableGroup";
 import { GripHorizontal, Save, Trash } from "lucide-react";
 import { timetablesList } from "./groupTimetableCard";
-
+import type { ITimetable } from "@/interfaces/timetable";
 
 interface Props {
   groupId: string;
@@ -57,6 +57,10 @@ export function GroupsPage(props: Props) {
   const [group, setGroup] = React.useState<ITimetableGroup>(
     {} as ITimetableGroup
   );
+  const [timetables, setTimetables] = React.useState<ITimetable[]>([
+    {},
+  ] as ITimetable[]);
+  const [timetableToAdd, setTimetableToAdd] = React.useState<string>();
 
   const form = useForm<z.infer<typeof GroupFormSchema>>({
     resolver: zodResolver(GroupFormSchema),
@@ -73,6 +77,8 @@ export function GroupsPage(props: Props) {
       verbUnavailable: "in use",
     },
   });
+
+  //!! DO THIS
 
   const onSubmit = async (data: any) => {
     if (!checkIfUserIsTech()) {
@@ -119,6 +125,18 @@ export function GroupsPage(props: Props) {
     }
   };
 
+  const fetchTimetablesData = async () => {
+    try {
+      const response = await axios.get(`${API_URL}/v2/timetable`, {
+        headers: { Authorization: `Bearer ${getCookie("token")}` },
+      });
+      setTimetables(response.data.timetables);
+    } catch (error) {
+      console.error("There was an error!", error);
+      toast(error.message);
+    }
+  };
+
   const [currentUserIsTechnician, setCurrentUserIsTechnician] =
     React.useState(false);
 
@@ -144,6 +162,7 @@ export function GroupsPage(props: Props) {
 
   React.useEffect(() => {
     fetchGroupData();
+    fetchTimetablesData();
     checkIfUserIsTech();
   }, []);
 
@@ -225,6 +244,30 @@ export function GroupsPage(props: Props) {
       verbUnavailable: group.verbUnavailable || "",
     });
   }, [group]);
+
+  const addTimetableToGroup = async (event: Event) => {
+    event.preventDefault();
+    try {
+      await axios.post(
+        API_URL + "/v2/timetable-group/add",
+        {
+          timetableId: timetableToAdd,
+          groupId: group.id,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${getCookie("token")}`,
+          },
+        }
+      );
+
+      toast("Added timetable to group");
+      fetchGroupData();
+    } catch (error) {
+      toast(error.response.data.message || "Something went wrong");
+      return;
+    }
+  };
 
   return (
     <>
@@ -416,6 +459,32 @@ export function GroupsPage(props: Props) {
             </div>
           </form>
         </Form>
+      </div>
+      <div className="w-full text-2xl text-semibold flex flex-row tablet:flex-col items-center pb-0 mb-2">
+        <h2>Timetables</h2>
+      </div>
+      <div className="w-full text-xl flex flex-row items-center p-2 tablet:px-10 pt-0 mt-0 pb-0 mb-0">
+        <Select value={timetableToAdd} onValueChange={setTimetableToAdd}>
+          <SelectTrigger>
+            <SelectValue placeholder="Add new timetable to group" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectGroup>
+              {timetables.map((tt: ITimetable) => (
+                <SelectItem key={"add_" + tt.id} value={tt.id}>
+                  {tt.spaceCode}: {tt.name}
+                </SelectItem>
+              ))}
+            </SelectGroup>
+          </SelectContent>
+        </Select>
+        <Button
+          onClick={async (event) => await addTimetableToGroup(event)}
+          variant={"constructive"}
+          className="ml-5"
+        >
+          Add Timetable
+        </Button>
       </div>
       <div className="w-full text-xl flex flex-col items-center p-2 tablet:p-10 pt-0 pb-0">
         {timetablesList(group, fetchGroupData)}

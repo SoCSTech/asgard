@@ -96,7 +96,7 @@ export function TimetableCard({
     resolver: zodResolver(GroupMemberFormSchema),
     defaultValues: {
       location: item.location || "",
-      order: item.order || 0,
+      order: (item.order || 0).toString(),
     },
   });
 
@@ -138,7 +138,7 @@ export function TimetableCard({
           timetableId: item.timetable.id,
           groupId: groupId,
           location: values.location,
-          order: values.order,
+          order: (values.order).toString(),
         },
         {
           headers: {
@@ -159,7 +159,7 @@ export function TimetableCard({
   return (
     <div
       key={item.timetable.spaceCode}
-      className="flex flex-col bg-black dark:bg-muted text-white rounded-2xl p-10 mt-10 w-full items-center text-left justify-between"
+      className="flex flex-col bg-black dark:bg-muted text-white rounded-2xl p-10 first:mt-0 mt-10 w-full items-center text-left justify-between"
     >
       <Form {...itemForm}>
         <form onSubmit={itemForm.handleSubmit(onItemSubmit)} className="w-full">
@@ -196,7 +196,6 @@ export function TimetableCard({
                   <FormLabel>Order</FormLabel>
                   <FormControl>
                     <Input
-                      type="number"
                       className="bg-black border-dashed text-xl font-bold mb-2 h-10"
                       {...field}
                     />
@@ -257,7 +256,7 @@ export function timetablesList(
   refreshData: () => void
 ): React.ReactElement[] {
   if (!data || !Array.isArray(data.timetables)) {
-    console.error("Invalid data passed to timetablesList:", data);
+    // console.error("Invalid data passed to timetablesList:", data);
     return [];
   }
   return data.timetables.map((item: TimetableListData) => {
