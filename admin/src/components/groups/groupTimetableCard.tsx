@@ -79,8 +79,8 @@ function getDirectionIcon(direction: string): string {
 
 // Move this hook out of the loop to fix the Rules of Hooks violation
 const GroupMemberFormSchema = z.object({
-  location: z.string(),
-  order: z.string(),
+  location: z.string() || null,
+  order: z.string().min(1),
 });
 
 export function TimetableCard({
@@ -96,7 +96,7 @@ export function TimetableCard({
     resolver: zodResolver(GroupMemberFormSchema),
     defaultValues: {
       location: item.location || "",
-      order: (item.order || "0") as string,
+      order: item.order || 0,
     },
   });
 
@@ -167,12 +167,12 @@ export function TimetableCard({
             <div className="flex items-center">
               <GripHorizontal className="mr-5" />
               <h1 className="font-semibold">{item.timetable.spaceCode}</h1>
+              {item.location && (
+                <Icon icon={getDirectionIcon(item.location)} className="ml-5" />
+              )}
             </div>
 
             <div className="flex items-center">
-              {item.location && (
-                <Icon icon={getDirectionIcon(item.location)} className="mr-5" />
-              )}
               <Button
                 variant={"ghost"}
                 onClick={(event) => {
@@ -212,10 +212,34 @@ export function TimetableCard({
                 <FormItem>
                   <FormLabel>Location</FormLabel>
                   <FormControl>
-                    <Input
-                      className="bg-black border-dashed text-xl font-bold mb-2 h-10"
-                      {...field}
-                    />
+                    <Select onValueChange={field.onChange} value={field.value}>
+                      <SelectTrigger className="bg-black border-dashed text-xl font-bold mb-2 h-10">
+                        <SelectValue placeholder="No Direction" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectGroup>
+                          <SelectItem key={"none"} value={"none"}>
+                            <div className="flex items-center">
+                              <Icon
+                                icon="fa-solid:trash-alt"
+                                className="mr-5"
+                              />
+                              Remove
+                            </div>
+                          </SelectItem>
+                          {Object.entries(TimetableDirections).map(
+                            ([key, value]) => (
+                              <SelectItem key={key} value={key}>
+                                <div className="flex items-center">
+                                  <Icon icon={value.icon} className="mr-5" />
+                                  {value.label}
+                                </div>
+                              </SelectItem>
+                            )
+                          )}
+                        </SelectGroup>
+                      </SelectContent>
+                    </Select>
                   </FormControl>
                   <FormMessage />
                 </FormItem>

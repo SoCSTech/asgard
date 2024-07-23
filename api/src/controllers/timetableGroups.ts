@@ -290,10 +290,16 @@ const updateTimetableGroupMember = async (req: Request, res: Response, next: Nex
             return
         }
 
+        // Handle null or none locations
+        let location = req.body.location || oldGrouping[0].location
+        if (location == "null" || location == "none") {
+            location = null
+        }
+
         const updatedGroup = await db.update(groupMembersSchema)
             .set({
                 order: req.body.order || oldGrouping[0].order,
-                location: req.body.location || oldGrouping[0].location
+                location: location
             })
             .where(and(
                 eq(groupMembersSchema.timetableId, timetableId),
@@ -393,7 +399,7 @@ const getTimetableGroupById = async (req: Request, res: Response, next: NextFunc
         return {
             timetable: tt.timetables,
             order: tt.timetable_group_members.order,
-            location: tt.timetable_group_members.location,
+            location: (tt.timetable_group_members.location) as string,
             events: events
         }
     }))
