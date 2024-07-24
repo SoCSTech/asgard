@@ -13,8 +13,7 @@ import {
   SheetDescription,
   SheetHeader,
   SheetTitle,
-  SheetTrigger,
-  SheetClose,
+  SheetTrigger
 } from "@/components/ui/sheet";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { formatEnumValue } from "@/lib/enum";
@@ -42,8 +41,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import ColourSelector from "../theme/colourPicker";
-import { Heart } from "lucide-react";
 import FavouriteButton from "../theme/favouriteButton";
+import { getErrorMessage, type IServerError } from "@/interfaces/serverError";
 
 const eventTypes = [
   { label: "Other", value: "OTHER" },
@@ -116,7 +115,7 @@ const EditTimetable: React.FC<EditTimetableProps> = ({
       spaceCode: "",
       lab: "",
       name: "",
-      capacity: 0,
+      capacity: (0).toString(),
       canCombine: false,
       combinedPartnerId: "",
       dataSource: "",
@@ -143,9 +142,10 @@ const EditTimetable: React.FC<EditTimetableProps> = ({
       } else {
         setTimetables(timetables);
       }
-    } catch (error) {
-      console.error("There was an error!", error);
-      toast(error.message);
+    } catch (error: any) {
+      const serverError = error as IServerError
+      console.error("There was an error!", serverError);
+      toast(getErrorMessage(serverError));
     }
   };
 
@@ -170,9 +170,10 @@ const EditTimetable: React.FC<EditTimetableProps> = ({
         },
       });
       return response.data.users[0].role === "TECHNICIAN";
-    } catch (error) {
+    } catch (error: any) {
+      const serverError = error as IServerError
       console.error("There was an error!", error);
-      toast("Error checking if you have permission " + error?.message);
+      toast(getErrorMessage(serverError, "Error checking if you have permission"));
       return false;
     }
   };
@@ -446,8 +447,9 @@ export function TimetablePage(props: Props) {
             }
           );
           toast("Added to Favourites");
-        } catch (error) {
-          toast(error.response?.data?.message || "Couldn't favourite it");
+        } catch (error: any) {
+          const serverError = error as IServerError
+          toast(getErrorMessage(serverError, "Couldn't favourite it"));
         }
       } else {
         // I want to unfavourite it!
@@ -460,8 +462,9 @@ export function TimetablePage(props: Props) {
             headers: { Authorization: `Bearer ${getCookie("token")}` },
           });
           toast("Removed from Favourites");
-        } catch (error) {
-          toast(error.response?.data?.message || "Couldn't unfavourite it");
+        } catch (error: any) {
+          const serverError = error as IServerError
+          toast(getErrorMessage(serverError, "Couldn't unfavourite it"));
         }
       }
       // Update the local state after the API call
@@ -471,26 +474,27 @@ export function TimetablePage(props: Props) {
     }
   };
 
-  const fetchTimetableData = async () => {
-    try {
-      const response = await axios.get(
-        `${API_URL}/v2/timetable/${props.timetableId}`,
-        {
-          headers: { Authorization: `Bearer ${getCookie("token")}` },
-        }
-      );
-      const timetables = response.data.timetables;
-      if (timetables.length === 0) {
-        toast("No timetables found");
-      } else {
-        setTimetable(timetables[0]);
-      }
-    } catch (error) {
-      console.error("There was an error!", error);
-      toast(error.message);
-    }
-  };
-
+ const fetchTimetableData = async () => {
+   try {
+     const response = await axios.get(
+       `${API_URL}/v2/timetable/${props.timetableId}`,
+       {
+         headers: { Authorization: `Bearer ${getCookie("token")}` },
+       }
+     );
+     const timetables = response.data.timetables;
+     if (timetables.length === 0) {
+       toast("No timetables found");
+     } else {
+       setTimetable(timetables[0]);
+     }
+   } catch (error: any) {
+     // Specify 'any' as the type for the catch clause variable
+     const serverError = error as IServerError; // Cast error to IServerError
+     console.error("There was an error!", serverError);
+     toast(getErrorMessage(serverError));
+   }
+ };
   const fetchEventsData = async () => {
     try {
       const response = await axios.get(
@@ -505,9 +509,10 @@ export function TimetablePage(props: Props) {
       } else {
         setEvents(events);
       }
-    } catch (error) {
-      console.error("There was an error!", error);
-      toast(error.message);
+    } catch (error: any) {
+      const serverError = error as IServerError
+      console.error("There was an error!", serverError);
+      toast(getErrorMessage(serverError));
     }
   };
 
@@ -576,9 +581,10 @@ export function TimetablePage(props: Props) {
       fetchEventsData();
       setEventSheetIsOpen(false);
       setSelectedEvent(null);
-    } catch (error) {
+    } catch (error: any) {
+      const serverError = error as IServerError
       console.error("There was an error!", error);
-      toast(error?.response?.data?.message || "Couldn't save the event");
+      toast(getErrorMessage(serverError, "Couldn't save the event"));
     }
   };
 

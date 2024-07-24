@@ -2,7 +2,7 @@ version: "3"
 
 services:
   asgard-jobs:
-    build: ./api
+    build: ./jobs
     container_name: a2-asgard-jobs
     restart: always
     networks:

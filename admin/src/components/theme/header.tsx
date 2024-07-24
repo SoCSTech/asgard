@@ -14,7 +14,7 @@ import {
 
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
-import { ChevronDown, CircleChevronDown, User } from "lucide-react";
+import { ChevronDown, User } from "lucide-react";
 
 export default function Header() {
   const [user, setUser] = React.useState({} as IUser);

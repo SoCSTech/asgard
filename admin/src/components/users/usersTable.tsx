@@ -1,5 +1,5 @@
 import * as React from "react";
-import axios, { AxiosError } from "axios";
+import axios from "axios";
 import { API_URL } from "@/constants";
 import { getCookie } from "@/lib/cookie";
 import { UserRoles, type IUser } from "@/interfaces/user";
@@ -26,8 +26,7 @@ import {
   SheetDescription,
   SheetHeader,
   SheetTitle,
-  SheetTrigger,
-  SheetClose,
+  SheetTrigger
 } from "@/components/ui/sheet";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import {
@@ -38,6 +37,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { getErrorMessage, type IServerError } from "@/interfaces/serverError";
 
 const UserFormSchema = z.object({
   username: z.string().min(1).max(50),
@@ -73,9 +73,12 @@ const CreateNewUser: React.FC<CreateNewUserProps> = ({ fetchData }) => {
         },
       });
       return response.data.users[0].role === "TECHNICIAN";
-    } catch (error) {
-      console.error("There was an error!", error);
-      toast("Error checking if you have permission " + error?.message);
+    } catch (error: any) {
+      const serverError = error as IServerError;
+      console.error("There was an error!", serverError);
+      toast(
+        getErrorMessage(serverError, "Error checking if you have permission")
+      );
       return false;
     }
   };
@@ -233,14 +236,15 @@ export function UsersTable() {
       if (data.length === 0) {
         toast("No users are found");
       }
-      const formattedData = data.map((usr) => ({
+      const formattedData = data.map((usr: IUser) => ({
         ...usr,
         role: formatEnumValue(usr.role),
       }));
       setUsers(formattedData);
-    } catch (error) {
-      console.error("There was an error!", error);
-      toast(error.message);
+    } catch (error: any) {
+      const serverError = error as IServerError
+      console.error("There was an error!", serverError);
+      toast(getErrorMessage(serverError));
     }
   };
 

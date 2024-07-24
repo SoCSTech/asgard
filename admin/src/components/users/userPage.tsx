@@ -16,12 +16,12 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { UserRoles } from "@/interfaces/user";
 import { Input } from "@/components/ui/input";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import md5 from "md5";
+import { getErrorMessage, type IServerError } from "@/interfaces/serverError";
 interface Props {
   userId: string;
 }
@@ -310,7 +310,7 @@ export function UserPage(props: Props) {
       .post(API_URL + "/v2/auth/forgot-password", {
         username: user.id,
       })
-      .then(function (response) {
+      .then(function () {
         toast(
           `Please inform ${user.shortName} that their to check their email!`
         );
@@ -379,9 +379,10 @@ export function UserPage(props: Props) {
       );
       toast("User has been reactivated");
       fetchData();
-    } catch (error) {
-      console.error("There was an error!", error);
-      toast(error?.message || "Could not reactivate the user");
+    } catch (error: any) {
+      const serverError = error as IServerError
+      console.error("There was an error!", serverError);
+      toast(getErrorMessage(serverError, "Could not reactivate the user"));
     }
   };
 

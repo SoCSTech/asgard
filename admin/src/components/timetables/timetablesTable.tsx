@@ -26,7 +26,6 @@ import {
   SheetHeader,
   SheetTitle,
   SheetTrigger,
-  SheetClose,
 } from "@/components/ui/sheet";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import {
@@ -40,6 +39,8 @@ import {
 import { Button } from "../ui/button";
 import ColourSelector from "../theme/colourPicker";
 import { Checkbox } from "../ui/checkbox";
+import { getErrorMessage, type IServerError } from "@/interfaces/serverError";
+import { server } from "typescript";
 
 const TimetableFormSchema = z.object({
   spaceCode: z.string().min(1).max(10),
@@ -64,7 +65,7 @@ export const TimetableDataSources = [
 
 interface CreateNewTimetableProps {
   fetchData: () => void;
-  timetables: () => ITimetable[];
+  timetables: ITimetable[];
 }
 
 const CreateNewTimetable: React.FC<CreateNewTimetableProps> = ({
@@ -98,9 +99,10 @@ const CreateNewTimetable: React.FC<CreateNewTimetableProps> = ({
         },
       });
       return response.data.users[0].role === "TECHNICIAN";
-    } catch (error) {
-      console.error("There was an error!", error);
-      toast("Error checking if you have permission " + error?.message);
+    } catch (error: any) {
+      const serverError = error as IServerError
+      console.error("There was an error!", server);
+      toast(getErrorMessage(serverError, "Error checking if you have permission"));
       return false;
     }
   };

@@ -6,18 +6,16 @@ import { Button } from "../ui/button";
 import { toast } from "sonner";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { object, z } from "zod";
+import { z } from "zod";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Checkbox } from "../ui/checkbox";
 import {
   Select,
   SelectContent,
@@ -26,7 +24,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import ColourSelector from "../theme/colourPicker";
 import { Icon } from "@iconify/react";
 import type {
   ITimetableGroup,

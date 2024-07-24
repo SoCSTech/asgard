@@ -3,8 +3,6 @@ import axios from "axios";
 import { API_URL } from "@/constants";
 import { getCookie } from "@/lib/cookie";
 import TableList from "../theme/tableList";
-import type { ITimetable } from "@/interfaces/timetable";
-import { formatEnumValue } from "@/lib/enum";
 import { toast } from "sonner";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -25,22 +23,12 @@ import {
   SheetDescription,
   SheetHeader,
   SheetTitle,
-  SheetTrigger,
-  SheetClose,
+  SheetTrigger
 } from "@/components/ui/sheet";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { Button } from "../ui/button";
-import ColourSelector from "../theme/colourPicker";
-import { Checkbox } from "../ui/checkbox";
 import type { ITimetableGroup } from "@/interfaces/timetableGroup";
+import { getErrorMessage, type IServerError } from "@/interfaces/serverError";
 
 const GroupFormSchema = z.object({
   internalName: z.string().min(1).max(128),
@@ -78,9 +66,10 @@ const CreateNewGroup: React.FC<CreateNewGroupProps> = ({ fetchData }) => {
         },
       });
       return response.data.users[0].role === "TECHNICIAN";
-    } catch (error) {
-      console.error("There was an error!", error);
-      toast("Error checking if you have permission " + error?.message);
+    } catch (error: any) {
+      const serverError = error as IServerError
+      console.error("There was an error!", serverError);
+      toast(getErrorMessage(serverError, "Error checking if you have permission"));
       return false;
     }
   };

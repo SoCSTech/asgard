@@ -1,11 +1,22 @@
 {
-  "name": "admin",
+  "name": "asgard-admin",
+  "description": "Admin UI for Asgard2",
   "type": "module",
-  "version": "0.0.1",
+  "version": "1.0.1",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SoCSTech/asgard2.git"
+  },
+  "author": "Josh Cooper <joshcooper@lincoln.ac.uk>, SoCS Technicians <technician@lincoln.ac.uk>",
+  "license": "PROPRIETARY",
+  "bugs": {
+    "url": "https://github.com/SoCSTech/asgard2/issues"
+  },
+  "homepage": "https://github.com/SoCSTech/asgard2#readme",
   "scripts": {
     "dev": "astro dev",
     "start": "astro dev",
-    "build": "astro check && astro build",
+    "build": "rm -rf dist/ && astro check && astro build",
     "preview": "astro preview",
     "astro": "astro"
   },

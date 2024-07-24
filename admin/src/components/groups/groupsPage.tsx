@@ -6,7 +6,7 @@ import { Button } from "../ui/button";
 import { toast } from "sonner";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { object, z } from "zod";
+import { z } from "zod";
 import {
   Form,
   FormControl,
@@ -26,16 +26,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import ColourSelector from "../theme/colourPicker";
-import { Icon } from "@iconify/react";
-import type {
-  ITimetableGroup,
-  TimetableListData,
-} from "@/interfaces/timetableGroup";
-import { GripHorizontal, Save, Trash } from "lucide-react";
+import type { ITimetableGroup } from "@/interfaces/timetableGroup";
 import { timetablesList } from "./groupTimetableCard";
 import type { ITimetable } from "@/interfaces/timetable";
 import { Textarea } from "../ui/textarea";
+import { getErrorMessage, type IServerError } from "@/interfaces/serverError";
 
 interface Props {
   groupId: string;
@@ -117,9 +112,10 @@ export function GroupsPage(props: Props) {
         }
       );
       setGroup(response.data);
-    } catch (error) {
-      console.error("There was an error!", error);
-      toast(error.message);
+    } catch (error: any) {
+      const serverError = error as IServerError;
+      console.error("There was an error!", serverError);
+      toast(getErrorMessage(serverError));
     }
   };
 
@@ -129,9 +125,10 @@ export function GroupsPage(props: Props) {
         headers: { Authorization: `Bearer ${getCookie("token")}` },
       });
       setTimetables(response.data.timetables);
-    } catch (error) {
-      console.error("There was an error!", error);
-      toast(error.message);
+    } catch (error: any) {
+      const serverError = error as IServerError;
+      console.error("There was an error!", serverError);
+      toast(getErrorMessage(serverError));
     }
   };
 
@@ -243,7 +240,9 @@ export function GroupsPage(props: Props) {
     });
   }, [group]);
 
-  const addTimetableToGroup = async (event: Event) => {
+  const addTimetableToGroup = async (
+    event: React.MouseEvent<HTMLButtonElement, MouseEvent>
+  ) => {
     event.preventDefault();
     try {
       await axios.post(
@@ -261,8 +260,9 @@ export function GroupsPage(props: Props) {
 
       toast("Added timetable to group");
       fetchGroupData();
-    } catch (error) {
-      toast(error.response.data.message || "Something went wrong");
+    } catch (error: any) {
+      const serverError = error as IServerError;
+      toast(getErrorMessage(serverError));
       return;
     }
   };

@@ -1,7 +1,17 @@
 {
   "name": "asgard-admin-app",
+  "description": "Runs the admin interface in the docker container",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SoCSTech/asgard2.git"
+  },
+  "author": "Josh Cooper <joshcooper@lincoln.ac.uk>, SoCS Technicians <technician@lincoln.ac.uk>",
+  "license": "PROPRIETARY",
+  "bugs": {
+    "url": "https://github.com/SoCSTech/asgard2/issues"
+  },
+  "homepage": "https://github.com/SoCSTech/asgard2#readme",
   "version": "1.0.0",
-  "description": "",
   "main": "server.mjs",
   "scripts": {
     "start": "node server.mjs"
