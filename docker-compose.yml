@@ -60,6 +60,9 @@ services:
       - proxy
     depends_on:
       - asgard-api
+    environment:
+      PUBLIC_API_URL: ${API_URL}
+      PUBLIC_Y2_URL: ${Y2_URL}
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.asgard-admin.rule=Host(`asgard.localhost`)"
