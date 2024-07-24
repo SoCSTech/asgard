@@ -13,7 +13,7 @@ import {
   SheetDescription,
   SheetHeader,
   SheetTitle,
-  SheetTrigger
+  SheetTrigger,
 } from "@/components/ui/sheet";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { formatEnumValue } from "@/lib/enum";
@@ -43,6 +43,8 @@ import {
 import ColourSelector from "../theme/colourPicker";
 import FavouriteButton from "../theme/favouriteButton";
 import { getErrorMessage, type IServerError } from "@/interfaces/serverError";
+import { Calendar, Trash } from "lucide-react";
+import type { ICarousel, ICarouselItem } from "@/interfaces/carousel";
 
 const eventTypes = [
   { label: "Other", value: "OTHER" },
@@ -143,7 +145,7 @@ const EditTimetable: React.FC<EditTimetableProps> = ({
         setTimetables(timetables);
       }
     } catch (error: any) {
-      const serverError = error as IServerError
+      const serverError = error as IServerError;
       console.error("There was an error!", serverError);
       toast(getErrorMessage(serverError));
     }
@@ -171,9 +173,11 @@ const EditTimetable: React.FC<EditTimetableProps> = ({
       });
       return response.data.users[0].role === "TECHNICIAN";
     } catch (error: any) {
-      const serverError = error as IServerError
+      const serverError = error as IServerError;
       console.error("There was an error!", error);
-      toast(getErrorMessage(serverError, "Error checking if you have permission"));
+      toast(
+        getErrorMessage(serverError, "Error checking if you have permission")
+      );
       return false;
     }
   };
@@ -423,10 +427,39 @@ const EditTimetable: React.FC<EditTimetableProps> = ({
   );
 };
 
+interface CarouselItemProps {
+  carousel: ICarouselItem;
+}
+
+const CarouselItem: React.FC<CarouselItemProps> = ({ carousel }) => {
+  return (
+    <div className="bg-zinc-200 p-5 m-5 rounded-xl flex flex-col items-center w-1/4">
+      <div className="flex justify-between items-center w-full mb-5">
+        <h1 className="font-bold">{carousel.name}</h1>
+        <Button
+          variant={"ghost"}
+          onClick={(event) => {
+            event.preventDefault();
+            alert("nyi")
+          }}
+        >
+          <Trash className="text-red-500" />
+        </Button>
+      </div>
+      {carousel.type == "TIMETABLE" && <Calendar className="mt-10" size={64} />}
+      {carousel.type == "PICTURE" && (
+        <img className="rounded-lg select-none" src={carousel.contentUrl} />
+      )}
+    </div>
+  );
+};
+
 export function TimetablePage(props: Props) {
   const [timetable, setTimetable] = React.useState<ITimetable>(
     {} as ITimetable
   );
+  const [carousel, setCarousel] = React.useState<ICarousel>({} as ICarousel);
+
   const [events, setEvents] = React.useState<IEvent[]>([]);
   const [eventSheetIsOpen, setEventSheetIsOpen] = React.useState(false);
   const [selectedEvent, setSelectedEvent] = React.useState<IEvent | null>(null);
@@ -448,7 +481,7 @@ export function TimetablePage(props: Props) {
           );
           toast("Added to Favourites");
         } catch (error: any) {
-          const serverError = error as IServerError
+          const serverError = error as IServerError;
           toast(getErrorMessage(serverError, "Couldn't favourite it"));
         }
       } else {
@@ -463,7 +496,7 @@ export function TimetablePage(props: Props) {
           });
           toast("Removed from Favourites");
         } catch (error: any) {
-          const serverError = error as IServerError
+          const serverError = error as IServerError;
           toast(getErrorMessage(serverError, "Couldn't unfavourite it"));
         }
       }
@@ -474,27 +507,44 @@ export function TimetablePage(props: Props) {
     }
   };
 
- const fetchTimetableData = async () => {
-   try {
-     const response = await axios.get(
-       `${API_URL}/v2/timetable/${props.timetableId}`,
-       {
-         headers: { Authorization: `Bearer ${getCookie("token")}` },
-       }
-     );
-     const timetables = response.data.timetables;
-     if (timetables.length === 0) {
-       toast("No timetables found");
-     } else {
-       setTimetable(timetables[0]);
-     }
-   } catch (error: any) {
-     // Specify 'any' as the type for the catch clause variable
-     const serverError = error as IServerError; // Cast error to IServerError
-     console.error("There was an error!", serverError);
-     toast(getErrorMessage(serverError));
-   }
- };
+  const fetchCarouselData = async () => {
+    try {
+      const response = await axios.get(
+        `${API_URL}/v2/timetable/${props.timetableId}/carousel`,
+        {
+          headers: { Authorization: `Bearer ${getCookie("token")}` },
+        }
+      );
+      console.log(response.data);
+      setCarousel(response.data);
+    } catch (error: any) {
+      // Specify 'any' as the type for the catch clause variable
+      const serverError = error as IServerError; // Cast error to IServerError
+      console.error("There was an error!", serverError);
+      toast(getErrorMessage(serverError));
+    }
+  };
+  const fetchTimetableData = async () => {
+    try {
+      const response = await axios.get(
+        `${API_URL}/v2/timetable/${props.timetableId}`,
+        {
+          headers: { Authorization: `Bearer ${getCookie("token")}` },
+        }
+      );
+      const timetables = response.data.timetables;
+      if (timetables.length === 0) {
+        toast("No timetables found");
+      } else {
+        setTimetable(timetables[0]);
+      }
+    } catch (error: any) {
+      // Specify 'any' as the type for the catch clause variable
+      const serverError = error as IServerError; // Cast error to IServerError
+      console.error("There was an error!", serverError);
+      toast(getErrorMessage(serverError));
+    }
+  };
   const fetchEventsData = async () => {
     try {
       const response = await axios.get(
@@ -510,7 +560,7 @@ export function TimetablePage(props: Props) {
         setEvents(events);
       }
     } catch (error: any) {
-      const serverError = error as IServerError
+      const serverError = error as IServerError;
       console.error("There was an error!", serverError);
       toast(getErrorMessage(serverError));
     }
@@ -541,6 +591,7 @@ export function TimetablePage(props: Props) {
 
   React.useEffect(() => {
     fetchTimetableData();
+    fetchCarouselData();
     fetchEventsData();
     checkIfUserIsTech();
   }, []);
@@ -582,7 +633,7 @@ export function TimetablePage(props: Props) {
       setEventSheetIsOpen(false);
       setSelectedEvent(null);
     } catch (error: any) {
-      const serverError = error as IServerError
+      const serverError = error as IServerError;
       console.error("There was an error!", error);
       toast(getErrorMessage(serverError, "Couldn't save the event"));
     }
@@ -1056,11 +1107,11 @@ export function TimetablePage(props: Props) {
             {newEventWindow()}
           </div>
         </div>
-        <h2 className="my-5 text-3xl w-full text-left">Events</h2>
-        <Tabs defaultValue="list" className="w-full">
-          <TabsList className="grid w-[200px] grid-cols-2">
+        <Tabs defaultValue="list" className="w-full mt-5">
+          <TabsList className="grid w-[500px] grid-cols-3">
             <TabsTrigger value="calendar">Calendar</TabsTrigger>
-            <TabsTrigger value="list">List</TabsTrigger>
+            <TabsTrigger value="list">Events List</TabsTrigger>
+            <TabsTrigger value="carousel">Carousel</TabsTrigger>
           </TabsList>
           <TabsContent value="list">
             <div className="relative overflow-x-auto tablet:shadow-md mt-5 rounded-xl w-full items-center">
@@ -1081,6 +1132,14 @@ export function TimetablePage(props: Props) {
                 Calendar view is gonna be a little bit more tricky so it's not
                 been done yet. But fear not it will be done soon :P
               </p>
+            </div>
+          </TabsContent>
+          <TabsContent value="carousel">
+            <div className="w-full flex flex-wrap">
+              {carousel.items &&
+                carousel.items.map((item) => (
+                  <CarouselItem carousel={item} key={item.id} />
+                ))}
             </div>
           </TabsContent>
         </Tabs>
