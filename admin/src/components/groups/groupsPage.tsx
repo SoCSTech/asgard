@@ -35,6 +35,7 @@ import type {
 import { GripHorizontal, Save, Trash } from "lucide-react";
 import { timetablesList } from "./groupTimetableCard";
 import type { ITimetable } from "@/interfaces/timetable";
+import { Textarea } from "../ui/textarea";
 
 interface Props {
   groupId: string;
@@ -78,8 +79,6 @@ export function GroupsPage(props: Props) {
     },
   });
 
-  //!! DO THIS
-
   const onSubmit = async (data: any) => {
     if (!checkIfUserIsTech()) {
       toast("You're not a technician! You cannot modify other users.");
@@ -95,15 +94,14 @@ export function GroupsPage(props: Props) {
       return;
     }
 
-    console.log(data);
-    return;
     try {
-      await axios.post(API_URL + "/v2/timetable-group", data, {
+      await axios.put(API_URL + "/v2/timetable-group/" + group.id, data, {
         headers: {
           Authorization: `Bearer ${getCookie("token")}`,
         },
       });
-      toast("Timetable group created successfully");
+      toast("Timetable group updated successfully");
+      fetchGroupData();
     } catch (error: any) {
       console.error("There was an error!", error);
       toast(error.response.data.message || "Something went wrong");
@@ -269,6 +267,9 @@ export function GroupsPage(props: Props) {
     }
   };
 
+  const displayingInfoPane = form.watch("displayInfoPane", false);
+  const displayingInfoPaneQR = form.watch("displayInfoPaneQR", false);
+
   return (
     <>
       {group.isDeleted && (
@@ -406,6 +407,89 @@ export function GroupsPage(props: Props) {
                   "1 {form.watch("object", "room")}{" "}
                   {form.watch("verbUnavailable", "in use")}"
                 </p>
+
+                <FormField
+                  control={form.control}
+                  name="displayInfoPane"
+                  render={({ field }) => (
+                    <FormItem className="flex flex-row items-start align-middle space-x-3 space-y-0 rounded-xl border border-dashed p-4 my-5">
+                      <FormControl>
+                        <Checkbox
+                          checked={field.value}
+                          onCheckedChange={field.onChange}
+                          className="border border-white"
+                        />
+                      </FormControl>
+                      <div className="leading-none self-center">
+                        <FormLabel>Show Info Pane</FormLabel>
+                      </div>
+                    </FormItem>
+                  )}
+                />
+
+                {displayingInfoPane && (
+                  <>
+                    <FormField
+                      control={form.control}
+                      name="infoPaneText"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormControl>
+                            <Textarea
+                              placeholder="Add a message to the info pane"
+                              className="bg-black border-dashed"
+                              rows={10}
+                              {...field}
+                            />
+                          </FormControl>
+                          <FormDescription>
+                            You can use markdown here!
+                          </FormDescription>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    <FormField
+                      control={form.control}
+                      name="displayInfoPaneQR"
+                      render={({ field }) => (
+                        <FormItem className="flex flex-row items-start align-middle space-x-3 space-y-0 rounded-xl border border-dashed p-4 my-5">
+                          <FormControl>
+                            <Checkbox
+                              checked={field.value}
+                              onCheckedChange={field.onChange}
+                              className="border border-white"
+                            />
+                          </FormControl>
+                          <div className="space-y-1 leading-none self-center">
+                            <FormLabel>Show QR Code</FormLabel>
+                          </div>
+                        </FormItem>
+                      )}
+                    />
+
+                    {displayingInfoPaneQR && (
+                      <FormField
+                        control={form.control}
+                        name="infoPaneQRUrl"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>QR Url</FormLabel>
+                            <FormControl>
+                              <Input
+                                className="bg-black border-dashed text-xl font-bold mb-2 h-10"
+                                placeholder="https://lncn.ac"
+                                {...field}
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    )}
+                  </>
+                )}
 
                 <Button
                   variant={"primaryOutline"}
