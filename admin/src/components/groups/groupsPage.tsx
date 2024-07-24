@@ -285,13 +285,53 @@ export function GroupsPage(props: Props) {
       <div className="w-full text-xl flex flex-row tablet:flex-col items-center p-2 tablet:p-10 pt-0 mt-0 pb-0 mb-0">
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="w-full">
-            <div className="flex flex-col tablet:flex-row justify-between bg-black dark:bg-muted text-white rounded-2xl p-10 w-full items-center text-left">
-              <img
-                src="/images/logos/uol-white-text.svg"
-                alt="University of Lincoln"
-                className="w-20 h-20 mr-10 self-start hidden tablet:block"
-              />
-              <div>
+            <div className="flex flex-col tablet:flex-row justify-around bg-black dark:bg-muted text-white rounded-2xl p-10 w-full items-center text-left">
+              <div className="flex flex-col pr-10 justify-evenly self-start">
+                <img
+                  src="/images/logos/uol-white-text.svg"
+                  alt="University of Lincoln"
+                  className="w-20 h-20 mr-10 self-start hidden tablet:block mb-5"
+                />
+                <Button
+                  variant="primaryOutline"
+                  className="text-black dark:text-white mb-3"
+                  onClick={(event) => {
+                    event.preventDefault();
+                    const newWindow = window.open(
+                      `${Y2_URL}/#/group/${group.id}`,
+                      "_blank"
+                    );
+                    if (newWindow) {
+                      newWindow.focus();
+                    }
+                  }}
+                >
+                  Open in Y2
+                </Button>
+
+                {group.isDeleted ? (
+                  <Button
+                    variant={"constructive"}
+                    onClick={(event) => {
+                      event.preventDefault();
+                      reactivateTimetableGroup();
+                    }}
+                  >
+                    Reactivate
+                  </Button>
+                ) : (
+                  <Button
+                    variant={"destructive"}
+                    onClick={(event) => {
+                      event.preventDefault();
+                      deactivateTimetableGroup();
+                    }}
+                  >
+                    Deactivate
+                  </Button>
+                )}
+              </div>
+              <div className="flex-1">
                 <FormField
                   control={form.control}
                   name="internalName"
@@ -498,47 +538,6 @@ export function GroupsPage(props: Props) {
                 >
                   Update
                 </Button>
-              </div>
-
-              <div className="flex flex-row justify-evenly gap-2 mt-5 laptop:mt-0 p-5 self-start">
-                <Button
-                  variant="primaryOutline"
-                  className="text-black dark:text-white"
-                  onClick={(event) => {
-                    event.preventDefault();
-                    const newWindow = window.open(
-                      `${Y2_URL}/#/group/${group.id}`,
-                      "_blank"
-                    );
-                    if (newWindow) {
-                      newWindow.focus();
-                    }
-                  }}
-                >
-                  Open in Y2
-                </Button>
-
-                {group.isDeleted ? (
-                  <Button
-                    variant={"constructive"}
-                    onClick={(event) => {
-                      event.preventDefault();
-                      reactivateTimetableGroup();
-                    }}
-                  >
-                    Reactivate
-                  </Button>
-                ) : (
-                  <Button
-                    variant={"destructive"}
-                    onClick={(event) => {
-                      event.preventDefault();
-                      deactivateTimetableGroup();
-                    }}
-                  >
-                    Deactivate
-                  </Button>
-                )}
               </div>
             </div>
           </form>
