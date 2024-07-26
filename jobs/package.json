@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "Job runner for the asgard system",
   "main": "src/index.ts",
+  "type": "module",
   "scripts": {
     "start": "nodemon",
     "dev": "npm start",
