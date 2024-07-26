@@ -45,6 +45,7 @@ import FavouriteButton from "../theme/favouriteButton";
 import { getErrorMessage, type IServerError } from "@/interfaces/serverError";
 import { Calendar, Trash } from "lucide-react";
 import type { ICarousel, ICarouselItem } from "@/interfaces/carousel";
+import { CarouselItem } from "./carousel";
 
 const eventTypes = [
   { label: "Other", value: "OTHER" },
@@ -427,32 +428,6 @@ const EditTimetable: React.FC<EditTimetableProps> = ({
   );
 };
 
-interface CarouselItemProps {
-  carousel: ICarouselItem;
-}
-
-const CarouselItem: React.FC<CarouselItemProps> = ({ carousel }) => {
-  return (
-    <div className="bg-zinc-200 p-5 m-5 rounded-xl flex flex-col items-center w-1/4">
-      <div className="flex justify-between items-center w-full mb-5">
-        <h1 className="font-bold">{carousel.name}</h1>
-        <Button
-          variant={"ghost"}
-          onClick={(event) => {
-            event.preventDefault();
-            alert("nyi")
-          }}
-        >
-          <Trash className="text-red-500" />
-        </Button>
-      </div>
-      {carousel.type == "TIMETABLE" && <Calendar className="mt-10" size={64} />}
-      {carousel.type == "PICTURE" && (
-        <img className="rounded-lg select-none" src={carousel.contentUrl} />
-      )}
-    </div>
-  );
-};
 
 export function TimetablePage(props: Props) {
   const [timetable, setTimetable] = React.useState<ITimetable>(
@@ -1107,7 +1082,7 @@ export function TimetablePage(props: Props) {
             {newEventWindow()}
           </div>
         </div>
-        <Tabs defaultValue="list" className="w-full mt-5">
+        <Tabs defaultValue="carousel" className="w-full mt-5">
           <TabsList className="grid w-[500px] grid-cols-3">
             <TabsTrigger value="calendar">Calendar</TabsTrigger>
             <TabsTrigger value="list">Events List</TabsTrigger>
