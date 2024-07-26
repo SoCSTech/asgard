@@ -1083,7 +1083,7 @@ export function TimetablePage(props: Props) {
           </div>
         </div>
         <Tabs defaultValue="carousel" className="w-full mt-5">
-          <TabsList className="grid w-[500px] grid-cols-3">
+          <TabsList className="grid tablet:w-1/3 grid-cols-3">
             <TabsTrigger value="calendar">Calendar</TabsTrigger>
             <TabsTrigger value="list">Events List</TabsTrigger>
             <TabsTrigger value="carousel">Carousel</TabsTrigger>
@@ -1110,7 +1110,7 @@ export function TimetablePage(props: Props) {
             </div>
           </TabsContent>
           <TabsContent value="carousel">
-            <div className="w-full flex flex-wrap">
+            <div className="w-full flex flex-wrap flex-col tablet:flex-row justify-center">
               {carousel.items &&
                 carousel.items.map((item) => (
                   <CarouselItem carousel={item} key={item.id} />

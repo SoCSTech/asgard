@@ -2,9 +2,6 @@ import * as React from "react";
 import axios from "axios";
 import { API_URL } from "@/constants";
 import { getCookie } from "@/lib/cookie";
-import TableList from "../theme/tableList";
-import type { ITimetable } from "@/interfaces/timetable";
-import { formatEnumValue } from "@/lib/enum";
 import { toast } from "sonner";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -19,30 +16,9 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import {
-  Sheet,
-  SheetContent,
-  SheetDescription,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from "@/components/ui/sheet";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { Button } from "../ui/button";
-import ColourSelector from "../theme/colourPicker";
-import { Checkbox } from "../ui/checkbox";
-import { getErrorMessage, type IServerError } from "@/interfaces/serverError";
-import { server } from "typescript";
 import type { ICarouselItem } from "@/interfaces/carousel";
-import { Calendar, ChevronDown, Pencil, Trash } from "lucide-react";
+import { Calendar, Earth, FileVideo2, Pencil, Trash } from "lucide-react";
 import {
   Collapsible,
   CollapsibleContent,
@@ -72,10 +48,19 @@ export const CarouselItem: React.FC<CarouselItemProps> = ({ carousel }) => {
     },
   });
 
+  React.useEffect(() => {
+    form.reset({
+      name: carousel.name || "",
+      order: (carousel.order || "0").toString(),
+      contentUrl: carousel.contentUrl || "",
+      durationMs: (carousel.durationMs || "4500").toString(),
+    });
+  }, [carousel]);
+
   return (
-    <div className="bg-zinc-200 p-5 m-5 rounded-xl flex flex-col items-center w-1/4">
+    <div className="bg-zinc-200 p-5 mb-5 tablet:m-5 rounded-xl flex flex-col items-center w-full tablet:w-1/3 desktop:w-1/4">
       <div className="flex justify-between items-center w-full mb-5">
-        <h1 className="font-bold">{carousel.name}</h1>
+        <h1 className="font-bold">{carousel.name} <span className="font-normal text-sm">({carousel.order})</span></h1>
         <Button
           variant={"ghost"}
           onClick={(event) => {
@@ -87,19 +72,42 @@ export const CarouselItem: React.FC<CarouselItemProps> = ({ carousel }) => {
         </Button>
       </div>
       {carousel.type == "TIMETABLE" && (
-        <div className="border border-blue-800 w-full flex items-center justify-center my-5 py-5">
-          <Calendar />
+        <div className="h-60 flex items-center justify-center mb-5 py-5 w-full">
+          <div className="rounded-lg select-none w-auto flex flex-col items-center">
+            <Calendar size={100} />
+          </div>
         </div>
       )}
 
       {carousel.type == "PICTURE" && (
-        <img className="rounded-lg select-none" src={carousel.contentUrl} />
+        <div className="h-60 flex items-center justify-center mb-5 py-5 w-full">
+          <img
+            className="rounded-lg select-none h-48 w-auto"
+            src={carousel.contentUrl}
+          />
+        </div>
+      )}
+
+      {carousel.type == "WEB" && (
+        <div className="h-60 flex items-center justify-center mb-5 py-5 w-full">
+          <div className="rounded-lg select-none w-auto flex flex-col items-center">
+            <Earth size={100} />
+          </div>
+        </div>
+      )}
+
+      {carousel.type == "VIDEO" && (
+        <div className="h-60 flex items-center justify-center mb-5 py-5 w-full">
+          <div className="rounded-lg select-none w-auto flex flex-col items-center">
+            <FileVideo2 size={100} />
+          </div>
+        </div>
       )}
 
       <div className="w-full mt-5 pt-5 border-t-2 border-black text-left">
         <Collapsible>
           <CollapsibleTrigger className="w-full">
-            <div className="flex justify-between items-center w-full">
+            <div className="flex justify-between items-center w-full mb-5">
               <span>Edit Item</span>
               <Pencil />
             </div>
@@ -138,19 +146,21 @@ export const CarouselItem: React.FC<CarouselItemProps> = ({ carousel }) => {
                   )}
                 />
 
-                <FormField
-                  control={form.control}
-                  name="contentUrl"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Content URL</FormLabel>
-                      <FormControl>
-                        <Input {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+                {carousel.type !== "TIMETABLE" && (
+                  <FormField
+                    control={form.control}
+                    name="contentUrl"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Content URL <a href={carousel.contentUrl} className="text-blue-800" target="_blank">(open)</a></FormLabel>
+                        <FormControl>
+                          <Input {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                )}
 
                 <FormField
                   control={form.control}
