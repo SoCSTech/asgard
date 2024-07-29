@@ -490,7 +490,6 @@ export function TimetablePage(props: Props) {
           headers: { Authorization: `Bearer ${getCookie("token")}` },
         }
       );
-      console.log(response.data);
       setCarousel(response.data);
     } catch (error: any) {
       // Specify 'any' as the type for the catch clause variable
@@ -1113,7 +1112,7 @@ export function TimetablePage(props: Props) {
             <div className="w-full flex flex-wrap flex-col tablet:flex-row justify-center">
               {carousel.items &&
                 carousel.items.map((item) => (
-                  <CarouselItem carousel={item} key={item.id} />
+                  <CarouselItem carousel={item} key={item.id} refreshCarousels={fetchCarouselData} />
                 ))}
             </div>
           </TabsContent>

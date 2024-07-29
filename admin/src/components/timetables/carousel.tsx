@@ -35,21 +35,27 @@ const CarouselItemFormSchemea = z.object({
 
 interface CarouselItemProps {
   carousel: ICarouselItem;
+  refreshCarousels: () => void;
 }
 
-export const CarouselItem: React.FC<CarouselItemProps> = ({ carousel }) => {
+export const CarouselItem: React.FC<CarouselItemProps> = ({
+  carousel,
+  refreshCarousels,
+}) => {
   const form = useForm<z.infer<typeof CarouselItemFormSchemea>>({
     resolver: zodResolver(CarouselItemFormSchemea),
     defaultValues: {
-      name: "",
-      order: "0",
-      contentUrl: "",
-      durationMs: "4500",
+      id: carousel.id || "",
+      name: carousel.name || "",
+      order: (carousel.order || "0").toString(),
+      contentUrl: carousel.contentUrl || "",
+      durationMs: (carousel.durationMs || "4500").toString(),
     },
   });
 
   React.useEffect(() => {
     form.reset({
+      id: carousel.id || "",
       name: carousel.name || "",
       order: (carousel.order || "0").toString(),
       contentUrl: carousel.contentUrl || "",
@@ -57,10 +63,38 @@ export const CarouselItem: React.FC<CarouselItemProps> = ({ carousel }) => {
     });
   }, [carousel]);
 
+  const onEditSubmit = async (
+    data: z.infer<typeof CarouselItemFormSchemea>
+  ) => {
+    if (
+      !confirm(
+        `Are you sure you want to update the carousel ${data.name} in Asgard?`
+      )
+    ) {
+      toast("Action has been cancelled");
+      return;
+    }
+    try {
+      await axios.put(API_URL + "/v2/carousel/item/" + carousel.id, data, {
+        headers: {
+          Authorization: `Bearer ${getCookie("token")}`,
+        },
+      });
+      toast("Carousel item updated successfully");
+      refreshCarousels();
+    } catch (error: any) {
+      console.error("There was an error!", error);
+      toast(error.response.data.message || "Something went wrong");
+    }
+  };
+
   return (
     <div className="bg-zinc-200 p-5 mb-5 tablet:m-5 rounded-xl flex flex-col items-center w-full tablet:w-1/3 desktop:w-1/4">
       <div className="flex justify-between items-center w-full mb-5">
-        <h1 className="font-bold">{carousel.name} <span className="font-normal text-sm">({carousel.order})</span></h1>
+        <h1 className="font-bold">
+          {carousel.name}{" "}
+          <span className="font-normal text-sm">({carousel.order})</span>
+        </h1>
         <Button
           variant={"ghost"}
           onClick={(event) => {
@@ -104,6 +138,9 @@ export const CarouselItem: React.FC<CarouselItemProps> = ({ carousel }) => {
         </div>
       )}
 
+      <span className="font-normal text-sm">
+        {carousel.durationMs / 1000} seconds
+      </span>
       <div className="w-full mt-5 pt-5 border-t-2 border-black text-left">
         <Collapsible>
           <CollapsibleTrigger className="w-full">
@@ -115,7 +152,7 @@ export const CarouselItem: React.FC<CarouselItemProps> = ({ carousel }) => {
           <CollapsibleContent>
             <Form {...form}>
               <form
-                onSubmit={form.handleSubmit(console.log)}
+                onSubmit={form.handleSubmit(onEditSubmit)}
                 className="space-y-6 px-1"
               >
                 <FormField
@@ -152,7 +189,16 @@ export const CarouselItem: React.FC<CarouselItemProps> = ({ carousel }) => {
                     name="contentUrl"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Content URL <a href={carousel.contentUrl} className="text-blue-800" target="_blank">(open)</a></FormLabel>
+                        <FormLabel>
+                          Content URL{" "}
+                          <a
+                            href={carousel.contentUrl}
+                            className="text-blue-800"
+                            target="_blank"
+                          >
+                            (open)
+                          </a>
+                        </FormLabel>
                         <FormControl>
                           <Input {...field} />
                         </FormControl>
