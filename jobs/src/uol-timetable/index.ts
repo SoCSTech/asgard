@@ -9,8 +9,8 @@ require('dotenv').config();
 const apiUrl = process.env.API_URL as string;
 
 export async function refreshTimetableData(): Promise<void> {
-    // const weekNumber = getCurrentWeekNumber();
-    const weekNumber = 4; // this is a placeholder to hardcode it to give me a week with data because its the summer holidays!
+    const weekNumber = getCurrentWeekNumber();
+    // const weekNumber = 4; // this is a placeholder to hardcode it to give me a week with data because its the summer holidays!
     const lastMonday = getLastMonday()
 
     // Fetch all the timetables which are the type of 'uol_timetable'
