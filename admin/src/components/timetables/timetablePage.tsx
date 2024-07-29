@@ -1085,7 +1085,7 @@ export function TimetablePage(props: Props) {
             {newEventWindow()}
           </div>
         </div>
-        <Tabs defaultValue="carousel" className="w-full mt-5">
+        <Tabs defaultValue="list" className="w-full mt-5">
           <TabsList className="grid tablet:w-1/3 grid-cols-3">
             <TabsTrigger value="calendar">Calendar</TabsTrigger>
             <TabsTrigger value="list">Events List</TabsTrigger>
