@@ -46,6 +46,7 @@ import { getErrorMessage, type IServerError } from "@/interfaces/serverError";
 import { Calendar, Trash } from "lucide-react";
 import type { ICarousel, ICarouselItem } from "@/interfaces/carousel";
 import { CarouselItem } from "./carousel";
+import { AddCarousel } from "./addCarousel";
 
 const eventTypes = [
   { label: "Other", value: "OTHER" },
@@ -434,6 +435,8 @@ export function TimetablePage(props: Props) {
     {} as ITimetable
   );
   const [carousel, setCarousel] = React.useState<ICarousel>({} as ICarousel);
+  const [carouselId, setCarouselId] = React.useState<string>("");
+  
 
   const [events, setEvents] = React.useState<IEvent[]>([]);
   const [eventSheetIsOpen, setEventSheetIsOpen] = React.useState(false);
@@ -491,6 +494,7 @@ export function TimetablePage(props: Props) {
         }
       );
       setCarousel(response.data);
+      setCarouselId(response.data.carousel.id);
     } catch (error: any) {
       // Specify 'any' as the type for the catch clause variable
       const serverError = error as IServerError; // Cast error to IServerError
@@ -1109,10 +1113,18 @@ export function TimetablePage(props: Props) {
             </div>
           </TabsContent>
           <TabsContent value="carousel">
+            <div className="w-full flex justify-start items-start mt-5">
+              <AddCarousel refreshCarousels={fetchCarouselData} carouselId={carouselId} />
+            </div>
+
             <div className="w-full flex flex-wrap flex-col tablet:flex-row justify-center">
               {carousel.items &&
                 carousel.items.map((item) => (
-                  <CarouselItem carousel={item} key={item.id} refreshCarousels={fetchCarouselData} />
+                  <CarouselItem
+                    carousel={item}
+                    key={item.id}
+                    refreshCarousels={fetchCarouselData}
+                  />
                 ))}
             </div>
           </TabsContent>
