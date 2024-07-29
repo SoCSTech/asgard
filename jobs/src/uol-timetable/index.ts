@@ -1,7 +1,7 @@
 import { loginAsBotUser } from "@/auth";
 import { IEventType } from "@/interfaces/event";
 import { ITimetable } from "@/interfaces/timetable";
-import { getEventColour, getEventType, getLastMonday, getTimetablesWhichCanBeUpdated, loadTimetableJsonFile } from "@/uol-timetable/utils";
+import { getCurrentWeekNumber, getEventColour, getEventType, getLastMonday, getTimetablesWhichCanBeUpdated, loadTimetableJsonFile } from "@/uol-timetable/utils";
 import axios from "axios";
 import moment from "moment";
 
@@ -80,6 +80,7 @@ export async function refreshTimetableData(): Promise<void> {
 
                 if (response.status == 201) {
                     console.log(`Created new event ${eventName} for ${startDateTime.format("YYYY-MM-DD HH:mm:ss")}`)
+                    return
                 } else {
                     console.error(`⛔️ ${response.status} -> ${eventName} on ${startDateTime.format("YYYY-MM-DD HH:mm:ss")}`)
                 }

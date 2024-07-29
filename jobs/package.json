@@ -3,10 +3,10 @@
   "version": "1.0.0",
   "description": "Job runner for the asgard system",
   "main": "src/index.ts",
-  "type": "module",
   "scripts": {
     "start": "nodemon",
     "dev": "npm start",
+    "refresh": "ts-node -r tsconfig-paths/register ./src/index.ts --refresh-data",
     "build": "rm -rf dist/ && tsc && tsc-alias"
   },
   "repository": {
