@@ -24,6 +24,7 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
+import { getErrorMessage, type IServerError } from "@/interfaces/serverError";
 
 const CarouselItemFormSchemea = z.object({
   id: z.string(),
@@ -83,8 +84,9 @@ export const CarouselItem: React.FC<CarouselItemProps> = ({
       });
       toast("Carousel item deleted!");
     } catch (error) {
-      toast("Event couldn't be deleted...");
-      console.error(error);
+      const serverError = error as IServerError;
+      console.error("There was an error!", serverError);
+      toast(getErrorMessage(serverError));
     }
     refreshCarousels();
   };
@@ -109,8 +111,9 @@ export const CarouselItem: React.FC<CarouselItemProps> = ({
       toast("Carousel item updated successfully");
       refreshCarousels();
     } catch (error: any) {
-      console.error("There was an error!", error);
-      toast(error.response.data.message || "Something went wrong");
+      const serverError = error as IServerError;
+      console.error("There was an error!", serverError);
+      toast(getErrorMessage(serverError));
     }
   };
 

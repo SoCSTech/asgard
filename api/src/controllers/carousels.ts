@@ -213,11 +213,31 @@ const deleteCarouselItem = async (req: Request, res: Response, next: NextFunctio
     // Check if the event exists before trying to delete it
     const foundItem = await db.select()
         .from(carouselItemsSchema)
-        .where(eq(carouselItemsSchema.id, itemId));
+        .where(and(
+            eq(carouselItemsSchema.id, itemId),
+            eq(carouselItemsSchema.isDeleted, false)
+        ));
+
 
     if (foundItem.length !== 1) {
         res.status(404).json({ message: "Could not find carousel item to delete, has it already been deleted?" });
         return;
+    }
+
+    if (foundItem[0].type == "TIMETABLE") {
+        // Check if there is at least another timetable on the carousel
+        const otherItemsInCarousel = await db.select()
+            .from(carouselItemsSchema)
+            .where(and(
+                eq(carouselItemsSchema.carousel, String(foundItem[0].carousel)),
+                eq(carouselItemsSchema.type, "TIMETABLE"),
+                eq(carouselItemsSchema.isDeleted, false)
+            ));
+
+        if (otherItemsInCarousel.length <= 1) {
+            res.status(406).json({ message: "You must have at least one timetable in your carousel!" })
+            return
+        }
     }
 
     const updatedItem = await db.update(carouselItemsSchema)
