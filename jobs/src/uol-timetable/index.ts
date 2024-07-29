@@ -1,7 +1,7 @@
 import { loginAsBotUser } from "@/auth";
 import { IEventType } from "@/interfaces/event";
 import { ITimetable } from "@/interfaces/timetable";
-import { getEventColour, getEventType, getLastMonday, getTimetablesWhichCanBeUpdated, loadTimetableJsonFile } from "@/uol-timetable/utils";
+import { getCurrentWeekNumber, getEventColour, getEventType, getLastMonday, getTimetablesWhichCanBeUpdated, loadTimetableJsonFile } from "@/uol-timetable/utils";
 import axios from "axios";
 import moment from "moment";
 
@@ -9,8 +9,8 @@ require('dotenv').config();
 const apiUrl = process.env.API_URL as string;
 
 export async function refreshTimetableData(): Promise<void> {
-    // const weekNumber = getCurrentWeekNumber();
-    const weekNumber = 4; // this is a placeholder to hardcode it to give me a week with data because its the summer holidays!
+    const weekNumber = getCurrentWeekNumber();
+    // const weekNumber = 4; // this is a placeholder to hardcode it to give me a week with data because its the summer holidays!
     const lastMonday = getLastMonday()
 
     // Fetch all the timetables which are the type of 'uol_timetable'
@@ -80,6 +80,7 @@ export async function refreshTimetableData(): Promise<void> {
 
                 if (response.status == 201) {
                     console.log(`Created new event ${eventName} for ${startDateTime.format("YYYY-MM-DD HH:mm:ss")}`)
+                    return
                 } else {
                     console.error(`⛔️ ${response.status} -> ${eventName} on ${startDateTime.format("YYYY-MM-DD HH:mm:ss")}`)
                 }

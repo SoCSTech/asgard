@@ -6,6 +6,7 @@
   "scripts": {
     "start": "nodemon",
     "dev": "npm start",
+    "refresh": "ts-node -r tsconfig-paths/register ./src/index.ts --refresh-data",
     "build": "rm -rf dist/ && tsc && tsc-alias"
   },
   "repository": {

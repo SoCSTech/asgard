@@ -221,7 +221,6 @@ const getTimetableById = async (req: Request, res: Response, next: NextFunction)
         // check if they have this timetable as a favourite
         // if they do add it to the return value
         if (req.headers.authorization) {
-            console.log("USER IS SIGNED IN!! YIPPPIEE :3")
             const token = getTokenFromAuthCookie(req, res)
             const currentUserId = getUserIdFromJWT(token);
 
@@ -230,8 +229,6 @@ const getTimetableById = async (req: Request, res: Response, next: NextFunction)
                     eq(userTimetablesSchema.user, currentUserId),
                     eq(userTimetablesSchema.timetable, timetableId)
                 ))
-
-            console.log(link)
 
             if (link.length == 1) {
                 timetableIsFavourite = true

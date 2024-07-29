@@ -1,13 +1,15 @@
-import e, { Request, Response, NextFunction } from "express";
+import { Request, Response, NextFunction } from "express";
 import { db } from '@/db';
 import { carousels as carouselSchema, carouselItems as carouselItemsSchema, timetables as timetableSchema } from '@/db/schema';
-import { eq, and, or, gte, lte, lt, gt, ConsoleLogWriter } from 'drizzle-orm';
+import { eq, and } from 'drizzle-orm';
 import { getUserIdFromJWT, getTokenFromAuthCookie } from "@/utils/auth";
 import { isUserATechnician } from "@/utils/users";
-import { dateToString, dateTimeToString } from "@/utils/date";
+import { dateTimeToString } from "@/utils/date";
 import { log } from "@/utils/log";
 import { convertSpaceCodeToTimetableId } from "@/controllers/timetables"
-import { it } from "node:test";
+import { MqttCommunicator } from "@/communication/mqtt";
+const mqtt = MqttCommunicator.instance
+
 const moment = require('moment');
 const dotenv = require('dotenv');
 dotenv.config();
@@ -23,10 +25,10 @@ const getCarouselItemById = async (req: Request, res: Response, next: NextFuncti
         ))
 
     if (items.length === 0) {
-        res.json({ message: "Couldn't get carousel, does it exist?"}).status(404)
+        res.json({ message: "Couldn't get carousel, does it exist?" }).status(404)
         return
-    }        
-    
+    }
+
     res.json({ carouselItems: items });
 }
 
@@ -128,7 +130,7 @@ const createCarousel = async (req: Request, res: Response, next: NextFunction) =
     });
 
     await log(`Has created carousel for Timetable ${req.body.timetable}`, currentUserId)
-
+    await mqtt.SendCarouselRefresh(String(existingCarousels[0].id))
     res.status(201).json({ timetable: req.body.timetable, message: 'Carousel has been created' });
 };
 
@@ -164,7 +166,7 @@ const createCarouselItem = async (req: Request, res: Response, next: NextFunctio
     });
 
     await log(`Has created item for carousel ${req.body.carousel}`, currentUserId)
-
+    await mqtt.SendCarouselRefresh(String(existingItems[0].carousel))
     res.status(201).json({ carousel: req.body.carousel, message: 'Carousel item has been created' });
 };
 
@@ -194,7 +196,7 @@ const deleteCarousel = async (req: Request, res: Response, next: NextFunction) =
         .where(eq(carouselSchema.id, foundCarousel[0].id));
 
     await log(`Has deleted carousel ${foundCarousel[0].id}`, currentUserId)
-
+    await mqtt.SendCarouselRefresh(String(foundCarousel[0].id))
     res.status(200).json({ carousel: foundCarousel[0].id, message: "Carousel has been deleted" })
 }
 
@@ -211,11 +213,31 @@ const deleteCarouselItem = async (req: Request, res: Response, next: NextFunctio
     // Check if the event exists before trying to delete it
     const foundItem = await db.select()
         .from(carouselItemsSchema)
-        .where(eq(carouselItemsSchema.id, itemId));
+        .where(and(
+            eq(carouselItemsSchema.id, itemId),
+            eq(carouselItemsSchema.isDeleted, false)
+        ));
+
 
     if (foundItem.length !== 1) {
         res.status(404).json({ message: "Could not find carousel item to delete, has it already been deleted?" });
         return;
+    }
+
+    if (foundItem[0].type == "TIMETABLE") {
+        // Check if there is at least another timetable on the carousel
+        const otherItemsInCarousel = await db.select()
+            .from(carouselItemsSchema)
+            .where(and(
+                eq(carouselItemsSchema.carousel, String(foundItem[0].carousel)),
+                eq(carouselItemsSchema.type, "TIMETABLE"),
+                eq(carouselItemsSchema.isDeleted, false)
+            ));
+
+        if (otherItemsInCarousel.length <= 1) {
+            res.status(406).json({ message: "You must have at least one timetable in your carousel!" })
+            return
+        }
     }
 
     const updatedItem = await db.update(carouselItemsSchema)
@@ -223,7 +245,7 @@ const deleteCarouselItem = async (req: Request, res: Response, next: NextFunctio
         .where(eq(carouselItemsSchema.id, foundItem[0].id));
 
     await log(`Has deleted carousel ${foundItem[0].id}`, currentUserId)
-
+    await mqtt.SendCarouselRefresh(String(foundItem[0].carousel))
     res.status(200).json({ carouseItem: foundItem[0].id, message: "Carousel item has been deleted" })
 }
 
@@ -259,9 +281,9 @@ const updateCarousel = async (req: Request, res: Response, next: NextFunction) =
         })
         .where(eq(carouselSchema.id, carousel[0].id));
 
-    res.status(201).json({ message: `Carousel has been updated`, carousel: carousel[0].id });
-
+    await mqtt.SendCarouselRefresh(String(carousel[0].id))
     await log(`Has updated carousel ${carousel[0].id}`, currentUserId)
+    res.status(201).json({ message: `Carousel has been updated`, carousel: carousel[0].id });
 }
 
 const updateCarouselItem = async (req: Request, res: Response, next: NextFunction) => {
@@ -301,9 +323,9 @@ const updateCarouselItem = async (req: Request, res: Response, next: NextFunctio
         })
         .where(eq(carouselItemsSchema.id, item[0].id));
 
-    res.status(201).json({ message: `Carousel item '${item[0].name}' has been updated`, carousel: item[0].id });
-
     await log(`Has updated carousel item '${item[0].name}' (${item[0].id})`, currentUserId)
+    await mqtt.SendCarouselRefresh(String(item[0].carousel))
+    res.status(201).json({ message: `Carousel item '${item[0].name}' has been updated`, carousel: item[0].id });
 }
 
 export default {
