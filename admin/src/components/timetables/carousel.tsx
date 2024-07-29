@@ -63,6 +63,32 @@ export const CarouselItem: React.FC<CarouselItemProps> = ({
     });
   }, [carousel]);
 
+  const deleteItem = async (id: string | undefined) => {
+    if (id === undefined) {
+      console.error(
+        "Trying to delete carousel item but the ID is undefined, not doing that!"
+      );
+      return;
+    }
+    if (
+      !confirm(`Are you sure you want to update the delete this carousel item?`)
+    ) {
+      toast("Action has been cancelled");
+      return;
+    }
+
+    try {
+      await axios.delete(`${API_URL}/v2/carousel/item/${id}`, {
+        headers: { Authorization: `Bearer ${getCookie("token")}` },
+      });
+      toast("Carousel item deleted!");
+    } catch (error) {
+      toast("Event couldn't be deleted...");
+      console.error(error);
+    }
+    refreshCarousels();
+  };
+
   const onEditSubmit = async (
     data: z.infer<typeof CarouselItemFormSchemea>
   ) => {
@@ -97,9 +123,9 @@ export const CarouselItem: React.FC<CarouselItemProps> = ({
         </h1>
         <Button
           variant={"ghost"}
-          onClick={(event) => {
+          onClick={async (event) => {
             event.preventDefault();
-            alert("nyi");
+            await deleteItem(carousel.id);
           }}
         >
           <Trash className="text-red-500" />
