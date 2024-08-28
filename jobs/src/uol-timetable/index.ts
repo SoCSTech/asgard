@@ -11,6 +11,7 @@ const apiUrl = process.env.API_URL as string;
 export async function refreshTimetableData(): Promise<void> {
     const weekNumber = getCurrentWeekNumber();
     // const weekNumber = 4; // this is a placeholder to hardcode it to give me a week with data because its the summer holidays!
+    
     const lastMonday = getLastMonday()
 
     // Fetch all the timetables which are the type of 'uol_timetable'
@@ -70,6 +71,7 @@ export async function refreshTimetableData(): Promise<void> {
                         end: endDateTime.format("YYYY-MM-DD HH:mm:ss"),
                         isCombinedSession: isCombinedSession,
                         group: rawEvent.allGroupCodes,
+                        externalId: rawEvent.slotId || "",
                     },
                     {
                         headers: {
@@ -83,6 +85,7 @@ export async function refreshTimetableData(): Promise<void> {
                     return
                 } else {
                     console.error(`⛔️ ${response.status} -> ${eventName} on ${startDateTime.format("YYYY-MM-DD HH:mm:ss")}`)
+                    return
                 }
 
             } catch (error: any) {
