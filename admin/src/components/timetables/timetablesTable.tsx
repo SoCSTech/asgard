@@ -50,6 +50,7 @@ const TimetableFormSchema = z.object({
   canCombine: z.boolean(),
   combinedPartnerId: z.string(),
   dataSource: z.string().min(1).max(128),
+  dataUrl: z.string().max(256),
   defaultColour: z.string().length(7, {
     message:
       "Select a colour from the list or select custom and enter a specific colour",
@@ -85,11 +86,24 @@ const CreateNewTimetable: React.FC<CreateNewTimetableProps> = ({
       canCombine: false,
       combinedPartnerId: "",
       dataSource: "",
+      dataUrl: "",
       defaultColour: "",
     },
   });
 
   const canCombine = form.watch("canCombine", false);
+
+  /* 
+    If the data source is ICAL or MS Bookings,
+    then... this needs a data url and should be shown.
+  */
+  let requiresCustomDataUrl = false;
+  const dataSource = form.watch("dataSource");
+  if (dataSource == "ICAL" || dataSource == "MS_BOOKINGS") {
+    requiresCustomDataUrl = true;
+  } else {
+    requiresCustomDataUrl = false;
+  }
 
   const checkIfUserIsTech = async () => {
     try {
@@ -100,9 +114,11 @@ const CreateNewTimetable: React.FC<CreateNewTimetableProps> = ({
       });
       return response.data.users[0].role === "TECHNICIAN";
     } catch (error: any) {
-      const serverError = error as IServerError
+      const serverError = error as IServerError;
       console.error("There was an error!", server);
-      toast(getErrorMessage(serverError, "Error checking if you have permission"));
+      toast(
+        getErrorMessage(serverError, "Error checking if you have permission")
+      );
       return false;
     }
   };
@@ -286,6 +302,25 @@ const CreateNewTimetable: React.FC<CreateNewTimetableProps> = ({
                   </FormItem>
                 )}
               />
+
+              {requiresCustomDataUrl && (
+                <FormField
+                  control={form.control}
+                  name="dataUrl"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Data Url</FormLabel>
+                      <FormControl>
+                        <Input {...field} />
+                      </FormControl>
+                      <FormDescription>
+                        Enter the URL that streams the ICS data.
+                      </FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              )}
 
               <FormField
                 control={form.control}

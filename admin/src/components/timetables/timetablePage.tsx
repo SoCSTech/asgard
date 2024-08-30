@@ -70,6 +70,7 @@ const TimetableFormSchema = z.object({
   canCombine: z.boolean(),
   combinedPartnerId: z.string(),
   dataSource: z.string().min(1).max(128),
+  dataUrl: z.string().max(256),
   defaultColour: z.string().length(7, {
     message:
       "Select a colour from the list or select custom and enter a specific colour",
@@ -123,11 +124,24 @@ const EditTimetable: React.FC<EditTimetableProps> = ({
       canCombine: false,
       combinedPartnerId: "",
       dataSource: "",
+      dataUrl: "",
       defaultColour: "",
     },
   });
 
   const canCombine = form.watch("canCombine", false);
+
+  /* 
+    If the data source is ICAL or MS Bookings,
+    then... this needs a data url and should be shown.
+  */
+  let requiresCustomDataUrl = false;
+  const dataSource = form.watch("dataSource");
+  if (dataSource == "ICAL" || dataSource == "MS_BOOKINGS") {
+    requiresCustomDataUrl = true;
+  } else {
+    requiresCustomDataUrl = false;
+  }
 
   const [timetables, setTimetables] = React.useState<ITimetable[]>([]);
 
@@ -162,6 +176,7 @@ const EditTimetable: React.FC<EditTimetableProps> = ({
       canCombine: timetable.canCombine || false,
       combinedPartnerId: timetable.combinedPartnerId || "",
       dataSource: timetable.dataSource || "",
+      dataUrl: timetable.dataUrl || "",
       defaultColour: timetable.defaultColour || "",
     });
   }, [timetable]);
@@ -366,6 +381,25 @@ const EditTimetable: React.FC<EditTimetableProps> = ({
                   </FormItem>
                 )}
               />
+
+              {requiresCustomDataUrl && (
+                <FormField
+                  control={form.control}
+                  name="dataUrl"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Data Url</FormLabel>
+                      <FormControl>
+                        <Input {...field} />
+                      </FormControl>
+                      <FormDescription>
+                        Enter the URL that streams the ICS data.
+                      </FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              )}
 
               <FormField
                 control={form.control}

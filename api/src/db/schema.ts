@@ -52,6 +52,7 @@ export const timetables = mysqlTable('timetables', {
     combinedPartnerId: varchar('combined_partner_id', { length: 128 }),
     isDeleted: boolean('is_deleted').default(false).notNull(),
     dataSource: mysqlEnum('data_source', ['MANUAL', "UOL_TIMETABLE", "ICAL", "MS_BOOKINGS"]).default('MANUAL').notNull(),
+    dataUrl: varchar('data_url', { length: 256 }),
     defaultColour: varchar('default_colour', { length: 7 }).notNull().default("#7ab4f5"),
 }, (timetables) => ({
     spaceCodeIndex: uniqueIndex('space_code_idx').on(timetables.spaceCode)

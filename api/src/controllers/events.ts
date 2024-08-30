@@ -19,7 +19,10 @@ const getEventById = async (req: Request, res: Response, next: NextFunction) => 
 
     const events = await db.select()
         .from(eventSchema)
-        .where(eq(eventSchema.id, eventId))
+        .where(or(
+            eq(eventSchema.id, eventId),
+            eq(eventSchema.externalId, eventId),
+        ));
 
     res.json({ events: events });
 }
@@ -106,7 +109,10 @@ const deleteEvent = async (req: Request, res: Response, next: NextFunction) => {
     // Check if the event exists before trying to delete it
     const foundEvent = await db.select()
         .from(eventSchema)
-        .where(eq(eventSchema.id, eventId));
+        .where(or(
+            eq(eventSchema.id, eventId),
+            eq(eventSchema.externalId, eventId),
+        ));
 
     if (foundEvent.length !== 1) {
         res.status(404).json({ message: "Could not find event to delete, has it already been deleted?" });
@@ -139,7 +145,10 @@ const updateEvent = async (req: Request, res: Response, next: NextFunction) => {
     // Check if the event exists before trying to delete it
     const event = await db.select()
         .from(eventSchema)
-        .where(eq(eventSchema.id, eventId));
+        .where(or(
+            eq(eventSchema.id, eventId),
+            eq(eventSchema.externalId, eventId),
+        ))
 
     if (event.length !== 1) {
         res.status(404).json({ message: "Could not find event to update." });
