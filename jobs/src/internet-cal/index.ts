@@ -56,6 +56,7 @@ export async function refreshInternetCalendarStream(): Promise<void> {
                 // If there have been changes, update it in Asgard
                 if (hasChanged) {
                     console.log("Updating ", aEvent.name);
+                    await deleteAsgardEvent(aEvent.id, token) // delete event first!
                     await updateAsgardWithEvent(aEvent, token);
                 }
 
@@ -114,9 +115,21 @@ async function updateAsgardWithEvent(event: IEvent, token: string) {
     console.log("Updating ", event.name)
 
     try {
-        const response = await axios.put(
+        const response = await axios.post(
             apiUrl + "/v2/event",
-            event,
+            {
+                name: event.name,
+                staff: "",
+                moduleCode: "",
+                timetableId: event.timetableId,
+                type: event.type,
+                colour: event.colour,
+                start: moment(event.start).format("YYYY-MM-DD HH:mm:ss"),
+                end: moment(event.end).format("YYYY-MM-DD HH:mm:ss"),
+                isCombinedSession: false,
+                group: "",
+                externalId: event.externalId
+            },
             {
                 headers: {
                     Authorization: `Bearer ${token}`,

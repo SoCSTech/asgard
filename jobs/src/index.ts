@@ -9,6 +9,17 @@ cron.schedule('0 6 * * 1', async () => {
     await refreshTimetableData()
 });
 
+// Run every minute and update ical data
+cron.schedule('* * * * *', async () => {
+    console.log('⏰ Refreshing ICal Data');
+    await refreshInternetCalendarStream();
+});
+
+
+
+
+
+
 // Handle Manual Refresh
 if (process.argv.slice(2)[0] == '--refresh-data') {
     console.log("**Running Manual Refresh Mode**");
@@ -30,6 +41,8 @@ if (process.argv.slice(2)[0] == '--test') {
         await refreshInternetCalendarStream();
     })();
 }
+
+
 
 // Debug that the service is running.
 console.log("Awaiting for my jobs!")
