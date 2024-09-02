@@ -36,17 +36,6 @@ export async function refreshInternetCalendarStream(): Promise<void> {
             // Check if it is different from what's in Asgard
             let currentCalEvent = calEvents.find(item => item.uid === aEvent.externalId);
 
-            // All day events to be set to 9-5
-            if (currentCalEvent?.start.isAllDay) {
-                let start = currentCalEvent.start.date;
-                start.setHours(9);
-                currentCalEvent.start.date = start;
-
-                let end = currentCalEvent.end.date;
-                end.setHours(17);
-                currentCalEvent.end.date = end;
-            }
-
             // If the event is already in Asgard
             if (currentCalEvent) {
                 if (currentCalEvent.title !== aEvent.name) {
@@ -153,6 +142,24 @@ async function addEventToAsgard(calEvent: CalendarEvent, timetable: ITimetable, 
     // calEvent.uid is externalId
     // this is required to match the events
     console.log("Adding ", calEvent.title)
+
+    // All day events to be set to 9-5
+    let start = calEvent.start.date;
+    let end = calEvent.end.date;
+
+    if (calEvent?.start.isAllDay) {
+        start = calEvent.start.date;
+        start.setHours(9);
+
+        end = calEvent.end.date;
+        end.setHours(18)
+    }
+
+    if (moment(calEvent.end.date).hours() > 18) {
+        console.log("Too late")
+        end.setHours(18)
+    }
+
     try {
         const response = await axios.post(
             apiUrl + "/v2/event",
@@ -163,8 +170,8 @@ async function addEventToAsgard(calEvent: CalendarEvent, timetable: ITimetable, 
                 timetableId: timetable.id,
                 type: "OTHER",
                 colour: timetable.defaultColour,
-                start: moment(calEvent.start.date).format("YYYY-MM-DD HH:mm:ss"),
-                end: moment(calEvent.end.date).format("YYYY-MM-DD HH:mm:ss"),
+                start: moment(start).format("YYYY-MM-DD HH:mm:ss"),
+                end: moment(end).format("YYYY-MM-DD HH:mm:ss"),
                 isCombinedSession: false,
                 group: "",
                 externalId: calEvent.uid,
