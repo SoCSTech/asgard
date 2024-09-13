@@ -9,8 +9,8 @@ cron.schedule('0 6 * * 1', async () => {
     await refreshTimetableData()
 });
 
-// Run every minute and update ical data
-cron.schedule('* * * * *', async () => {
+// Run every 15 minutes and update ical data
+cron.schedule('*/15 * * * *', async () => {
     console.log('⏰ Refreshing ICal Data');
     await refreshInternetCalendarStream();
 });
