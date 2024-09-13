@@ -1,0 +1,1 @@
+ALTER TABLE `timetables` ADD `data_url` varchar(256);

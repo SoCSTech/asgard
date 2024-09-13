@@ -11,5 +11,6 @@ export interface ITimetable {
     isDeleted: boolean;
     isFavourite: boolean;
     dataSource: string;
+    dataUrl: string;
     defaultColour: string;
 }

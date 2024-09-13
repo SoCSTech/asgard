@@ -17,6 +17,7 @@ const newTimetable = {
     canCombine: timetableSchema.canCombine || false,
     combinedPartnerId: timetableSchema.combinedPartnerId || null,
     dataSource: timetableSchema.dataSource || null,
+    dataUrl: timetableSchema.dataUrl || null,
 }
 
 type TimetableWithPartner = {
@@ -31,6 +32,7 @@ type TimetableWithPartner = {
     isDeleted: boolean;
     isFavourite?: boolean;
     dataSource: "MANUAL" | "UOL_TIMETABLE" | "ICAL" | "MS_BOOKINGS";
+    dataUrl: string | null;
     combinedPartnerSpaceCode?: string;
 };
 
@@ -358,6 +360,7 @@ const createTimetable = async (req: Request, res: Response, next: NextFunction) 
         canCombine: req.body.canCombine || false,
         combinedPartnerId: req.body.combinedPartnerId || null,
         dataSource: req.body.dataSource || "MANUAL",
+        dataUrl: String(timetableSchema.dataUrl || ""),
     })
 
     await log(`Has created timetable with name ${req.body.name} (${req.body.spaceCode})`, currentUserId)
@@ -493,6 +496,7 @@ const updateTimetable = async (req: Request, res: Response, next: NextFunction) 
             combinedPartnerId: req.body.combinedPartnerId || timetable[0].combinedPartnerId,
             isDeleted: req.body.isDeleted || timetable[0].isDeleted,
             dataSource: req.body.dataSource || timetable[0].dataSource,
+            dataUrl: req.body.dataUrl || timetable[0].dataUrl,
             defaultColour: req.body.defaultColour || timetable[0].defaultColour,
         })
         .where(eq(timetableSchema.id, timetable[0].id));

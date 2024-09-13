@@ -21,9 +21,9 @@
     "astro": "astro"
   },
   "dependencies": {
-    "@astrojs/check": "^0.7.0",
-    "@astrojs/node": "^8.3.1",
-    "@astrojs/react": "^3.4.0",
+    "@astrojs/check": "^0.9.3",
+    "@astrojs/node": "^8.3.3",
+    "@astrojs/react": "^3.6.2",
     "@astrojs/tailwind": "^5.1.0",
     "@hookform/resolvers": "^3.6.0",
     "@radix-ui/react-avatar": "^1.0.4",
@@ -40,7 +40,7 @@
     "@tanstack/react-table": "^8.17.3",
     "@types/react": "^18.3.3",
     "@types/react-dom": "^18.3.0",
-    "astro": "^4.9.2",
+    "astro": "^4.15.4",
     "astro-icon": "^1.1.0",
     "axios": "^1.7.2",
     "class-variance-authority": "^0.7.0",

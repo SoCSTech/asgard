@@ -41,12 +41,18 @@ app.use((req, res, next) => {
     next();
 });
 
+// handle errors middleware
+app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
+    console.error(err.stack);
+    res.status(500).json({ message: "Something went wrong! Please try again in a few moments." })
+});
+
 /* default endpoints */
 app.get('/', (req: Request, res: Response) => {
     res.json({ message: '👋💻👾🏎️ Hello from SoCS Tech' });
 });
 app.get('/v2', (req: Request, res: Response) => {
-    res.json({ name: "asgard2" });
+    res.json({ name: "asgard2", message: '👋💻👾🏎️ Hello from SoCS Tech' });
 });
 
 /* License File */
