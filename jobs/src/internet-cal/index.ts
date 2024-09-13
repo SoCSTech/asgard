@@ -56,7 +56,7 @@ export async function refreshInternetCalendarStream(): Promise<void> {
                 // If there have been changes, update it in Asgard
                 if (hasChanged) {
                     console.log("Updating ", aEvent.name);
-                    await deleteAsgardEvent(aEvent.id, token) // delete event first!
+                    await deleteAsgardEvent(aEvent.id, token) // delete event first or we have clashes
                     await updateAsgardWithEvent(aEvent, token);
                 }
 
