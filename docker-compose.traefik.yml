@@ -18,13 +18,19 @@ services:
     restart: always
     networks:
       - asgard_internal
-    ports:
-      - 1305:3000
+      - proxy
     env_file:
       - .env
     depends_on:
       - db
       - mqtt
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.asgard-api.rule=Host(`asgard.localhost`) && PathPrefix(`/v2`)"
+      - "traefik.http.routers.asgard-api.entrypoints=https"
+      - "traefik.http.routers.asgard-api.tls=true"
+      - "traefik.http.services.asgard-api.loadbalancer.server.port=3000"
+
 
   yggdrasil-web:
     build: ./yggdrasil-web
@@ -32,12 +38,18 @@ services:
     restart: always
     networks:
       - asgard_internal
+      - proxy
     env_file:
       - .env
     depends_on:
       - asgard-api
-    ports:
-      - 2305
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.yggdrasil-web.rule=Host(`yggdrasil.localhost`)"
+      - "traefik.http.routers.yggdrasil-web.entrypoints=https"
+      - "traefik.http.routers.yggdrasil-web.tls=true"
+      - "traefik.http.services.yggdrasil-web.loadbalancer.server.scheme=http"
+      - "traefik.http.services.yggdrasil-web.loadbalancer.server.port=80"
 
   asgard-admin:
     build: ./admin
@@ -45,13 +57,20 @@ services:
     restart: always
     networks:
       - asgard_internal
+      - proxy
     depends_on:
       - asgard-api
     environment:
       PUBLIC_API_URL: ${API_URL}
       PUBLIC_Y2_URL: ${Y2_URL}
-    ports:
-      - 1102:80
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.asgard-admin.rule=Host(`asgard.localhost`)"
+      - "traefik.http.routers.asgard-admin.entrypoints=https"
+      - "traefik.http.routers.asgard-admin.tls=true"
+      - "traefik.http.services.asgard-admin.loadbalancer.server.scheme=http"
+      - "traefik.http.services.asgard-admin.loadbalancer.server.port=80"
+
   db:
     container_name: a2-asgard-db
     image: mysql:8.0
@@ -78,6 +97,7 @@ services:
     tty: true
     networks:
       - asgard_internal
+      - proxy
     ports:
       - 1883:1883
       - 9001:9001
@@ -95,3 +115,5 @@ volumes:
 
 networks:
   asgard_internal:
+  proxy:
+    external: true
