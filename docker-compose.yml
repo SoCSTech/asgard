@@ -9,6 +9,8 @@ services:
       - asgard_internal
     env_file:
       - .env
+    volumes:
+      - ./jobs/data:/app/data
     depends_on:
       - asgard-api
 
