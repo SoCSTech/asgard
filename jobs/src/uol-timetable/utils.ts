@@ -169,7 +169,7 @@ export function getEventColour(moduleCode: string, defaultColour: string): strin
     return defaultColour
 }
 
-export function getEventType(rawEventType: string): IEventType {
+export function getEventType(rawEventType: string, rawName: string): IEventType {
     if (rawEventType == null || rawEventType == undefined)
         rawEventType = ""
 
@@ -265,6 +265,12 @@ export function getEventType(rawEventType: string): IEventType {
     else if (rawEventType == "TCA") {
         returnableEventType.type = "EXAM"
         returnableEventType.name = "TCA"
+    }
+
+    // Make all CSS events 'social'
+    if (rawName.toLowerCase().includes("css")) {
+        returnableEventType.type = "SOCIAL"
+        returnableEventType.name = ""
     }
 
     return returnableEventType

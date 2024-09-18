@@ -10,7 +10,7 @@ const apiUrl = process.env.API_URL as string;
 
 export async function refreshTimetableData(): Promise<void> {
     const weekNumber = getCurrentWeekNumber();
-    // const weekNumber = 4; // this is a placeholder to hardcode it to give me a week with data because its the summer holidays!
+    //const weekNumber = 4; // this is a placeholder to hardcode it to give me a week with data because its the summer holidays!
     
     const lastMonday = getLastMonday()
 
@@ -40,13 +40,13 @@ export async function refreshTimetableData(): Promise<void> {
             if (rawEvent.weeksMap.charAt(weekNumber) !== '1') { return }
 
             // Get the type and the colour
-            const eventType: IEventType = getEventType(rawEvent.allEventTypes)
+            const eventType: IEventType = getEventType(rawEvent.allEventTypes, rawEvent.allModuleTitles)
             const eventColour: string = getEventColour(rawEvent.allModuleIds, timetable.defaultColour)
 
             // Add the event type to the title.
             let eventName: string = rawEvent.allModuleTitles
-            if (eventType.type !== "OTHER")
-                eventName = `${eventType.name}: ${rawEvent.allModuleTitles}`
+            //if (eventType.type !== "OTHER")
+            //    eventName = `${eventType.name}: ${rawEvent.allModuleTitles}`
 
             // Figure out start and end times
             let currentWeekDate = moment(lastMonday).startOf('week');
@@ -64,6 +64,18 @@ export async function refreshTimetableData(): Promise<void> {
                 return
             }
 
+            // Force group codes to be one character!
+            let groupCode = "";
+            if (rawEvent.allGroupCodes) {
+            groupCode = (rawEvent.allGroupCodes as string).slice(0, 2).toUpperCase()
+            }
+
+            // Ignore group codes for groups that are different entries,
+            // It should be pretty clear without it
+            if (rawEvent.allGroupCodes == "FEB" || rawEvent.allGroupCodes == "SEP") {
+                groupCode = "";
+            } 
+
             // Add to asgard
             try {
                 const response = await axios.post(
@@ -78,7 +90,7 @@ export async function refreshTimetableData(): Promise<void> {
                         start: startDateTime.format("YYYY-MM-DD HH:mm:ss"),
                         end: endDateTime.format("YYYY-MM-DD HH:mm:ss"),
                         isCombinedSession: isCombinedSession,
-                        group: rawEvent.allGroupCodes,
+                        group: groupCode,
                         externalId: rawEvent.slotId || "",
                     },
                     {
@@ -89,7 +101,7 @@ export async function refreshTimetableData(): Promise<void> {
                 );
 
                 if (response.status == 201) {
-                    console.log(`Created new event ${eventName} for ${startDateTime.format("YYYY-MM-DD HH:mm:ss")}`)
+                    console.log(`${timetable.spaceCode}: Created new event ${eventName} for ${startDateTime.format("YYYY-MM-DD HH:mm:ss")}`)
                     return
                 } else {
                     console.error(`⛔️ ${response.status} -> ${eventName} on ${startDateTime.format("YYYY-MM-DD HH:mm:ss")}`)
