@@ -14,6 +14,8 @@ export async function refreshTimetableData(): Promise<void> {
     
     const lastMonday = getLastMonday()
 
+    console.log(`Week ${weekNumber} - Monday ${lastMonday}`)
+
     // Fetch all the timetables which are the type of 'uol_timetable'
     const timetables: ITimetable[] = await getTimetablesWhichCanBeUpdated()
 
@@ -47,7 +49,7 @@ export async function refreshTimetableData(): Promise<void> {
                 eventName = `${eventType.name}: ${rawEvent.allModuleTitles}`
 
             // Figure out start and end times
-            let currentWeekDate = moment(getLastMonday()).startOf('week');
+            let currentWeekDate = moment(lastMonday).startOf('week');
             let startDateTime = currentWeekDate.add(rawEvent.weekDay, 'days');
             startDateTime = startDateTime.add(moment.duration(rawEvent.startTime));
             let endDateTime = startDateTime.clone().add(rawEvent.duration, 'minutes');
@@ -55,6 +57,12 @@ export async function refreshTimetableData(): Promise<void> {
             // Figure out if it should be combined or not
             let isCombinedSession = false;
             if (rawEvent.allRoomIds.length > timetable.spaceCode) { isCombinedSession = true; }
+
+            // Ignore "Lab access - computing students" events
+            if (eventName.startsWith("Lab access")) {
+                console.log("Ignoring lab access events")
+                return
+            }
 
             // Add to asgard
             try {
@@ -94,7 +102,7 @@ export async function refreshTimetableData(): Promise<void> {
         })
 
         console.log(`✅ All events added for ${timetable.spaceCode}!`)
-    })
+    }) 
 }
 
 async function deleteAllEventsFromTimetable(timetableId: string, token: string): Promise<void> {

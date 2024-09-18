@@ -36,11 +36,9 @@ export function getLastMonday(): Date {
     const today = new Date();
     const dayOfWeek = today.getUTCDay(); // Sunday - Saturday : 0 - 6
 
-    // If today is Sunday (0), set it to 7 to calculate the last Monday
-    const adjustedDayOfWeek = (dayOfWeek === 0) ? 7 : dayOfWeek;
-
-    // Calculate the number of days to subtract to get the last Monday
-    const daysToSubtract = adjustedDayOfWeek - 1;
+    // If today is Sunday (0), subtract 6 days to get the last Monday
+    // Otherwise, subtract dayOfWeek - 1 days to get the last Monday
+    const daysToSubtract = (dayOfWeek === 0) ? 6 : (dayOfWeek - 1);
 
     // Create a new date object for last Monday
     const lastMonday = new Date(today);
@@ -49,6 +47,8 @@ export function getLastMonday(): Date {
 
     return lastMonday;
 }
+
+
 
 export async function getTimetablesWhichCanBeUpdated(): Promise<ITimetable[]> {
     const response = await axios.get(
@@ -66,13 +66,11 @@ export async function loadTimetableJsonFile(spaceCode: string): Promise<any> {
                 reject(`Error loading timetable for ${spaceCode}: ${err}`);
             } else {
                 const jsonData = JSON.parse(data)
-                if (!jsonData?.success)
-                    reject(`Error loading timetable for ${spaceCode}: Data is unsuccessful`);
 
-                if (!jsonData?.returned?.timetableEntries)
+                if (!jsonData?.timetableEntries)
                     reject(`Error loading timetable for ${spaceCode}: There's no timetable entries`);
 
-                resolve(jsonData.returned.timetableEntries);
+                resolve(jsonData.timetableEntries);
             }
         });
     });
