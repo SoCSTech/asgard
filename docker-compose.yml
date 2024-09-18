@@ -9,6 +9,11 @@ services:
       - asgard_internal
     env_file:
       - .env
+    environment:
+      API_URL: "asgard-api"
+      ACADEMIC_YEAR_START_DATE: ${ACADEMIC_YEAR_START_DATE}
+      BOT_USER: ${BOT_PASS}
+      BOT_PASS: ${BOT_PASS}
     volumes:
       - ./jobs/data:/app/data
     depends_on:
