@@ -1,5 +1,8 @@
 var cron = require('node-cron');
 
+require('dotenv').config();
+const apiUrl = process.env.API_URL as string;
+
 import { refreshTimetableData } from "@/uol-timetable";
 import { refreshInternetCalendarStream } from "@/internet-cal";
 
@@ -14,11 +17,6 @@ cron.schedule('*/15 * * * *', async () => {
     console.log('⏰ Refreshing ICal Data');
     await refreshInternetCalendarStream();
 });
-
-
-
-
-
 
 // Handle Manual Refresh
 if (process.argv.slice(2)[0] == '--refresh-data') {
@@ -46,3 +44,4 @@ if (process.argv.slice(2)[0] == '--test') {
 
 // Debug that the service is running.
 console.log("Awaiting for my jobs!")
+console.log("Connecting to API at " + apiUrl)

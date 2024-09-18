@@ -14,7 +14,7 @@ export const loginAsBotUser = async (): Promise<string> => {
                 password: botPass
             },
             {
-                timeout: 15000, // 15 seconds timeout
+                timeout: 5000, // 5 seconds timeout
                 headers: { "Cache-Control": "no-cache" },
             }
         )
@@ -25,7 +25,7 @@ export const loginAsBotUser = async (): Promise<string> => {
             console.log(error);
             if (error.code === "ECONNABORTED") {
                 console.error(
-                    "The request took too long - please try again later."
+                    "Could not connect to asgard api! The request took too long... API Url is " + apiUrl
                 );
             } else {
                 console.error(
