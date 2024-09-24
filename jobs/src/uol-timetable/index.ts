@@ -11,7 +11,7 @@ const apiUrl = process.env.API_URL as string;
 export async function refreshTimetableData(): Promise<void> {
     const weekNumber = getCurrentWeekNumber();
     //const weekNumber = 4; // this is a placeholder to hardcode it to give me a week with data because its the summer holidays!
-    
+
     const lastMonday = getLastMonday()
 
     console.log(`Week ${weekNumber} - Monday ${lastMonday}`)
@@ -64,18 +64,31 @@ export async function refreshTimetableData(): Promise<void> {
                 return
             }
 
+            // Say module name only once if its a (M) module
+            eventName = eventName.replace("(M)", "").trim()
+            let splitEventName = eventName.split(", ")
+
+            if (splitEventName.length >= 2) {
+                if (splitEventName[0] == splitEventName[1]) {
+                    console.log("Duplicate name, using the name once")
+                    eventName = splitEventName[0]
+                }
+            }
+
             // Force group codes to be one character!
             let groupCode = "";
             if (rawEvent.allGroupCodes) {
-            groupCode = (rawEvent.allGroupCodes as string).slice(0, 2).toUpperCase()
+                groupCode = (rawEvent.allGroupCodes as string).slice(0, 2).toUpperCase()
             }
 
             // Ignore group codes for groups that are different entries,
             // It should be pretty clear without it
             if (rawEvent.allGroupCodes == "FEB" || rawEvent.allGroupCodes == "SEP") {
                 groupCode = "";
-            } 
+            }
 
+            console.log(eventName)
+            
             // Add to asgard
             try {
                 const response = await axios.post(
@@ -114,7 +127,7 @@ export async function refreshTimetableData(): Promise<void> {
         })
 
         console.log(`✅ All events added for ${timetable.spaceCode}!`)
-    }) 
+    })
 }
 
 async function deleteAllEventsFromTimetable(timetableId: string, token: string): Promise<void> {
