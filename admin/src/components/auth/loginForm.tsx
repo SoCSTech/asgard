@@ -30,7 +30,7 @@ export default function LoginForm() {
       .then(function (response) {
         setErrorMessage("");
         setJwtCookie(response.data.TOKEN);
-        // window.location.href = redirect || "/";
+        window.location.href = redirect || "/";
       })
       .catch(function (error) {
         console.log(error);

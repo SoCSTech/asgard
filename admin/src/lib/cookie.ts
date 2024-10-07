@@ -4,7 +4,6 @@ export function setJwtCookie(token: string) {
     document.cookie = cookie.serialize('token', token, {
         maxAge: 60 * 60 * 24, // 1 day
         path: '/',
-        secure: true,
         sameSite: 'strict'
     });
 }
