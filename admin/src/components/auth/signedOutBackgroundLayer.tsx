@@ -11,6 +11,11 @@ export default function SignedOutBackgroundLayer() {
     "/images/bg6.webp",
     "/images/bg7.webp",
     "/images/bg8.webp",
+    "/images/bg9.webp",
+    "/images/bg10.webp",
+    "/images/bg11.webp",
+    "/images/bg12.webp",
+    "/images/bg13.webp",
   ];
 
   const generateRandomNumber = (): number =>
@@ -50,7 +55,7 @@ export default function SignedOutBackgroundLayer() {
 
   return (
     <div
-      className="w-full h-full absolute z-0 bg-cover bg-no-repeat"
+      className="hidden tablet:block w-full h-full absolute z-0 bg-cover bg-no-repeat bg-center"
       style={backgroundStyle}
     ></div>
   );
