@@ -33,18 +33,16 @@ export default function ChangePasswordForm() {
     // const redirect = queryParameters.get("redirect") || "";
 
     const { password, confirmPassword } = document.forms[0];
-    console.log("hi")
-    console.log(password.value)
-    console.log(confirmPassword.value);
-
-    if (password.value.length > 13) {
-      setErrorMessage("The passwords you have entered is too short.");
-      return;
-    }
+    // if (password.value.length < 13) {
+    //   setErrorMessage(`The passwords you have entered is too short. It must be at least 13 characters long. Your password has ${password.value.length} characters.`);
+    //   throw new Error("SHORT_PASSWORD");
+    //   return
+    // }
 
     if (password.value !== confirmPassword.value) {
       setErrorMessage("The passwords you have entered do not match.");
-      return;
+      throw new Error("PASSWORD_MISMATCH");
+      return
     }
   
     axios
