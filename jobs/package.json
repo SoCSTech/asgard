@@ -1,6 +1,6 @@
 {
   "name": "asgard-jobs",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Job runner for the asgard system",
   "main": "src/index.ts",
   "scripts": {

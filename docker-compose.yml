@@ -11,6 +11,7 @@ services:
       - .env
     environment:
       API_URL: "http://asgard-api:3000"
+      MQTT_BROKER: "mqtt"
       ACADEMIC_YEAR_START_DATE: ${ACADEMIC_YEAR_START_DATE}
       BOT_USER: ${BOT_USER}
       BOT_PASS: ${BOT_PASS}
@@ -18,6 +19,7 @@ services:
       - ./jobs/data:/app/data
     depends_on:
       - asgard-api
+      - mqtt
 
   asgard-api:
     build: ./api
