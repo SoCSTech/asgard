@@ -5,6 +5,7 @@ const apiUrl = process.env.API_URL as string;
 
 import { refreshTimetableData } from "@/uol-timetable";
 import { refreshInternetCalendarStream } from "@/internet-cal";
+import { sendRefreshForAllTimetables } from "@/mqtt-refresh";
 
 // Run every monday morning at 6 and import all timetable events for this week.
 cron.schedule('0 6 * * 1', async () => {
@@ -16,6 +17,12 @@ cron.schedule('0 6 * * 1', async () => {
 cron.schedule('*/15 * * * *', async () => {
     console.log('⏰ Refreshing ICal Data');
     await refreshInternetCalendarStream();
+});
+
+// Run every morning at 1 min past midnight and refresh all the screens
+cron.schedule('1 0 * * *', async () => {
+    console.log('⏰ Refreshing all timetables as the day has changed!');
+    await sendRefreshForAllTimetables()
 });
 
 // Handle Manual Refresh
@@ -35,8 +42,7 @@ if (process.argv.slice(2)[0] == '--test') {
 
     // Run jobs
     (async () => {
-        console.log('⏰ Refreshing ICal Data');
-        await refreshInternetCalendarStream();
+        await sendRefreshForAllTimetables()
     })();
 }
 
