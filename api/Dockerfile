@@ -1,10 +1,10 @@
-FROM node:20-alpine as base
+FROM node:20-alpine
 
 # Open Container Initiative (OCI) labels
-LABEL org.opencontainers.image.title "Asgard API"
-LABEL org.opencontainers.image.description "Main API for the Asgard System"
-LABEL org.opencontainers.image.authors ["University of Lincoln - Computer Science Technical Services <technician@lincoln.ac.uk>","Josh Cooper <joshcooper@lincoln.ac.uk>"]
-LABEL org.opencontainers.image.url "https://github.com/socstech/asgard"
+LABEL org.opencontainers.image.title="Asgard API"
+LABEL org.opencontainers.image.description="Main API for the Asgard System"
+LABEL org.opencontainers.image.authors=["University of Lincoln - Computer Science Technical Services <technician@lincoln.ac.uk>","Josh Cooper <joshcooper@lincoln.ac.uk>"]
+LABEL org.opencontainers.image.url="https://github.com/socstech/asgard"
 LABEL org.opencontainers.image.licenses="Apache-2.0"
 
 # Make things run as node user
