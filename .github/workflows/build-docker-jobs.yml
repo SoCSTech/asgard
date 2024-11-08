@@ -1,4 +1,4 @@
-name: API - Build and Publish Docker Image
+name: Jobs - Build and Publish Docker Image
 
 on:
   push:
@@ -9,7 +9,7 @@ on:
       - main
 
 jobs:
-  api-build:
+  jobs-build:
     runs-on: ubuntu-latest
 
     steps:
@@ -38,20 +38,20 @@ jobs:
         id: meta
         uses: docker/metadata-action@v5
         with:
-          images: ghcr.io/socstech/asgard-api
+          images: ghcr.io/socstech/asgard-jobs
 
       - name: Build and Push Production Docker Image
         id: build-and-push
         uses: docker/build-push-action@v6
         with:
           platforms: linux/amd64
-          context: ./api
-          file: ./api/Dockerfile
+          context: ./jobs
+          file: ./jobs/Dockerfile
           push: ${{ github.event_name != 'pull_request' }}
           tags: |
             ${{ steps.meta.outputs.tags }}
-            ghcr.io/socstech/asgard-api:latest
-            ghcr.io/socstech/asgard-api:${{ github.sha }}
+            ghcr.io/socstech/asgard-jobs:latest
+            ghcr.io/socstech/asgard-jobs:${{ github.sha }}
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
@@ -62,12 +62,12 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           platforms: linux/amd64
-          context: ./api
-          file: ./api/Dockerfile
+          context: ./jobs
+          file: ./jobs/Dockerfile
           push: true
           tags: |
-            ghcr.io/socstech/asgard-api:${{ github.sha }}
-            ghcr.io/socstech/asgard-api:pr-${{ github.event.number }}
+            ghcr.io/socstech/asgard-jobs:${{ github.sha }}
+            ghcr.io/socstech/asgard-jobs:pr-${{ github.event.number }}
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
