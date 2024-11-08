@@ -44,6 +44,7 @@ jobs:
         id: build-and-push
         uses: docker/build-push-action@v5
         with:
+          platforms: linux/amd64
           context: ./api
           file: ./api/Dockerfile
           push: ${{ github.event_name != 'pull_request' }}
@@ -59,6 +60,7 @@ jobs:
         id: pr-build-and-push
         uses: docker/build-push-action@v5
         with:
+          platforms: linux/amd64
           context: ./api
           file: ./api/Dockerfile
           push: true
