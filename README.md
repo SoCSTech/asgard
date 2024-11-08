@@ -1,20 +1,29 @@
-# asgard<sup>2</sup>
+# asgard
 
-asgard<sup>2</sup> is *currently in development* and will be the next generation of the [original asgard system](https://github.com/SoCSTech/asgard-system-stack) which is the [School of Computer Science's](https://lincoln.ac.uk/socs) timetabling and booking system. It manages the events that are running in each one of our computing labs (and other rooms too) to provide data to our [signage screens platform yggdrasil (y2)](https://github.com/SoCSTech/yggdrasil-revamp/tree/asgard2).
+Asgard is the system designed for improving the experience of the Computing Labs at the [University of Lincoln](https://www.lincoln.ac.uk/studywithus/subjects/computerscienceandgamescomputing/). It is designed around managing aspects of the lab such as signage, timetabling and lab occupancy. Asgard provides the back of house management system for student facing projects such as [yggdrasil](https://github.com/SoCSTech/yggdrasil) which comes under the asgard family of projects. 
+
+This iteration (asgard<sup>2</sup>) has been built on the back of the work previously done by former technicians to improve the functionality and capability of the system.
+
+## Getting started
+
+No matter if you are developing or deploying you will need to use [Docker](https://docker.com) as the whole system is designed around it.
+
+If you are developing, you should use a Code Editor such as [Visual Studio Code](https://code.visualstudio.com) which can support [Devcontainers](https://containers.dev/). You will then be able to open one of the 'sub-projects' and work inside of it and make changes, on your own branch or fork.
+
+Or if you are wanting to deploy for production, you should use the [docker-compose.yml](docker-compose.yml) file, which holds the configuration file to bring up the system with all the different components.
+
+Once you have brought up your environment, you will need to run some migrations against the database. To do this you will need to connect into the running `api` container. You can do that by running:
+```bash
+docker exec -it asgard-api bash
+```
+You should then have a shell inside of the container, where you can run the following migration command:
+```bash
+npm run db:push
+```
+This will ensure your version of the database matches what the stack is expecting!
 
 
-## Deployment
-
-This project is deployed to the SoCS internal web server using Docker. There is a [docker-compose.yml](docker-compose.yml) file which holds the configuration file to bring up the system.
-
-The server is expected to be running Ubuntu Server and have Docker and Docker Compose installed. With future versions (after [#18](https://github.com/SoCSTech/asgard2/issues/18) is closed) we may require the server to be configured with Traefik which will be documented here.
-
-### Migrations on the Server
-
-You need to exec into the container - and run the command `npm run db:push` to ensure the data base is in sync with the schema.
-
-
-## Documentation
+## Top Guides
 
 | Document | Purpose |
 | -------- | ------- |
@@ -40,14 +49,14 @@ You need to exec into the container - and run the command `npm run db:push` to e
 
 
 ## Credits
-- Asgard<sup>2</sup>, [Josh Cooper](https://github.com/cooperj).
-- Yggdrasil, [Benjamin Williams](https://github.com/blewert).
-- A bit of design, and Dockerisation, [Ollie Grooby](https://github.com/Grooben).
-- Original Asgard Microservice author [Thomas Reed](https://github.com/treed1104).
+- [Josh Cooper](https://github.com/cooperj)
+- [Benjamin Williams](https://github.com/blewert)
+- [Ollie Grooby](https://github.com/Grooben)
+- [Thomas Reed](https://github.com/treed1104)
 
 
 
 
 
 ##
-SoCSTech @ University of Lincoln // INB1201 - 2024
+Computer Science Technical Service @ University of Lincoln, UK // INB1201 - 2024
