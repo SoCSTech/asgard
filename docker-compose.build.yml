@@ -2,7 +2,7 @@ version: "3"
 
 services:
   asgard-jobs:
-    image: ghcr.io/socstech/asgard-jobs:${TAG}
+    build: ./jobs
     container_name: asgard-jobs
     restart: always
     networks:
@@ -22,7 +22,7 @@ services:
       - mqtt
 
   asgard-api:
-    image: ghcr.io/socstech/asgard-api
+    build: ./api
     container_name: asgard-api
     restart: always
     networks:
@@ -35,21 +35,8 @@ services:
       - db
       - mqtt
 
-  # yggdrasil-web:
-  #   build: ./yggdrasil-web
-  #   container_name: a2-yggdrasil-web
-  #   restart: always
-  #   networks:
-  #     - asgard_internal
-  #   env_file:
-  #     - .env
-  #   depends_on:
-  #     - asgard-api
-  #   ports:
-  #     - 2305:80
-
   asgard-admin:
-    image: ghcr.io/socstech/asgard-admin:${TAG}
+    build: ./admin
     container_name: asgard-admin
     restart: always
     networks:
