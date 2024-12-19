@@ -75,14 +75,14 @@ export const events = mysqlTable('events', {
     moduleCode: varchar('module_code', { length: 20 }),
     timetableId: varchar('timetable_id', { length: 128 }).references(() => timetables.id),
     type: mysqlEnum('type', ['OTHER', 'WORKSHOP', 'LECTURE', 'SOCIAL', 'MAINTENANCE', 'EXAM', 'PROJECT']).default('OTHER').notNull(),
-    colour: varchar('colour', {length: 7}),
+    colour: varchar('colour', { length: 7 }),
     start: timestamp('start', { mode: "string" }).notNull(),
     end: timestamp('end', { mode: "string" }).notNull(),
     lastModified: timestamp('last_modified', { mode: "string" }).defaultNow().notNull(),
     modifiedBy: varchar('modified_by_id', { length: 128 }).references(() => users.id),
     isCombinedSession: boolean('is_combined_session').default(false),
     group: varchar('group', { length: 10 }),
-    externalId: varchar('external_id', {length: 128})
+    externalId: varchar('external_id', { length: 128 })
 }, (events) => ({
     timetableIndex: index('timetable_idx').on(events.timetableId),
     startIndex: index('start_idx').on(events.start),
@@ -90,9 +90,36 @@ export const events = mysqlTable('events', {
     externalIdIndex: index('external_idx').on(events.externalId)
 }));
 
+export const media = mysqlTable('media', {
+    id: varchar('id', { length: 128 }).$defaultFn(() => createId()).primaryKey(),
+    name: varchar('name', { length: 128 }),
+    url: varchar('url', { length: 256 }),
+    fileName: varchar('file_name', { length: 128 }),
+    contentType: varchar('content_type', { length: 32 }),
+    modifiedBy: varchar('modified_by_id', { length: 128 }).references(() => users.id),
+    lastModified: timestamp('last_modified', { mode: "string" }).defaultNow().notNull(),
+    isDeleted: boolean('is_deleted').default(false).notNull(),
+});
+
+export const displays = mysqlTable('displays', {
+    id: varchar('id', { length: 128 }).$defaultFn(() => createId()).primaryKey(),
+    name: varchar('name', { length: 128 }),
+    macAddress: varchar('mac_address', { length: 25 }),
+    modifiedBy: varchar('modified_by_id', { length: 128 }).references(() => users.id),
+    isDeleted: boolean('is_deleted').default(false).notNull(),
+});
+
+export const displayContent = mysqlTable('displayContent', {
+    display: varchar('display', { length: 128 }).references(() => displays.id),
+    contentType: mysqlEnum('content_type', ['TIMETABLE', 'GROUP', 'PICTURE', 'VIDEO', 'WEB']).notNull(),
+    timetable: varchar('timetable', { length: 128 }).references(() => timetables.id),
+    timetableGroup: varchar('timetable_group', { length: 128 }).references(() => timetableGroups.id),
+    media: varchar('media', { length: 128 }).references(() => media.id),
+});
+
 export const carousels = mysqlTable('carousels', {
     id: varchar('id', { length: 128 }).$defaultFn(() => createId()).primaryKey(),
-    timetable: varchar('timetable_id', {length: 128}).references(() => timetables.id),
+    timetable: varchar('timetable_id', { length: 128 }).references(() => timetables.id),
     lastModified: timestamp('last_modified', { mode: "string" }).defaultNow().notNull(),
     modifiedBy: varchar('modified_by_id', { length: 128 }).references(() => users.id),
     isDeleted: boolean('is_deleted').default(false).notNull(),
@@ -127,7 +154,7 @@ export const timetableGroups = mysqlTable('timetable_groups', {
     infoPaneText: text('info_pane_text'),
     displayInfoPaneQR: boolean('display_info_pane_qr').default(false),
     infoPaneQRUrl: varchar('info_pane_qr_url', { length: 256 }),
-    object: varchar('object', {length: 30}).notNull().default('room'),
+    object: varchar('object', { length: 30 }).notNull().default('room'),
     verbAvailable: varchar('verb_available', { length: 30 }).notNull().default('free'),
     verbUnavailable: varchar('verb_unavailable', { length: 30 }).notNull().default('in use')
 })

@@ -1,6 +1,8 @@
 services:
   app:
     container_name: asgard-api
+    env_file:
+      - ./.env
     build:
       context: .
       dockerfile: Dockerfile
@@ -9,6 +11,8 @@ services:
     volumes:
       - ..:/workspace:cached
     command: sleep infinity # Overrides default command so things don't shut down after the process ends.
+    ports:
+      - 3000:3000
     networks:
       - asgard-dev
 
@@ -16,7 +20,8 @@ services:
     image: mysql:8.0
     container_name: asgard-db
     command: --default-authentication-plugin=mysql_native_password --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
-    restart: unless-stopped
+    ports:
+      - 3306:3306
     volumes:
       - mysql-data:/var/lib/mysql
     environment:
@@ -26,7 +31,7 @@ services:
       MYSQL_PASSWORD: computing
     networks:
       - asgard-dev
-
+      
   mqtt:
     image: eclipse-mosquitto
     container_name: asgard-mqtt
@@ -39,6 +44,16 @@ services:
     ports:
       - 1883:1883
       - 9001:9001
+    networks:
+      - asgard-dev
+
+  mail:
+    container_name: mail
+    image: mailhog/mailhog:latest
+    # restart: always
+    ports:  
+      - 1025:1025
+      - 8025:8025
     networks:
       - asgard-dev
 
