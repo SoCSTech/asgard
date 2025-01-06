@@ -2,7 +2,7 @@ services:
   app:
     container_name: asgard-api
     env_file:
-      - ./.env
+      - ../.env
     build:
       context: .
       dockerfile: Dockerfile
