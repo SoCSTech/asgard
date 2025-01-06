@@ -1,5 +1,5 @@
 import type { Route } from "./+types/home";
-import Page from "../dashboard/page";
+import Page from "../dashboard/timetables";
 
 export function meta({}: Route.MetaArgs) {
   return [
