@@ -7,6 +7,19 @@ const showdown = require('showdown');
 const dotenv = require('dotenv');
 dotenv.config();
 
+// Email interface to structure email objects
+interface Email {
+    to: string;
+    subject: string;
+    text: string;
+    html?: string;
+    attempts: number;
+}
+
+// Array to maintain the email queue
+const emailQueue: Email[] = [];
+const maxAttempts = 10;
+
 // Define the interface for mail options
 interface MailOptions {
     host: string | undefined;
@@ -152,27 +165,20 @@ export async function SendEmail(to: string, subject: string, body: string) {
 
 ---
 Thanks,
-Asgard Team, University of Lincoln
-*Please reply to this email if you have any queries about using this system.*`
+Asgard Team
+*Please reply to this email if you have any queries about using this system.*`;
 
-    try {
-        // Sends email from the system
-        const info = await transporter.sendMail({
-            from: `"Asgard" <${process.env.MAIL_FROM}>`, // sender address
-            replyTo: `${process.env.MAIL_REPLY}`,
-            to: to,
-            subject: subject,
-            text: body.replace(removeMarkdownPattern, "") + plainEmailSignature,
-            html: formatMailTextAsHTML(body),
-        });
+    const email: Email = {
+        to,
+        subject,
+        text: body.replace(removeMarkdownPattern, "") + plainEmailSignature,
+        html: formatMailTextAsHTML(body),
+        attempts: 0,
+    };
 
-        // Logs out the msg id for debugging
-        console.log("📫 Message sent: " + info.messageId);
-        return { info: info, success: true }
-    } catch (error) {
-        console.warn("📭 Message failed to send: " + error);
-        return { info: error, success: false }
-    }
+    // Add email to the queue
+    emailQueue.push(email);
+    processQueue();
 }
 
 export async function SendPasswordResetEmail(to: string, name: string, code: string) {
@@ -219,3 +225,40 @@ Before you can login you will need to reset your password.
 
 If you have any further questions - please contact the technicians.`)
 }
+
+const processQueue = async (): Promise<void> => {
+    while (emailQueue.length > 0) {
+        const email = emailQueue.shift();
+        if (email) {
+            await attemptToSendEmail(email);
+        }
+    }
+};
+
+const attemptToSendEmail = async (email: Email): Promise<void> => {
+    try {
+        // Sends email from the system
+        const info = await transporter.sendMail({
+            from: `"Asgard" <${process.env.MAIL_FROM}>`, // sender address
+            replyTo: `${process.env.MAIL_REPLY}`,
+            to: email.to,
+            subject: email.subject,
+            text: email.text,
+            html: email.html,
+        });
+
+        // Logs out the msg id for debugging
+        console.log("📫 Message sent: " + info.messageId);
+    } catch (error) {
+        console.warn("📭 Message failed to send: " + error);
+        await new Promise(resolve => setTimeout(resolve, 5000)); // Wait 5 seconds before trying again
+
+        if (email.attempts < maxAttempts) {
+            email.attempts += 1;
+            emailQueue.push(email);
+            console.log(`Requeued email to ${email.to}. Attempt ${email.attempts}`);
+        } else {
+            console.log(`Failed to send email to ${email.to} after ${maxAttempts} attempts.`);
+        }
+    }
+};
