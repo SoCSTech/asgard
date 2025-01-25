@@ -1,18 +1,37 @@
 "use strict";
+
+import e from "express";
+
 const nodemailer = require("nodemailer");
 const showdown = require('showdown');
 const dotenv = require('dotenv');
 dotenv.config();
 
-const transporter = nodemailer.createTransport({
+// Define the interface for mail options
+interface MailOptions {
+    host: string | undefined;
+    port: number | undefined;  // Adjust this to 'number' if MAIL_PORT is always a number
+    secure: boolean;
+    auth?: {
+        user: string | undefined;
+        pass: string | undefined;
+    };
+}
+
+const mailOptions: MailOptions = {
     host: process.env.MAIL_SERVER,
-    port: process.env.MAIL_PORT,
-    secure: process.env.MAIL_USE_SSL,
-    auth: {
+    port: process.env.MAIL_PORT ? parseInt(process.env.MAIL_PORT, 10) : undefined, // Ensure this is a number
+    secure: process.env.MAIL_USE_SSL === 'true', // Ensure this is a boolean
+};
+
+if (process.env.MAIL_USEAUTH === 'true') {
+    mailOptions.auth = {
         user: process.env.MAIL_USERNAME,
         pass: process.env.MAIL_PASSWORD,
-    },
-});
+    };
+}
+
+const transporter = nodemailer.createTransport(mailOptions);
 
 // Creates a HTML email from a template
 function formatMailTextAsHTML(rawText: string): string {
@@ -65,7 +84,7 @@ function formatMailTextAsHTML(rawText: string): string {
 </head>
 <body>
     <div class="email-content">
-        <h1>asgard</h1>
+        <h1>Asgard</h1>
         <hr />
         <div class="inner">
           ${html}
@@ -90,12 +109,12 @@ export async function SendEmail(to: string, subject: string, body: string) {
 
 ---
 Asgard, University of Lincoln
-*Please reply to this email if you have any queries about this system.*`
+*Please reply to this email if you have any queries about using this system.*`
 
     try {
         // Sends email from the system
         const info = await transporter.sendMail({
-            from: `"Asgard - Timetables and Bookings" <${process.env.MAIL_FROM}>`, // sender address
+            from: `"Asgard" <${process.env.MAIL_FROM}>`, // sender address
             replyTo: `${process.env.MAIL_REPLY}`,
             to: to,
             subject: subject,

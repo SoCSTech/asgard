@@ -23,7 +23,25 @@
 
   // Use 'forwardPorts' to make a list of ports inside the container available locally.
   // This can be used to network with other containers or with the host.
-  "forwardPorts": [3000, 3306, 1883, 9001],
+  "forwardPorts": [3000, 3306, 1883, 9001, 8025],
+  "portsAttributes": {
+    "3000": {
+      "label": "api",
+      "onAutoForward": "notify"
+    },
+    "3306": {
+      "label": "mysql"
+    },
+    "1883": {
+      "label": "mqtt"
+    },
+    "9001": {
+      "label": "mqtt-ws"
+    },
+    "8025": {
+      "label": "mailhog"
+    }
+  },
 
   // Use 'postCreateCommand' to run commands after the container is created.
   "postCreateCommand": "npm install"
