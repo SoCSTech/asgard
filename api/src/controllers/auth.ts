@@ -52,7 +52,6 @@ const login = async (req: Request, res: Response, next: NextFunction) => {
 };
 
 const forgotPassword = async (req: Request, res: Response, next: NextFunction) => {
-    console.log("You hit forgot password!")
     const { username } = req.body;
     const ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress 
 
@@ -100,11 +99,6 @@ const forgotPassword = async (req: Request, res: Response, next: NextFunction) =
 
     await log(`Requested password reset email with IP ${ip}`, users[0].id)
 
-    if (emailResponse.success == false) {
-        res.status(500).json({ message: "Something went wrong while sending the email, please try again and if it still persists contact the technicians." })
-        return
-    }
-
     // Send 201
     res.status(201).json({ message: "Please check your email for the verification code" })
 };
@@ -139,11 +133,6 @@ const changePassword = async (req: Request, res: Response, next: NextFunction) =
     const emailResponse = await email.SendPasswordUpdatedEmail(users[0].email, users[0].shortName)
 
     await log("Has changed password from IP " + ip, users[0].id)
-
-    if (emailResponse.success == false) {
-        res.status(500).json({ message: "Something went wrong while sending the email, please try again and if it still persists contact the technicians." })
-        return
-    }
 
     // Send 201
     res.status(201).json({ message: "Password Updated" })
