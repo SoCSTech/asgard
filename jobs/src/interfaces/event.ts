@@ -15,7 +15,7 @@ export interface IEvent {
     externalId: string;
 }
 
-type AsgardEventType = 'OTHER' | 'WORKSHOP' | 'LECTURE' | 'SOCIAL' | 'MAINTENANCE' | 'EXAM' | 'PROJECT';
+type AsgardEventType = 'OTHER' | 'WORKSHOP' | 'LECTURE' | 'SOCIAL' | 'MAINTENANCE' | 'EXAM' | 'PROJECT' | 'SUPPORT';
 export interface IEventType {
     type: AsgardEventType;
     name: string;

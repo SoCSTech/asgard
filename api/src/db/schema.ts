@@ -76,7 +76,7 @@ export const events = mysqlTable('events', {
     staff: varchar('staff', { length: 128 }),
     moduleCode: varchar('module_code', { length: 20 }),
     timetableId: varchar('timetable_id', { length: 128 }).references(() => timetables.id),
-    type: mysqlEnum('type', ['OTHER', 'WORKSHOP', 'LECTURE', 'SOCIAL', 'MAINTENANCE', 'EXAM', 'PROJECT']).default('OTHER').notNull(),
+    type: mysqlEnum('type', ['OTHER', 'WORKSHOP', 'LECTURE', 'SOCIAL', 'MAINTENANCE', 'EXAM', 'PROJECT', 'SUPPORT']).default('OTHER').notNull(),
     colour: varchar('colour', { length: 7 }),
     start: timestamp('start', { mode: "string" }).notNull(),
     end: timestamp('end', { mode: "string" }).notNull(),

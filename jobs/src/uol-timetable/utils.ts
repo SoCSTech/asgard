@@ -272,6 +272,11 @@ export function getEventType(rawEventType: string, rawName: string): IEventType 
         returnableEventType.name = "TCA"
     }
 
+    else if (rawEventType == "TUTORIAL") {
+        returnableEventType.type = "SUPPORT"
+        returnableEventType.name = "Tutorial"
+    }
+
     // Make all CSS events 'social'
     if (rawName.toLowerCase().includes("css")) {
         returnableEventType.type = "SOCIAL"
