@@ -35,6 +35,8 @@ export const users = mysqlTable('users', {
     resetToken: char('reset_token', { length: 8 }),
     resetTokenExpiry: timestamp('reset_token_expiry'),
     profilePictureUrl: varchar('profile_picture_url', { length: 256 }),
+    totpEnabled: boolean('totp_enabled').default(false).notNull(),
+    totpSecret: varchar('totp_secret', { length: 32 }),
     isDeleted: boolean('is_deleted').default(false).notNull()
 }, (users) => ({
     emailIndex: uniqueIndex('email_idx').on(users.email),
@@ -94,27 +96,12 @@ export const media = mysqlTable('media', {
     id: varchar('id', { length: 128 }).$defaultFn(() => createId()).primaryKey(),
     name: varchar('name', { length: 128 }),
     url: varchar('url', { length: 256 }),
+    key: varchar('url', { length: 256 }),
     fileName: varchar('file_name', { length: 128 }),
     contentType: varchar('content_type', { length: 32 }),
     modifiedBy: varchar('modified_by_id', { length: 128 }).references(() => users.id),
     lastModified: timestamp('last_modified', { mode: "string" }).defaultNow().notNull(),
     isDeleted: boolean('is_deleted').default(false).notNull(),
-});
-
-export const displays = mysqlTable('displays', {
-    id: varchar('id', { length: 128 }).$defaultFn(() => createId()).primaryKey(),
-    name: varchar('name', { length: 128 }),
-    macAddress: varchar('mac_address', { length: 25 }),
-    modifiedBy: varchar('modified_by_id', { length: 128 }).references(() => users.id),
-    isDeleted: boolean('is_deleted').default(false).notNull(),
-});
-
-export const displayContent = mysqlTable('displayContent', {
-    display: varchar('display', { length: 128 }).references(() => displays.id),
-    contentType: mysqlEnum('content_type', ['TIMETABLE', 'GROUP', 'PICTURE', 'VIDEO', 'WEB']).notNull(),
-    timetable: varchar('timetable', { length: 128 }).references(() => timetables.id),
-    timetableGroup: varchar('timetable_group', { length: 128 }).references(() => timetableGroups.id),
-    media: varchar('media', { length: 128 }).references(() => media.id),
 });
 
 export const carousels = mysqlTable('carousels', {
@@ -123,6 +110,7 @@ export const carousels = mysqlTable('carousels', {
     lastModified: timestamp('last_modified', { mode: "string" }).defaultNow().notNull(),
     modifiedBy: varchar('modified_by_id', { length: 128 }).references(() => users.id),
     isDeleted: boolean('is_deleted').default(false).notNull(),
+    macAddress: varchar('mac_address', { length: 25 }),
 }, (carousels) => ({
     timetableIndex: index('timetable_idx').on(carousels.timetable)
 }));
@@ -130,17 +118,66 @@ export const carousels = mysqlTable('carousels', {
 export const carouselItems = mysqlTable('carousel_items', {
     id: varchar('id', { length: 128 }).$defaultFn(() => createId()).primaryKey(),
     carousel: varchar('carousel_id', { length: 128 }).references(() => carousels.id),
-    lastModified: timestamp('last_modified', { mode: "string" }).defaultNow().notNull(),
-    modifiedBy: varchar('modified_by_id', { length: 128 }).references(() => users.id),
-    type: mysqlEnum('type', ['TIMETABLE', 'PICTURE', 'VIDEO', 'WEB']).default('TIMETABLE').notNull(),
-    contentUrl: varchar('content_url', { length: 2000 }),
     name: varchar('name', { length: 128 }).notNull(),
+    order: int('order').default(0),
+    type: mysqlEnum('type', ['TIMETABLE', 'MEDIA', 'PICTURE', 'VIDEO', 'WEB']).default('TIMETABLE').notNull(),
+    contentUrl: varchar('content_url', { length: 2000 }),
+    media: varchar('media_id', { length: 128 }).references(() => media.id),
     isDeleted: boolean('is_deleted').default(false).notNull(),
     durationMs: int('duration_milliseconds').default(4500).notNull(),
-    order: int('order').default(0)
+    lastModified: timestamp('last_modified', { mode: "string" }).defaultNow().notNull(),
+    modifiedBy: varchar('modified_by_id', { length: 128 }).references(() => users.id),
 }, (carouselItems) => ({
     carouselIndex: index('carousel_idx').on(carouselItems.carousel)
 }));
+
+export const carouselGroups = mysqlTable('carousel_groups', {
+    id: varchar('id', { length: 128 }).$defaultFn(() => createId()).primaryKey(),
+    name: varchar('name', { length: 128 }).notNull(),
+    carousel: varchar('carousels', { length: 128 }).references(() => carousels.id),
+    lastModified: timestamp('last_modified', { mode: "string" }).defaultNow().notNull(),
+    modifiedBy: varchar('modified_by_id', { length: 128 }).references(() => users.id),
+    isDeleted: boolean('is_deleted').default(false)
+})
+
+export const carouselGroupCampaigns = mysqlTable('carousel_group_campaigns', {
+    group: varchar('group_id', { length: 128 }).references(() => carouselGroups.id),
+    carousel: varchar('carousels', { length: 128 }).references(() => carousels.id),
+    lastModified: timestamp('last_modified', { mode: "string" }).defaultNow().notNull(),
+    modifiedBy: varchar('modified_by_id', { length: 128 }).references(() => users.id)
+})
+
+export const campaigns = mysqlTable('campaigns', {
+    id: varchar('id', { length: 128 }).$defaultFn(() => createId()).primaryKey(),
+    name: varchar('name', { length: 128 }).notNull(),
+    order: int('order').default(0),
+    type: mysqlEnum('type', ['TIMETABLE', 'MEDIA', 'PICTURE', 'VIDEO', 'WEB']).default('TIMETABLE').notNull(),
+    contentUrl: varchar('content_url', { length: 2000 }),
+    media: varchar('media_id', { length: 128 }).references(() => media.id),
+    isDeleted: boolean('is_deleted').default(false).notNull(),
+    durationMs: int('duration_milliseconds').default(4500).notNull(),
+    lastModified: timestamp('last_modified', { mode: "string" }).defaultNow().notNull(),
+    modifiedBy: varchar('modified_by_id', { length: 128 }).references(() => users.id),
+});
+
+export const campaignItems = mysqlTable('campaign_items', {
+    id: varchar('id', { length: 128 }).$defaultFn(() => createId()).primaryKey(),
+    campaign: varchar('campaign_id', { length: 128 }).references(() => campaigns.id),
+    name: varchar('name', { length: 128 }).notNull(),
+    order: int('order').default(0),
+    type: mysqlEnum('type', ['TIMETABLE', 'MEDIA', 'PICTURE', 'VIDEO', 'WEB']).default('TIMETABLE').notNull(),
+    contentUrl: varchar('content_url', { length: 2000 }),
+    media: varchar('media_id', { length: 128 }).references(() => media.id),
+    isDeleted: boolean('is_deleted').default(false).notNull(),
+    durationMs: int('duration_milliseconds').default(4500).notNull(),
+    lastModified: timestamp('last_modified', { mode: "string" }).defaultNow().notNull(),
+    modifiedBy: varchar('modified_by_id', { length: 128 }).references(() => users.id),
+});
+
+export const campaignMedia = mysqlTable('campaign_media', {
+    campaign: varchar('campaign_id', { length: 128 }).references(() => campaigns.id),
+    media: varchar('media_id', { length: 128 }).references(() => media.id)
+})
 
 export const timetableGroups = mysqlTable('timetable_groups', {
     id: varchar('id', { length: 128 }).$defaultFn(() => createId()).primaryKey(),
