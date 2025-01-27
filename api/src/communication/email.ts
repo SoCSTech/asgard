@@ -1,7 +1,5 @@
 "use strict";
 
-import e from "express";
-
 const nodemailer = require("nodemailer");
 const showdown = require('showdown');
 const dotenv = require('dotenv');
