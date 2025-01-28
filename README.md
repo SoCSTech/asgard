@@ -4,6 +4,9 @@ Asgard is the system designed for improving the experience of the Computing Labs
 
 This iteration (asgard<sup>2</sup>) has been built on the back of the work previously done by former technicians to improve the functionality and capability of the system.
 
+> [!WARNING]  
+> Asgard is still in active development and may not be fully documented - or documentation may be incorrect. Use at your own risk!
+
 ## Getting started
 
 No matter if you are developing or deploying you will need to use [Docker](https://docker.com) as the whole system is designed around it.
