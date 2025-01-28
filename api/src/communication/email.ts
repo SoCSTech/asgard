@@ -249,7 +249,7 @@ const attemptToSendEmail = async (email: Email): Promise<void> => {
         console.log("📫 Message sent: " + info.messageId);
     } catch (error) {
         console.warn("📭 Message failed to send: " + error);
-        await new Promise(resolve => setTimeout(resolve, 5000)); // Wait 5 seconds before trying again
+        await new Promise(resolve => setTimeout(resolve, 20000)); // Wait 20 seconds before trying again
 
         if (email.attempts < maxAttempts) {
             email.attempts += 1;
