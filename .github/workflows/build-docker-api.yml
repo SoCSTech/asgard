@@ -11,6 +11,9 @@ on:
 jobs:
   api-test:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: api
 
     steps:
       - name: Checkout repository
@@ -26,7 +29,6 @@ jobs:
 
       - name: Run Jest
         run: npm test
-
 
   api-build:
     runs-on: ubuntu-latest
