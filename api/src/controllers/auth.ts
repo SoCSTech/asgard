@@ -4,15 +4,16 @@ import { users as userSchema } from '@/db/schema';
 import { eq, and, or, gt } from 'drizzle-orm';
 import { hashPassword, comparePassword } from '@/utils/passwords';
 import * as email from '@/communication/email';
-import { generateSecureCode } from "@/utils/auth";
+import { generateSecureCode, verifyTOTP } from "@/utils/auth";
 import { log } from "@/utils/log";
+import { verify } from "crypto";
 const jwt = require('jsonwebtoken');
 const dotenv = require('dotenv');
 dotenv.config();
 
 const login = async (req: Request, res: Response, next: NextFunction) => {
-    const { username, password } = req.body;
-    const ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress 
+    const { username, password, totp } = req.body;
+    const ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress
 
     // Search for user by username
     const users = await db.select().from(userSchema)
@@ -42,6 +43,31 @@ const login = async (req: Request, res: Response, next: NextFunction) => {
         });
     }
 
+    if (users[0].totpEnabled) {
+
+        // Check if user even bothered to give us a totp code
+        if (!totp) {
+            await log(`Failed login from IP ${ip} - missing totp`)
+            return res.status(401).json({
+                message: "Please provide a TOTP code",
+                totpRequired: true
+            });
+        }
+
+        // Verify TOTP code
+        // const isTotpCorrect = verifyTOTP(users[0].totpSecret, totp);
+        const isTotpCorrect = verifyTOTP("3UWIINDEILTF67VQ3RVLXSWZZGX5REFF", totp);
+        console.log(isTotpCorrect, "is totp correct?")
+
+        if (isTotpCorrect === false) {
+            await log(`Failed login from IP ${ip} - invalid totp`)
+            return res.status(401).json({
+                message: "Invalid TOTP code",
+                totpRequired: true
+            });
+        }
+    }
+
     // Create a JWT - make it last for 24 hours
     const token = jwt.sign({ id: users[0].id, username: (users[0].username).toLowerCase() }, process.env.AUTH_SECRET, { expiresIn: '86400s' });
 
@@ -53,7 +79,7 @@ const login = async (req: Request, res: Response, next: NextFunction) => {
 
 const forgotPassword = async (req: Request, res: Response, next: NextFunction) => {
     const { username } = req.body;
-    const ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress 
+    const ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress
 
     // Check for idiots
     if (username.length === 0) {
@@ -105,7 +131,7 @@ const forgotPassword = async (req: Request, res: Response, next: NextFunction) =
 
 const changePassword = async (req: Request, res: Response, next: NextFunction) => {
     const { resetToken, password } = req.body;
-    const ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress 
+    const ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress
     const serverTime = new Date();
 
     // Search for user by username

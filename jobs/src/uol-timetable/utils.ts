@@ -283,5 +283,11 @@ export function getEventType(rawEventType: string, rawName: string): IEventType 
         returnableEventType.name = ""
     }
 
+    // Make all social events 'social'
+    if (rawName.toLowerCase().includes("social")) {
+        returnableEventType.type = "SOCIAL"
+        returnableEventType.name = ""
+    }
+
     return returnableEventType
 }
