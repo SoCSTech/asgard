@@ -48,6 +48,7 @@ export function getTokenFromAuthCookie(req: Request, res: Response) {
     return token
 }
 
+// use https://otpauth.molinero.dev/ to test!
 export function verifyTOTP (secret: string, token: string): boolean {
     console.log(secret)
     const _secret = OTPAuth.Secret.fromBase32(secret)
