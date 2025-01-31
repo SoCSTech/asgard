@@ -43,8 +43,8 @@ const login = async (req: Request, res: Response, next: NextFunction) => {
         });
     }
 
-    if (users[0].totpEnabled) {
-
+    // If user has totp enabled and they have actually set it up.
+    if (users[0].totpEnabled && users[0].totpSecret) {
         // Check if user even bothered to give us a totp code
         if (!totp) {
             await log(`Failed login from IP ${ip} - missing totp`)
@@ -54,9 +54,8 @@ const login = async (req: Request, res: Response, next: NextFunction) => {
             });
         }
 
-        // Verify TOTP code
-        // const isTotpCorrect = verifyTOTP(users[0].totpSecret, totp);
-        const isTotpCorrect = verifyTOTP("3UWIINDEILTF67VQ3RVLXSWZZGX5REFF", totp);
+        // Verify TOTP code, if totp fails, return error.
+        const isTotpCorrect = verifyTOTP(users[0].totpSecret || "", totp);
         console.log(isTotpCorrect, "is totp correct?")
 
         if (isTotpCorrect === false) {
@@ -70,11 +69,8 @@ const login = async (req: Request, res: Response, next: NextFunction) => {
 
     // Create a JWT - make it last for 24 hours
     const token = jwt.sign({ id: users[0].id, username: (users[0].username).toLowerCase() }, process.env.AUTH_SECRET, { expiresIn: '86400s' });
-
     await log(`Successfully logged in with IP ${ip}`, users[0].id)
-
     res.cookie('TOKEN', token, { maxAge: 86400, httpOnly: true, sameSite: true, secure: true }).json({ TOKEN: token });
-
 };
 
 const forgotPassword = async (req: Request, res: Response, next: NextFunction) => {
@@ -122,7 +118,6 @@ const forgotPassword = async (req: Request, res: Response, next: NextFunction) =
 
     // Send Password Email
     const emailResponse = await email.SendPasswordResetEmail(users[0].email, users[0].shortName, _resetToken)
-
     await log(`Requested password reset email with IP ${ip}`, users[0].id)
 
     // Send 201
