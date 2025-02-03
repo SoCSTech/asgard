@@ -223,6 +223,10 @@ const disableTotp = async (req: Request, res: Response, next: NextFunction) => {
         return
     }
 
+    const updatedUser = await db.update(userSchema)
+        .set({ totpSecret: "", totpEnabled: false })
+        .where(eq(userSchema.id, user[0].id));
+
     res.status(201).json({ "message": "2FA has been disabled for your account.", "username": user[0].username, "userId": user[0].id })
 }
 

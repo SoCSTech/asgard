@@ -11,7 +11,7 @@ export default function LoginForm() {
   const handleLogin = (event: React.FormEvent<HTMLFormElement>): void => {
     // Prevent page reload
     event.preventDefault();
-    const { username, password } = document.forms[0];
+    const { username, password, totp } = document.forms[0];
     const queryParameters = new URLSearchParams(window.location.search);
     const redirect = queryParameters.get("redirect");
 
@@ -21,6 +21,7 @@ export default function LoginForm() {
         {
           username: username.value,
           password: password.value,
+          totp: totp.value
         },
         {
           timeout: 15000, // 15 seconds timeout
@@ -60,6 +61,12 @@ export default function LoginForm() {
           placeholder="Password"
           autoComplete="current-password"
           name="password"
+        />
+        <Input
+          type="text"
+          placeholder="2FA Code"
+          autoComplete="username"
+          name="totp"
         />
         <div className="flex w-full flex-col">
           <Button type="submit" variant={"primaryOutline"}>

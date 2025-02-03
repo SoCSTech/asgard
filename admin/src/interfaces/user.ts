@@ -9,6 +9,8 @@ export interface IUser {
     creationDate: Date;
     profilePictureUrl?: string;
     isDeleted: boolean;
+    totpEnabled: boolean;
+    totpSecret: string;
 }
 
 export const UserRoles = [
