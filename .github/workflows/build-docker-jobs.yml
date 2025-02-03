@@ -71,7 +71,6 @@ jobs:
           file: ./jobs/Dockerfile
           push: true
           tags: |
-            ghcr.io/socstech/asgard-jobs:${{ github.sha }}
             ghcr.io/socstech/asgard-jobs:pr-${{ github.event.number }}
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
