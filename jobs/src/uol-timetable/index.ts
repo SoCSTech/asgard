@@ -45,6 +45,12 @@ export async function refreshTimetableData(): Promise<void> {
 
             // Add the event type to the title.
             let eventName: string = rawEvent.allModuleTitles
+
+            // If there is no title, use the word busy!
+            if (eventName.trim().length == 0) {
+                eventName = "Busy"
+            }
+            
             //if (eventType.type !== "OTHER")
             //    eventName = `${eventType.name}: ${rawEvent.allModuleTitles}`
 
