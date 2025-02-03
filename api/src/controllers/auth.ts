@@ -4,7 +4,7 @@ import { users as userSchema } from '@/db/schema';
 import { eq, and, or, gt } from 'drizzle-orm';
 import { hashPassword, comparePassword } from '@/utils/passwords';
 import * as email from '@/communication/email';
-import { generateSecureCode, verifyTOTP } from "@/utils/auth";
+import { generateSecureCode, generateTOTPSecret, getUserIdFromJWT, verifyTOTP } from "@/utils/auth";
 import { log } from "@/utils/log";
 import { verify } from "crypto";
 const jwt = require('jsonwebtoken');
@@ -49,19 +49,18 @@ const login = async (req: Request, res: Response, next: NextFunction) => {
         if (!totp) {
             await log(`Failed login from IP ${ip} - missing totp`)
             return res.status(401).json({
-                message: "Please provide a TOTP code",
+                message: "Please provide a 2FA code",
                 totpRequired: true
             });
         }
 
         // Verify TOTP code, if totp fails, return error.
         const isTotpCorrect = verifyTOTP(users[0].totpSecret || "", totp);
-        console.log(isTotpCorrect, "is totp correct?")
 
         if (isTotpCorrect === false) {
             await log(`Failed login from IP ${ip} - invalid totp`)
             return res.status(401).json({
-                message: "Invalid TOTP code",
+                message: "Invalid 2FA code",
                 totpRequired: true
             });
         }
@@ -159,5 +158,72 @@ const changePassword = async (req: Request, res: Response, next: NextFunction) =
     res.status(201).json({ message: "Password Updated" })
 };
 
+const setupTotp = async (req: Request, res: Response, next: NextFunction) => {
+    let userId: string = req.params.id
+    let token = req.headers.authorization as string; // Assuming token is sent in the 'Authorization' header
 
-export default { login, forgotPassword, changePassword };
+    if (!!token) {
+        userId = getUserIdFromJWT(token);
+    } else {
+        res.status(401).json({ "message": "You need to be logged in to access me.jpg" })
+        return
+    }
+
+    const user = await db.select().from(userSchema)
+        .where(
+            eq(userSchema.id, String(userId))
+        )
+        .limit(1);
+
+    if (user.length !== 1) {
+        res.status(404).json({ "message": "Couldn't get user" })
+        return
+    }
+
+    if (user[0].totpEnabled) {
+        res.status(400).json({ "message": "2FA is already enabled" })
+        return
+    }
+
+    const totpSecret = generateTOTPSecret()
+    const updatedUser = await db.update(userSchema)
+        .set({ totpSecret: totpSecret, totpEnabled: true })
+        .where(eq(userSchema.id, user[0].id));
+
+    const totpString = `otpauth://totp/Asgard:${user[0].username}?secret=${totpSecret}&issuer=Asgard&algorithm=SHA1&digits=6&period=30`
+
+    res.status(201).json({ "message": "2FA has been enabled for your account, please scan the QR code with your authenticator app.", "totp": totpString, "username": user[0].username, "userId": user[0].id })
+    return
+}
+
+const disableTotp = async (req: Request, res: Response, next: NextFunction) => {
+    let userId: string = req.params.id
+    let token = req.headers.authorization as string; // Assuming token is sent in the 'Authorization' header
+
+    if (!!token) {
+        userId = getUserIdFromJWT(token);
+    } else {
+        res.status(401).json({ "message": "You need to be logged in to access me.jpg" })
+        return
+    }
+
+    const user = await db.select().from(userSchema)
+        .where(
+            eq(userSchema.id, String(userId))
+        )
+        .limit(1);
+
+    if (user.length !== 1) {
+        res.status(404).json({ "message": "Couldn't get user" })
+        return
+    }
+
+    if (!user[0].totpEnabled) {
+        res.status(400).json({ "message": "2FA is not enabled on the account" })
+        return
+    }
+
+    res.status(201).json({ "message": "2FA has been disabled for your account.", "username": user[0].username, "userId": user[0].id })
+}
+
+export default { login, forgotPassword, changePassword, setupTotp, disableTotp };

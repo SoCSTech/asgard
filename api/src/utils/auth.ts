@@ -65,3 +65,8 @@ export function verifyTOTP (secret: string, token: string): boolean {
 
     return validstep
 }
+
+export function generateTOTPSecret(): string {
+    const secret = new OTPAuth.Secret()
+    return secret.base32;
+}
