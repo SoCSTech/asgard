@@ -1,5 +1,5 @@
 import { db } from "@/db";
-import {users as userSchema } from '@/db/schema';
+import { users as userSchema } from '@/db/schema';
 import { eq, and } from 'drizzle-orm';
 const crypto = require("crypto");
 
@@ -14,7 +14,8 @@ export const simplifiedUser = {
     email: userSchema.email,
     creationDate: userSchema.creationDate,
     profilePictureUrl: userSchema.profilePictureUrl,
-    isDeleted: userSchema.isDeleted
+    isDeleted: userSchema.isDeleted,
+    totpEnabled: userSchema.totpEnabled
 };
 
 // // Schema of New User
@@ -39,6 +40,6 @@ export const isUserATechnician = async (userId: string): Promise<boolean> => {
                 eq(userSchema.isDeleted, false))
         );
 
-    if (admin[0].role === "TECHNICIAN") { return true}
+    if (admin[0].role === "TECHNICIAN") { return true }
     else { return false }
 };

@@ -1,5 +1,6 @@
-import e, { Request, Response, NextFunction } from "express";
+import { Request, Response } from "express";
 import { randomBytes } from 'crypto';
+import * as OTPAuth from "otpauth";
 
 export function generateSecureCode(): string {
     const chars = '0123456789ABCDEF';
@@ -45,4 +46,27 @@ export function getTokenFromAuthCookie(req: Request, res: Response) {
     }
 
     return token
+}
+
+// use https://otpauth.molinero.dev/ to test!
+export function verifyTOTP (secret: string, token: string): boolean {
+    console.log(secret)
+    const _secret = OTPAuth.Secret.fromBase32(secret)
+    console.log(_secret)
+    const totp = new OTPAuth.TOTP({secret: _secret, digits: 6, period: 30, algorithm: 'SHA1'})
+    const realCode = totp.generate()
+    console.log(realCode, "real code")
+    console.log(token, "token")
+
+    const validationResponse = totp.validate({ token: token})
+    console.log(validationResponse, "validation response")
+    const validstep = validationResponse === null ? false : (typeof validationResponse === 'number' && validationResponse < 3 ? true : false);
+    console.log(validstep, "valid step")
+
+    return validstep
+}
+
+export function generateTOTPSecret(): string {
+    const secret = new OTPAuth.Secret()
+    return secret.base32;
 }

@@ -4,9 +4,14 @@ on:
   push:
     branches:
       - main
+    paths:
+      - jobs/**
   pull_request:
     branches:
       - main
+    paths:
+      - jobs/**
+  workflow_dispatch:
 
 jobs:
   jobs-build:

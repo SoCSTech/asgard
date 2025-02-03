@@ -412,6 +412,9 @@ export function UserPage(props: Props) {
             <h2 className="font-medium text 3xl">
               {user.role} - Joined{" "}
               {new Date(user.creationDate).toLocaleDateString()}
+              <p className="text-green-600">
+                {user.totpEnabled ? "2FA Enabled" : ""}
+              </p>
             </h2>
           </div>
         </div>

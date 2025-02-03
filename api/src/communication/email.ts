@@ -1,24 +1,54 @@
 "use strict";
+
 const nodemailer = require("nodemailer");
 const showdown = require('showdown');
 const dotenv = require('dotenv');
 dotenv.config();
 
-const transporter = nodemailer.createTransport({
+// Email interface to structure email objects
+interface Email {
+    to: string;
+    subject: string;
+    text: string;
+    html?: string;
+    attempts: number;
+}
+
+// Array to maintain the email queue
+const emailQueue: Email[] = [];
+const maxAttempts = 10;
+
+// Define the interface for mail options
+interface MailOptions {
+    host: string | undefined;
+    port: number | undefined;  // Adjust this to 'number' if MAIL_PORT is always a number
+    secure: boolean;
+    auth?: {
+        user: string | undefined;
+        pass: string | undefined;
+    };
+}
+
+const mailOptions: MailOptions = {
     host: process.env.MAIL_SERVER,
-    port: process.env.MAIL_PORT,
-    secure: process.env.MAIL_USE_SSL,
-    auth: {
+    port: process.env.MAIL_PORT ? parseInt(process.env.MAIL_PORT, 10) : undefined, // Ensure this is a number
+    secure: process.env.MAIL_USE_SSL === 'true', // Ensure this is a boolean
+};
+
+if (process.env.MAIL_USEAUTH === 'true') {
+    mailOptions.auth = {
         user: process.env.MAIL_USERNAME,
         pass: process.env.MAIL_PASSWORD,
-    },
-});
+    };
+}
+
+const transporter = nodemailer.createTransport(mailOptions);
 
 // Creates a HTML email from a template
 function formatMailTextAsHTML(rawText: string): string {
     rawText = rawText.replace(
         /((https?):\/\/[^\s]+)/g,
-        '<a href="$1">$1</a>'
+        '<a href="$1" target="_blank">$1</a>'
     );
 
     const sd = new showdown.Converter();
@@ -58,58 +88,95 @@ function formatMailTextAsHTML(rawText: string): string {
             font-weight: bold;
         }
         .footer {
-            text-align: center;
-            font-style: italic;
+            text-align: left;
+            padding-top: 10px;
+        }
+        code {
+            font-family: monospace;
+            display: inline;
+            position: relative;
+            letter-spacing: 5px;
+            background-clip: padding-box;
+            text-shadow: 0 0 0.5px #000;
+            box-shadow: 0 0 0 1px #000;
+            padding: 5px;
+            border-radius: 3px;
+        }
+
+        code::before,
+        code::after {
+            content: "";
+            display: inline-block;
+            width: 0;
+        }
+
+        code::before {
+            margin-left: -2.5px;
+        }
+
+        code::after {
+            margin-right: -2.5px;
+        }
+        .header {
+            background-color: #fcc05f;
+            border-radius: 12px 12px 0 0;
+            margin-bottom: 5px;
+            height: 60px;
+        }
+        .header h1 {
+            color: #121212;
+            padding: 10px;
+        }
+        .bottom {
+            background-color: #fcc05f;
+            border-radius: 0 0 12px 12px;
+            margin-top: 15px;
+            height: 30px;
         }
     </style>
 </head>
 <body>
     <div class="email-content">
-        <h1>asgard</h1>
-        <hr />
+        <div class="header">
+            <h1>Asgard</h1>
+        </div>
         <div class="inner">
           ${html}
         </div>
-        <hr />
-        <p class="footer" style="font-weight: bold; padding-top: 10px;">
-            University of Lincoln
+        <p class="footer">Thanks,</p>
+        <p><span style="font-weight: bold;">Asgard</span>, University of Lincoln
         </p>
-        <p class="footer">
+        <p class="footer" style="font-style: italic;">
             Please reply to this email if you have any queries about this system.
         </p>
+        <div class="bottom"></div>
     </div>
 </body>
 </html>`
 }
 
 export async function SendEmail(to: string, subject: string, body: string) {
-    const removeAsterisksPattern = /\*/gi // remove *s
+    const removeMarkdownPattern = /[*_~`]/gi; // remove *, _, ~, and ` characters
 
     // This gets appended to a plain text email
     const plainEmailSignature = `
 
 ---
-Asgard, University of Lincoln
-*Please reply to this email if you have any queries about this system.*`
+Thanks,
+Asgard Team
+*Please reply to this email if you have any queries about using this system.*`;
 
-    try {
-        // Sends email from the system
-        const info = await transporter.sendMail({
-            from: `"Asgard - Timetables and Bookings" <${process.env.MAIL_FROM}>`, // sender address
-            replyTo: `${process.env.MAIL_REPLY}`,
-            to: to,
-            subject: subject,
-            text: body.replace(removeAsterisksPattern, "") + plainEmailSignature,
-            html: formatMailTextAsHTML(body),
-        });
+    const email: Email = {
+        to,
+        subject,
+        text: body.replace(removeMarkdownPattern, "") + plainEmailSignature,
+        html: formatMailTextAsHTML(body),
+        attempts: 0,
+    };
 
-        // Logs out the msg id for debugging
-        console.log("📫 Message sent: " + info.messageId);
-        return { info: info, success: true }
-    } catch (error) {
-        console.warn("📭 Message failed to send: " + error);
-        return { info: error, success: false }
-    }
+    // Add email to the queue
+    emailQueue.push(email);
+    processQueue();
 }
 
 export async function SendPasswordResetEmail(to: string, name: string, code: string) {
@@ -118,11 +185,14 @@ export async function SendPasswordResetEmail(to: string, name: string, code: str
         `Your account verification code is ${code}`,
         `Hi ${name}, 
 
-Your Asgard password reset code is **${code}**.
+Your password reset code for Asgard is:
 
-You have 1 hour to change your password at: ${process.env.WEB_BASEURL}/change-password?code=${code}
+\`${code}\`
 
-If this wasn't you - please ignore this email.`)
+You have **1 hour** to change your password at: ${process.env.WEB_BASEURL}/change-password?code=${code}
+
+
+**If this wasn't you - please ignore this email and your password will not be changed.**`)
 }
 
 export async function SendPasswordUpdatedEmail(to: string, name: string) {
@@ -133,7 +203,7 @@ export async function SendPasswordUpdatedEmail(to: string, name: string) {
 
 Your Asgard password has been updated.
 
-If this wasn't you - please contact a technician urgently.`)
+If this was you, you do not need to do anything, but, if this wasn't you - please reply to this email.`)
 }
 
 export async function SendWelcomeEmail(to: string, name: string, username: string) {
@@ -142,7 +212,7 @@ export async function SendWelcomeEmail(to: string, name: string, username: strin
         `Welcome to Asgard`,
         `Hi ${name}, 
 
-You have been invited to manage timetables and room bookings with the Asgard system.
+You have been invited to manage timetables, room bookings, signage, and other lab experience tools with the Asgard system.
 
 The dashboard is located at ${process.env.WEB_BASEURL}
 
@@ -153,3 +223,40 @@ Before you can login you will need to reset your password.
 
 If you have any further questions - please contact the technicians.`)
 }
+
+const processQueue = async (): Promise<void> => {
+    while (emailQueue.length > 0) {
+        const email = emailQueue.shift();
+        if (email) {
+            await attemptToSendEmail(email);
+        }
+    }
+};
+
+const attemptToSendEmail = async (email: Email): Promise<void> => {
+    try {
+        // Sends email from the system
+        const info = await transporter.sendMail({
+            from: `"Asgard" <${process.env.MAIL_FROM}>`, // sender address
+            replyTo: `${process.env.MAIL_REPLY}`,
+            to: email.to,
+            subject: email.subject,
+            text: email.text,
+            html: email.html,
+        });
+
+        // Logs out the msg id for debugging
+        console.log("📫 Message sent: " + info.messageId);
+    } catch (error) {
+        console.warn("📭 Message failed to send: " + error);
+        await new Promise(resolve => setTimeout(resolve, 20000)); // Wait 20 seconds before trying again
+
+        if (email.attempts < maxAttempts) {
+            email.attempts += 1;
+            emailQueue.push(email);
+            console.log(`Requeued email to ${email.to}. Attempt ${email.attempts}`);
+        } else {
+            console.log(`Failed to send email to ${email.to} after ${maxAttempts} attempts.`);
+        }
+    }
+};

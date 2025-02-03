@@ -182,6 +182,11 @@ export function getEventType(rawEventType: string, rawName: string): IEventType 
         returnableEventType.name = "Workshop"
     }
 
+    else if (rawEventType == "DROP-IN") {
+        returnableEventType.type = "WORKSHOP"
+        returnableEventType.name = "Drop-In"
+    }
+
     else if (rawEventType == "LECTURE") {
         returnableEventType.type = "LECTURE"
         returnableEventType.name = "Lecture"
@@ -267,8 +272,19 @@ export function getEventType(rawEventType: string, rawName: string): IEventType 
         returnableEventType.name = "TCA"
     }
 
+    else if (rawEventType == "TUTORIAL") {
+        returnableEventType.type = "SUPPORT"
+        returnableEventType.name = "Tutorial"
+    }
+
     // Make all CSS events 'social'
     if (rawName.toLowerCase().includes("css")) {
+        returnableEventType.type = "SOCIAL"
+        returnableEventType.name = ""
+    }
+
+    // Make all social events 'social'
+    if (rawName.toLowerCase().includes("social")) {
         returnableEventType.type = "SOCIAL"
         returnableEventType.name = ""
     }

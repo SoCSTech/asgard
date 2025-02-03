@@ -56,6 +56,7 @@ const eventTypes = [
   { label: "Maintenance", value: "MAINTENANCE" },
   { label: "Exam", value: "EXAM" },
   { label: "Project", value: "PROJECT" },
+  { label: "Support", value: "SUPPORT" },
 ];
 
 interface Props {

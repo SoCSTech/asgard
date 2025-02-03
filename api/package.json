@@ -1,6 +1,6 @@
 {
   "name": "asgard-api",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "description": "API for Asgard2",
   "main": "src/server.ts",
   "scripts": {
@@ -9,14 +9,15 @@
     "build": "rm -rf dist/ && tsc && tsc-alias",
     "db:migrate": "npx drizzle-kit generate",
     "db:push": "npx drizzle-kit push",
-    "db:undo-migrate": "npx drizzle-kit drop"
+    "db:undo-migrate": "npx drizzle-kit drop",
+    "test": "jest -w 8"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/SoCSTech/asgard2.git"
   },
-  "author": "Josh Cooper <joshcooper@lincoln.ac.uk>, SoCS Technicians <technician@lincoln.ac.uk>",
-  "license": "PROPRIETARY",
+  "author": "Josh Cooper <joshcooper@lincoln.ac.uk>, UoL Computer Science Technicians <technician@lincoln.ac.uk>",
+  "license": "Apache-2.0",
   "bugs": {
     "url": "https://github.com/SoCSTech/asgard2/issues"
   },
@@ -28,6 +29,7 @@
     "bcrypt": "^5.1.1",
     "cors": "^2.8.5",
     "dotenv": "^16.3.2",
+    "drizzle-orm": "^0.31.0",
     "express": "^4.18.2",
     "generate-license-file": "^3.4.0",
     "helmet": "^7.1.0",
@@ -37,18 +39,22 @@
     "mqtt": "^5.7.0",
     "mysql2": "^3.9.8",
     "nodemailer": "^6.9.8",
+    "otpauth": "^9.3.6",
     "showdown": "^2.1.0",
-    "drizzle-orm": "^0.31.0",
     "ts-node": "^10.9.2"
   },
   "devDependencies": {
+    "@jest/globals": "^29.7.0",
     "@types/express": "^4.17.21",
     "@types/helmet": "^4.0.0",
+    "@types/jest": "^29.5.14",
     "@types/morgan": "^1.9.9",
     "@types/node": "^20.12.11",
     "@types/nodemailer": "^6.4.14",
     "drizzle-kit": "^0.22.1",
+    "jest": "^29.7.0",
     "nodemon": "^3.0.3",
+    "ts-jest": "^29.2.5",
     "tsc-alias": "^1.8.8",
     "tsconfig-paths": "^4.2.0",
     "typescript": "^5.3.3"
