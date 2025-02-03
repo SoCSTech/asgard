@@ -70,8 +70,9 @@ jobs:
           context: ./jobs
           file: ./jobs/Dockerfile
           push: true
-          # tags: |
-          #   ghcr.io/socstech/asgard-jobs:pr-${{ github.event.number }}
+          tags: |
+            ghcr.io/socstech/asgard-jobs:pr-${{ github.event.number }}
+            ghcr.io/socstech/asgard-jobs:${{ github.sha }}
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
