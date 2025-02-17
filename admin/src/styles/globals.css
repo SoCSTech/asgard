@@ -1,8 +1,31 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
 @layer base {
   :root {
+    --apricot: 33, 100%, 70%;
+    --lavender: 252, 60%, 75%;
+    --salmon: 6, 73%, 66%;
+    --cyan: 183, 68%, 65%;
+    --mint: 139, 63%, 70%;
+    --sky: 212, 89%, 70%;
+    --blush: 340, 40%, 70%;
+    --turquoise: 167, 80%, 67%;
+    --chartreuse: 68, 47%, 63%;
+    --periwinkle: 240, 20%, 73%;
+    --coral: 6, 72%, 69%;
+    --lilac: 282, 30%, 72%;
+    --frost: 180, 100%, 98%;
+    --slate: 240, 14%, 65%;
+    --tangerine: 20, 100%, 65%;
+    --white: 0, 0%, 100%;
+    --black: 0, 0%, 7%;
+    --azure: 200, 100%, 63%;
+    --mango: 20, 100%, 63%;
+    --violet: 284, 80%, 64%;
+    --emerald: 104, 80%, 64%;
+    --amber: 55, 92%, 52%;
     --background: 0 0% 100%;
     --foreground: 224 71.4% 4.1%;
     --card: 0 0% 100%;
@@ -29,6 +52,7 @@
     --chart-5: 27 87% 67%;
     --radius: 0.5rem
   }
+
   .dark {
     --background: 224 71.4% 4.1%;
     --foreground: 210 20% 98%;
@@ -56,10 +80,12 @@
     --chart-5: 340 75% 55%
   }
 }
+
 @layer base {
   * {
     @apply border-border;
   }
+
   body {
     @apply bg-background text-foreground;
   }

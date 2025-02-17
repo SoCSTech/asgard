@@ -11,7 +11,8 @@ const config = {
         return [
             {
                 source: '/v2/:path*',
-                destination: 'http://localhost:3000/v2/:path*',
+                // destination: 'http://localhost:3000/v2/:path*',
+                destination: 'https://asgard.socstech.support/v2/:path*',
             },
         ]
     },
