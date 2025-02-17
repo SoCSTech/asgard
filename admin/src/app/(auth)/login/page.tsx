@@ -69,13 +69,13 @@ export default function LoginForm() {
           autoComplete="username"
           name="totp"
         />
-        <div className="flex w-full flex-col">
-          <Button type="submit" variant={"secondary"}>
+        <div className="flex w-full flex-col mt-5">
+          <Button type="submit">
             Login
           </Button>
         </div>
       </form>
-      <p className="text-salmon pt-5 text-center">{errorMessage}</p>
+      {errorMessage && <p className="bg-salmon mt-5 p-2 rounded-lg text-center">{errorMessage}</p>}
     </div>
   );
 }
