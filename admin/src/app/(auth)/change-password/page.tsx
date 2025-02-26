@@ -50,9 +50,7 @@ export default function LoginForm() {
 
   return (
     <div>
-      <div className="my-5 text-center text-white">
-        <h1 className="text-2xl">Login to Asgard</h1>
-      </div>
+      <h1>Change pass</h1>
       <form onSubmit={handleLogin}>
         <Input
           type="text"
@@ -70,21 +68,15 @@ export default function LoginForm() {
           type="text"
           placeholder="2FA Code"
           autoComplete="username"
-          // className="hidden"
           name="totp"
         />
-        <div className="mt-5 flex w-full flex-col">
-          <Button type="submit">Login</Button>
+        <div className="flex w-full flex-col mt-5">
+          <Button type="submit">
+            Login
+          </Button>
         </div>
       </form>
-      <p className="my-5 text-center text-gray-200 hover:text-white">
-        <a href="/forgot-password">Forgot password?</a>
-      </p>
-      {errorMessage && (
-        <p className="mt-5 rounded-lg bg-salmon p-2 text-center">
-          {errorMessage}
-        </p>
-      )}
+      {errorMessage && <p className="bg-salmon mt-5 p-2 rounded-lg text-center">{errorMessage}</p>}
     </div>
   );
 }

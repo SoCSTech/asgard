@@ -75,8 +75,8 @@ export default function Header() {
   }, []);
 
   return (
-    <header className="tablet:grid tablet:grid-rows-1 tablet:grid-cols-3 tablet:pb-2 tablet:rounded-none mb-5 rounded-b-xl bg-black px-5 py-2 pb-5 text-white drop-shadow-md dark:bg-muted">
-      <div className="tablet:m-0 ml-2 mt-2 h-full">
+    <header className="mb-5 rounded-b-xl bg-black px-5 py-2 pb-5 text-white drop-shadow-md tablet:grid tablet:grid-cols-3 tablet:grid-rows-1 tablet:rounded-none tablet:pb-2">
+      <div className="ml-2 mt-2 h-full tablet:m-0">
         <a href="/" className="flex h-full items-center">
           <img
             className="h-10 w-10"
@@ -91,10 +91,9 @@ export default function Header() {
       </div>
 
       <HeaderLinkGroup href={""}>
-        <HeaderLink href="/timetables">Timetables</HeaderLink>
-        <HeaderLink href="/groups">Groups</HeaderLink>
-        <HeaderLink href="/desks">Desks</HeaderLink>
-        <HeaderLink href="/users">Users</HeaderLink>
+        <HeaderLink href="/rooms">Rooms</HeaderLink>
+        <HeaderLink href="/carousels">Carousels</HeaderLink>
+        <HeaderLink href="/users">People</HeaderLink>
       </HeaderLinkGroup>
 
       <Collapsible className="tablet:hidden">
@@ -118,7 +117,7 @@ export default function Header() {
         </CollapsibleContent>
       </Collapsible>
 
-      <div className="tablet:flex tablet:justify-end hidden items-center justify-center">
+      <div className="hidden items-center justify-center tablet:flex tablet:justify-end">
         <form
           className="flex items-center align-middle text-black"
           action="/search"

@@ -29,6 +29,7 @@
     "@radix-ui/react-slot": "^1.1.2",
     "@radix-ui/react-tabs": "^1.1.3",
     "@t3-oss/env-nextjs": "^0.10.1",
+    "@tanstack/react-query": "^5.66.5",
     "axios": "^1.7.9",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
@@ -47,6 +48,7 @@
     "zod": "^3.24.1"
   },
   "devDependencies": {
+    "@tanstack/eslint-plugin-query": "^5.66.1",
     "@types/eslint": "^8.56.10",
     "@types/node": "^20.14.10",
     "@types/react": "^18.3.3",
