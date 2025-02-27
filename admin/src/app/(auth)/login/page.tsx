@@ -4,7 +4,18 @@ import * as React from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import axios from "axios";
-// import { setJwtCookie } from "@/lib/cookie";
+import {
+  getCookie,
+  getCookies,
+  setCookie,
+  deleteCookie,
+  hasCookie,
+  useGetCookies,
+  useSetCookie,
+  useHasCookie,
+  useDeleteCookie,
+  useGetCookie,
+} from "cookies-next/client";
 
 export default function LoginForm() {
   const [errorMessage, setErrorMessage] = React.useState("");
@@ -32,6 +43,7 @@ export default function LoginForm() {
       .then(function (response) {
         setErrorMessage("");
         // setJwtCookie(response.data.TOKEN);
+        setCookie("admin_token", response.data.TOKEN); ///!!!!! SETUP SECURE COOKIE STUFF HERE !!!!!!!!!!!!!!
         window.location.href = redirect || "/";
       })
       .catch(function (error) {

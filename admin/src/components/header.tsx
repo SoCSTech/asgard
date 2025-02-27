@@ -1,7 +1,18 @@
 "use client";
 import * as React from "react";
 import axios from "axios";
-import { useCookies } from "next-client-cookies";
+import {
+  getCookie,
+  getCookies,
+  setCookie,
+  deleteCookie,
+  hasCookie,
+  useGetCookies,
+  useSetCookie,
+  useHasCookie,
+  useDeleteCookie,
+  useGetCookie,
+} from "cookies-next/client";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import type { IUser } from "@/interfaces/user";
 import {
@@ -17,22 +28,22 @@ interface HeaderLinkProps {
 }
 
 export function HeaderLink(props: HeaderLinkProps) {
-  const currentSection = window.location.pathname.split("/")[1];
-  const buttonSection = props.href.split("/")[1];
+  // const currentSection = window.location.pathname.split("/")[1];
+  // const buttonSection = props.href.split("/")[1];
 
-  if (currentSection === buttonSection) {
-    return (
-      <li className="tablet:text-md tablet:my-0 tablet:mr-5 tablet:px-1 tablet:underline tablet:bg-inherit tablet:text-white my-1 rounded bg-white px-2 text-xl text-black hover:bg-accent hover:text-accent-foreground">
-        <a href={props.href}>{props.children}</a>
-      </li>
-    );
-  } else {
+  // if (currentSection === buttonSection) {
+  //   return (
+  //     <li className="tablet:text-md tablet:my-0 tablet:mr-5 tablet:px-1 tablet:underline tablet:bg-inherit tablet:text-white my-1 rounded bg-white px-2 text-xl text-black hover:bg-accent hover:text-accent-foreground">
+  //       <a href={props.href}>{props.children}</a>
+  //     </li>
+  //   );
+  // } else {
     return (
       <li className="tablet:text-md tablet:my-0 tablet:mr-5 tablet:px-1 my-1 rounded px-2 text-xl hover:bg-accent hover:text-accent-foreground">
         <a href={props.href}>{props.children}</a>
       </li>
     );
-  }
+  // }
 }
 
 export function HeaderLinkGroup({ children }: HeaderLinkProps) {
@@ -48,14 +59,13 @@ import { toast } from "sonner";
 import { ChevronDown, User } from "lucide-react";
 
 export default function Header() {
-  const Cookies = useCookies();
   const [user, setUser] = React.useState({} as IUser);
 
   const fetchData = async () => {
     await axios
       .get("/v2/user/me", {
         headers: {
-          Authorization: `Bearer ${Cookies.get("token")}`,
+          Authorization: `Bearer ${getCookie("admin_token")}`,
         },
       })
       .then((response) => {

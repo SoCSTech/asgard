@@ -4,10 +4,11 @@ import * as React from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import axios from "axios";
-// import { setJwtCookie } from "@/lib/cookie";
+import { useCookies } from "next-client-cookies";
 
 export default function LoginForm() {
   const [errorMessage, setErrorMessage] = React.useState("");
+  const cookies = useCookies();
 
   const handleLogin = (event: React.FormEvent<HTMLFormElement>): void => {
     // Prevent page reload
@@ -32,7 +33,8 @@ export default function LoginForm() {
       .then(function (response) {
         setErrorMessage("");
         // setJwtCookie(response.data.TOKEN);
-        window.location.href = redirect || "/";
+        // cookies.set("admin_token", response.data.TOKEN)
+        // window.location.href = redirect || "/";
       })
       .catch(function (error) {
         console.log(error);

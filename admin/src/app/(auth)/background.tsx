@@ -1,11 +1,20 @@
 "use client";
 
 import React, { useState } from "react";
-import { useCookies } from "next-client-cookies";
+import {
+  getCookie,
+  getCookies,
+  setCookie,
+  deleteCookie,
+  hasCookie,
+  useGetCookies,
+  useSetCookie,
+  useHasCookie,
+  useDeleteCookie,
+  useGetCookie,
+} from "cookies-next/client";
 
 export default function AuthBackground() {
-  const Cookies = useCookies();
-
   const backgroundImages: string[] = [
     "/images/bg1.webp",
     "/images/bg2.webp",
@@ -25,7 +34,7 @@ export default function AuthBackground() {
     Math.floor(Math.random() * backgroundImages.length);
 
   const getBgImageFromCookie = (): number | undefined => {
-    const savedBgImage = Cookies.get("bgImage");
+    const savedBgImage = getCookie("bgImage");
     return savedBgImage ? parseInt(savedBgImage) : undefined;
   };
 
@@ -42,8 +51,8 @@ export default function AuthBackground() {
     // Else, we will make a random number and set it
     else {
       const newBgImage = generateRandomNumber();
-      Cookies.set("bgImage", newBgImage as unknown as string, {
-        expires: 1 / 24,
+      setCookie("bgImage", newBgImage as unknown as string, {
+        maxAge: 3600,
       }); // 1 hour expiration
 
       return newBgImage;

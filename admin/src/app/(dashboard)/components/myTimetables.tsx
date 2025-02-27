@@ -2,7 +2,18 @@
 
 import * as React from "react";
 import axios from "axios";
-import { useCookies } from "next-client-cookies";
+import {
+  getCookie,
+  getCookies,
+  setCookie,
+  deleteCookie,
+  hasCookie,
+  useGetCookies,
+  useSetCookie,
+  useHasCookie,
+  useDeleteCookie,
+  useGetCookie,
+} from "cookies-next/client";
 import type { ITimetable } from "@/interfaces/timetable";
 import { formatEnumValue } from "@/lib/enum";
 import { toast } from "sonner";
@@ -102,8 +113,8 @@ function TimetableCard({ timetable, token }: { timetable: ITimetable, token: str
 
 export function MyTimetables() {
   const [timetables, setTimetables] = React.useState<ITimetable[]>([]);
-  const Cookies = useCookies();
-  const token = Cookies.get("token");
+  const token = getCookie("admin_token");
+  console.log("token got for my timetables", token);
 
   const fetchData = async () => {
     try {
