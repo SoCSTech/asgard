@@ -4,78 +4,75 @@ import * as React from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import axios from "axios";
-// import { setJwtCookie } from "@/lib/cookie";
+import {
+  getCookie,
+  getCookies,
+  setCookie,
+  deleteCookie,
+  hasCookie,
+  useGetCookies,
+  useSetCookie,
+  useHasCookie,
+  useDeleteCookie,
+  useGetCookie,
+} from "cookies-next/client";
 
-export default function LoginForm() {
+export default function ForgotPasswordForm() {
   const [errorMessage, setErrorMessage] = React.useState("");
+  const [successMessage, setSuccessMessage] = React.useState("");
+  const [submitted, setSubmitted] = React.useState(false);
 
-  const handleLogin = (event: React.FormEvent<HTMLFormElement>): void => {
+  const handleResetRequest = (event: React.FormEvent<HTMLFormElement>): void => {
     // Prevent page reload
     event.preventDefault();
-    const { username, password, totp } = document.forms[0];
-    const queryParameters = new URLSearchParams(window.location.search);
-    const redirect = queryParameters.get("redirect");
+    const { username } = document.forms[0];
 
     axios
-      .post(
-        "/v2/auth/login",
-        {
-          username: username.value,
-          password: password.value,
-          totp: totp.value,
-        },
-        {
-          timeout: 15000, // 15 seconds timeout
-          headers: { "Cache-Control": "no-cache" },
-        },
-      )
+      .post("/v2/auth/forgot-password", {
+        username: username.value,
+      })
       .then(function (response) {
         setErrorMessage("");
-        // setJwtCookie(response.data.TOKEN);
-        window.location.href = redirect || "/";
+        setSuccessMessage(response.data.message);
+        setSubmitted(true);
       })
       .catch(function (error) {
         console.log(error);
-        if (error.code === "ECONNABORTED") {
-          setErrorMessage(
-            "The request took too long - please try again later.",
-          );
-        } else {
-          setErrorMessage(
-            error.response?.data?.message || "An unknown error occurred",
-          );
-        }
+        setErrorMessage(error.response.data.message);
+        setSuccessMessage("");
       });
   };
 
   return (
     <div>
-      <form onSubmit={handleLogin}>
+      <div className="my-5 text-center text-white">
+        <h1 className="text-2xl">Reset your Password</h1>
+      </div>
+      <form onSubmit={handleResetRequest}>
         <Input
           type="text"
           placeholder="Username"
           autoComplete="username"
           name="username"
         />
-        <Input
-          type="password"
-          placeholder="Password"
-          autoComplete="current-password"
-          name="password"
-        />
-        <Input
-          type="text"
-          placeholder="2FA Code"
-          autoComplete="username"
-          name="totp"
-        />
-        <div className="flex w-full flex-col mt-5">
-          <Button type="submit">
-            Login
-          </Button>
+        <div className="mt-5 flex w-full flex-col">
+          <Button type="submit">Send recovery email</Button>
         </div>
       </form>
-      {errorMessage && <p className="bg-salmon mt-5 p-2 rounded-lg text-center">{errorMessage}</p>}
+      <p className="my-5 text-center text-gray-200 hover:text-white">
+        <a href="/login">Login?</a>
+      </p>
+      {errorMessage && (
+        <p className="mt-5 rounded-lg bg-salmon text-black p-2 text-center">
+          {errorMessage}
+        </p>
+      )}
+
+      {successMessage && (
+        <p className="mt-5 rounded-lg bg-white text-black p-2 text-center">
+          {successMessage}
+        </p>
+      )}
     </div>
   );
 }

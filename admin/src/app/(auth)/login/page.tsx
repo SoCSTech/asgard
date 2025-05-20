@@ -19,11 +19,15 @@ import {
 
 export default function LoginForm() {
   const [errorMessage, setErrorMessage] = React.useState("");
+  const [totpRequired, setTotpRequired] = React.useState(false);
 
   const handleLogin = (event: React.FormEvent<HTMLFormElement>): void => {
     // Prevent page reload
     event.preventDefault();
-    const { username, password, totp } = document.forms[0];
+    const formData = new FormData(document.forms[0]);
+    const username = formData.get("username") as string;
+    const password = formData.get("password") as string;
+    const totp = formData.get("totp") as string;
     const queryParameters = new URLSearchParams(window.location.search);
     const redirect = queryParameters.get("redirect");
 
@@ -31,9 +35,9 @@ export default function LoginForm() {
       .post(
         "/v2/auth/login",
         {
-          username: username.value,
-          password: password.value,
-          totp: totp.value,
+          username: username,
+          password: password,
+          totp: totp,
         },
         {
           timeout: 15000, // 15 seconds timeout
@@ -43,7 +47,14 @@ export default function LoginForm() {
       .then(function (response) {
         setErrorMessage("");
         // setJwtCookie(response.data.TOKEN);
-        setCookie("admin_token", response.data.TOKEN); ///!!!!! SETUP SECURE COOKIE STUFF HERE !!!!!!!!!!!!!!
+
+        setCookie("admin_token", response.data.TOKEN, {
+          maxAge: 60 * 60 * 24, // 1 Day
+          path: "/",
+          // httpOnly: true,
+          secure: true,
+          sameSite: "strict",
+        });
         window.location.href = redirect || "/";
       })
       .catch(function (error) {
@@ -56,6 +67,11 @@ export default function LoginForm() {
           setErrorMessage(
             error.response?.data?.message || "An unknown error occurred",
           );
+          if (error.response?.data.totpRequired) {
+            setTotpRequired(true);
+          } else {
+            setTotpRequired(false);
+          }
         }
       });
   };
@@ -78,13 +94,15 @@ export default function LoginForm() {
           autoComplete="current-password"
           name="password"
         />
-        <Input
-          type="text"
-          placeholder="2FA Code"
-          autoComplete="username"
-          // className="hidden"
-          name="totp"
-        />
+        {totpRequired && (
+          <Input
+            className="mt-5"
+            type="text"
+            placeholder="TOTP"
+            autoComplete="one-time-code"
+            name="totp"
+          />
+        )}
         <div className="mt-5 flex w-full flex-col">
           <Button type="submit">Login</Button>
         </div>

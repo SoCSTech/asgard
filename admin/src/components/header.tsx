@@ -72,11 +72,13 @@ export default function Header() {
         setUser(response.data.users[0] as IUser);
         if (response.data.users.length == 0) {
           toast("Authentication failure");
+          deleteCookie;
         }
       })
-      .catch((error) => {
+      .catch(async (error) => {
         console.error("There was an error!", error);
         toast(error.message);
+        await deleteCookie("admin_token")
       });
   };
 

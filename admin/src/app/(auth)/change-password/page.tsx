@@ -4,81 +4,114 @@ import * as React from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import axios from "axios";
-import { useCookies } from "next-client-cookies";
 
-export default function LoginForm() {
+import {
+  InputOTP,
+  InputOTPGroup,
+  InputOTPSeparator,
+  InputOTPSlot,
+} from "@/components/ui/input-otp";
+
+const REGEXP_ASGARD_SECURE_CODE = "^[a-fA-F0-9]+$";
+
+export default function ChangePasswordForm() {
   const [errorMessage, setErrorMessage] = React.useState("");
-  const cookies = useCookies();
+  const [code, setCode] = React.useState({ provided: false, value: "" });
 
-  const handleLogin = (event: React.FormEvent<HTMLFormElement>): void => {
+  let queryParameters: URLSearchParams;
+  React.useEffect(() => {
+    queryParameters = new URLSearchParams(window.location.search);
+    const _code = queryParameters.get("code");
+    if (_code) {
+      setCode({ provided: true, value: _code });
+    }
+  }, []);
+
+  const handleSubmit = (event: React.FormEvent<HTMLFormElement>): void => {
     // Prevent page reload
     event.preventDefault();
-    const { username, password, totp } = document.forms[0];
-    const queryParameters = new URLSearchParams(window.location.search);
-    const redirect = queryParameters.get("redirect");
+    setErrorMessage("");
+
+    const { password, confirmPassword } = document.forms[0];
+
+    if (password.value !== confirmPassword.value) {
+      setErrorMessage("The passwords you have entered do not match.");
+      throw new Error("PASSWORD_MISMATCH");
+      return;
+    }
 
     axios
-      .post(
-        "/v2/auth/login",
-        {
-          username: username.value,
-          password: password.value,
-          totp: totp.value,
-        },
-        {
-          timeout: 15000, // 15 seconds timeout
-          headers: { "Cache-Control": "no-cache" },
-        },
-      )
+      .post("/v2/auth/change-password", {
+        resetToken: code.value,
+        password: password.value,
+      })
       .then(function (response) {
+        console.log(response);
         setErrorMessage("");
-        // setJwtCookie(response.data.TOKEN);
-        // cookies.set("admin_token", response.data.TOKEN)
-        // window.location.href = redirect || "/";
+        window.location.href = "/login";
       })
       .catch(function (error) {
         console.log(error);
-        if (error.code === "ECONNABORTED") {
-          setErrorMessage(
-            "The request took too long - please try again later.",
-          );
-        } else {
-          setErrorMessage(
-            error.response?.data?.message || "An unknown error occurred",
-          );
-        }
+        setErrorMessage(error.response.data.message);
       });
   };
 
   return (
     <div>
-      <h1>Change pass</h1>
-      <form onSubmit={handleLogin}>
+      <div className="my-5 text-center text-white">
+        <h1 className="text-2xl">Change your Password</h1>
+      </div>
+      <form
+        onSubmit={handleSubmit}
+        className="flex flex-col justify-between text-center align-middle"
+      >
+        <div className="flex justify-center w-full">
+          <InputOTP
+            maxLength={8}
+            pattern={REGEXP_ASGARD_SECURE_CODE}
+            disabled={code.provided}
+            value={code.value}
+            onChange={(x) => setCode({ provided: false, value: x })}
+            className=""
+          >
+            <InputOTPGroup>
+              <InputOTPSlot index={0} />
+              <InputOTPSlot index={1} />
+              <InputOTPSlot index={2} />
+              <InputOTPSlot index={3} />
+            </InputOTPGroup>
+            <InputOTPSeparator />
+            <InputOTPGroup>
+              <InputOTPSlot index={4} />
+              <InputOTPSlot index={5} />
+              <InputOTPSlot index={6} />
+              <InputOTPSlot index={7} />
+            </InputOTPGroup>
+          </InputOTP>
+        </div>
         <Input
-          type="text"
-          placeholder="Username"
-          autoComplete="username"
-          name="username"
+          type="password"
+          placeholder="New password"
+          autoComplete="new-password"
+          name="password"
+          id="password"
+          className="mt-5"
         />
         <Input
           type="password"
-          placeholder="Password"
-          autoComplete="current-password"
-          name="password"
+          placeholder="Confirm new password"
+          autoComplete="new-password"
+          name="confirmPassword"
+          id="confirmPassword"
         />
-        <Input
-          type="text"
-          placeholder="2FA Code"
-          autoComplete="username"
-          name="totp"
-        />
-        <div className="flex w-full flex-col mt-5">
-          <Button type="submit">
-            Login
-          </Button>
+
+        <div className="mt flex w-full flex-col">
+          <div className="mt-5 flex w-full flex-col">
+            <Button type="submit">Update Password</Button>
+          </div>
         </div>
       </form>
-      {errorMessage && <p className="bg-salmon mt-5 p-2 rounded-lg text-center">{errorMessage}</p>}
+      <p className="pt-5 text-center text-salmon">{errorMessage}</p>
     </div>
   );
 }

@@ -3,15 +3,7 @@
 import React, { useState } from "react";
 import {
   getCookie,
-  getCookies,
-  setCookie,
-  deleteCookie,
-  hasCookie,
-  useGetCookies,
-  useSetCookie,
-  useHasCookie,
-  useDeleteCookie,
-  useGetCookie,
+  setCookie
 } from "cookies-next/client";
 
 export default function AuthBackground() {
@@ -26,8 +18,6 @@ export default function AuthBackground() {
     "/images/bg8.webp",
     "/images/bg9.webp",
     "/images/bg10.webp",
-    "/images/bg11.webp",
-    "/images/bg12.webp",
   ];
 
   const generateRandomNumber = (): number =>
@@ -35,19 +25,14 @@ export default function AuthBackground() {
 
   const getBgImageFromCookie = (): number | undefined => {
     const savedBgImage = getCookie("bgImage");
+    console.log(savedBgImage);
     return savedBgImage ? parseInt(savedBgImage) : undefined;
   };
 
   const [bgImage] = useState<number>(() => {
     // Get the number saved as a cookie
     const savedBgImage = getBgImageFromCookie();
-    if (
-      savedBgImage !== undefined &&
-      !isNaN(savedBgImage) &&
-      savedBgImage >= 0 &&
-      savedBgImage < backgroundImages.length
-    )
-      return savedBgImage;
+    if (savedBgImage) return savedBgImage;
     // Else, we will make a random number and set it
     else {
       const newBgImage = generateRandomNumber();
@@ -68,7 +53,7 @@ export default function AuthBackground() {
   return (
     <div
       suppressHydrationWarning
-      className="tablet:block absolute -z-10 hidden h-full w-full bg-cover bg-center bg-no-repeat"
+      className="absolute -z-10 hidden h-full w-full bg-cover bg-center bg-no-repeat tablet:block"
       style={backgroundStyle}
     ></div>
   );
