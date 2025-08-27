@@ -1,6 +1,6 @@
 {
   "name": "asgard-api",
-  "version": "2.1.0",
+  "version": "2.1.1",
   "description": "API for Asgard2",
   "main": "src/server.ts",
   "scripts": {
@@ -51,7 +51,7 @@
     "@types/morgan": "^1.9.9",
     "@types/node": "^20.12.11",
     "@types/nodemailer": "^6.4.14",
-    "drizzle-kit": "^0.22.1",
+    "drizzle-kit": "^0.31.4",
     "jest": "^29.7.0",
     "nodemon": "^3.0.3",
     "ts-jest": "^29.2.5",
