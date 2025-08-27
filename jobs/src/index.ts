@@ -27,13 +27,13 @@ cron.schedule('1 0 * * *', async () => {
 });
 
 // Turn off the Displays at 7pm
-cron.schedule('19 0 * * *', async () => {
+cron.schedule('0 19 * * *', async () => {
     console.log('⏰ Sending Display Power Off');
     await sendDisplayPowerMessage("off")
 });
 
 // Turn off the Displays at 8am
-cron.schedule('8 0 * * *', async () => {
+cron.schedule('0 8 * * *', async () => {
     console.log('⏰ Sending Display Power On');
     await sendDisplayPowerMessage("on")
 });
