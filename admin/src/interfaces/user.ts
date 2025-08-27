@@ -17,3 +17,5 @@ export const UserRoles = [
     { label: "Standard", value: "STANDARD" },
     { label: "Technician", value: "TECHNICIAN" },
 ]
+
+export type UserRole = (typeof UserRoles)[number]["value"];
