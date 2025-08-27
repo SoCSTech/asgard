@@ -6,6 +6,7 @@ const apiUrl = process.env.API_URL as string;
 import { refreshTimetableData } from "@/uol-timetable";
 import { refreshInternetCalendarStream } from "@/internet-cal";
 import { sendRefreshForAllTimetables } from "@/mqtt-refresh";
+import { sendDisplayPowerMessage } from "@/mqtt-display-power";
 
 // Run every monday morning at 6 and import all timetable events for this week.
 cron.schedule('0 6 * * 1', async () => {
@@ -24,6 +25,30 @@ cron.schedule('1 0 * * *', async () => {
     console.log('⏰ Refreshing all timetables as the day has changed!');
     await sendRefreshForAllTimetables()
 });
+
+// Turn off the Displays at 7pm
+cron.schedule('19 0 * * *', async () => {
+    console.log('⏰ Sending Display Power Off');
+    await sendDisplayPowerMessage("off")
+});
+
+// Turn off the Displays at 8am
+cron.schedule('8 0 * * *', async () => {
+    console.log('⏰ Sending Display Power On');
+    await sendDisplayPowerMessage("on")
+});
+
+// ---- Debugs! ----
+
+// Handle Manual Control of TVs
+if (process.argv.slice(2)[0] == '--power-tv') {
+    const state = process.argv.slice(2)[1].toLowerCase()
+    console.log(`**Manually turning the TVs ${state}**`);
+
+    (async () => {
+        await sendDisplayPowerMessage(state);
+    })();
+}
 
 // Handle Manual Refresh
 if (process.argv.slice(2)[0] == '--refresh-data') {

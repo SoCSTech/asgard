@@ -1,6 +1,6 @@
 {
   "name": "asgard-jobs",
-  "version": "1.0.3",
+  "version": "1.1.0",
   "description": "Job runner for the asgard system",
   "main": "src/index.ts",
   "scripts": {
@@ -8,7 +8,8 @@
     "dev": "npm start",
     "refresh": "ts-node -r tsconfig-paths/register ./src/index.ts --refresh-data",
     "test": "ts-node -r tsconfig-paths/register ./src/index.ts --test",
-    "build": "rm -rf dist/ && tsc && tsc-alias"
+    "build": "rm -rf dist/ && tsc && tsc-alias",
+    "power": "ts-node -r tsconfig-paths/register ./src/index.ts --power-tv"
   },
   "repository": {
     "type": "git",
