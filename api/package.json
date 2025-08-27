@@ -1,6 +1,6 @@
 {
   "name": "asgard-api",
-  "version": "2.1.1",
+  "version": "2.1.2",
   "description": "API for Asgard2",
   "main": "src/server.ts",
   "scripts": {
