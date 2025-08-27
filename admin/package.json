@@ -66,6 +66,7 @@
   },
   "devDependencies": {
     "@iconify/react": "^5.0.1",
+    "@types/cookie": "^0.6.0",
     "@types/js-cookie": "^3.0.6",
     "@types/md5": "^2.3.5"
   }
