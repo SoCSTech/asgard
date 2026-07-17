@@ -18,6 +18,8 @@ helm install asgard ./helm/asgard -f ./helm/asgard/values.example.yaml
 
 The chart uses a ConfigMap and Secret to pass the same environment variables that are currently supplied through the Compose `.env` file. The example values file shows a complete sample of the current environment variables.
 
+The chart will fail fast if the placeholder secrets in `values.yaml` or `values.example.yaml` are left unchanged, so replace them with real values before you install the chart.
+
 ## Configuration
 
 The chart exposes the environment variables from the current Compose setup through the `env` and `secretEnv` values. Update `values.example.yaml` (or provide your own values file) to match your environment before installing the chart.

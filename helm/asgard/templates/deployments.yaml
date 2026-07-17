@@ -137,7 +137,7 @@ spec:
         - name: db
           image: "{{ .Values.images.db.repository }}:{{ .Values.images.db.tag }}"
           imagePullPolicy: {{ .Values.images.db.pullPolicy }}
-          command:
+          args:
             - --default-authentication-plugin=mysql_native_password
             - --character-set-server=utf8
             - --collation-server=utf8_general_ci
@@ -146,13 +146,19 @@ spec:
               name: mysql
           env:
             - name: MYSQL_ROOT_PASSWORD
-              value: {{ tpl (printf "%v" .Values.secretEnv.DB_PASSWORD) $ | quote }}
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "asgard.fullname" . }}-secret-env
+                  key: DB_PASSWORD
             - name: MYSQL_DATABASE
               value: {{ tpl (printf "%v" .Values.env.DB_DATABASE) $ | quote }}
             - name: MYSQL_USER
               value: {{ tpl (printf "%v" .Values.env.DB_USERNAME) $ | quote }}
             - name: MYSQL_PASSWORD
-              value: {{ tpl (printf "%v" .Values.secretEnv.DB_PASSWORD) $ | quote }}
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "asgard.fullname" . }}-secret-env
+                  key: DB_PASSWORD
           volumeMounts:
             - name: mysql-data
               mountPath: /var/lib/mysql
