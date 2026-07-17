@@ -1,0 +1,6 @@
+apiVersion: v2
+name: asgard
+description: Helm chart for deploying the Asgard stack
+type: application
+version: 0.1.0
+appVersion: "latest"

@@ -1,0 +1,213 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "asgard.fullname" . }}-api
+  labels:
+    app.kubernetes.io/component: api
+    {{- include "asgard.labels" . | nindent 4 }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      {{- include "asgard.selectorLabels" . | nindent 6 }}
+      app.kubernetes.io/component: api
+  template:
+    metadata:
+      labels:
+        {{- include "asgard.selectorLabels" . | nindent 8 }}
+        app.kubernetes.io/component: api
+    spec:
+      containers:
+        - name: api
+          image: "{{ .Values.images.api.repository }}:{{ .Values.images.api.tag }}"
+          imagePullPolicy: {{ .Values.images.api.pullPolicy }}
+          ports:
+            - containerPort: {{ .Values.api.containerPort }}
+              name: http
+          envFrom:
+            - configMapRef:
+                name: {{ include "asgard.fullname" . }}-env
+            - secretRef:
+                name: {{ include "asgard.fullname" . }}-secret-env
+          env:
+            - name: PORT
+              value: {{ .Values.api.containerPort | quote }}
+{{- range $name, $value := .Values.api.extraEnv }}
+            - name: {{ $name }}
+              value: {{ tpl (printf "%v" $value) $ | quote }}
+{{- end }}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "asgard.fullname" . }}-jobs
+  labels:
+    app.kubernetes.io/component: jobs
+    {{- include "asgard.labels" . | nindent 4 }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      {{- include "asgard.selectorLabels" . | nindent 6 }}
+      app.kubernetes.io/component: jobs
+  template:
+    metadata:
+      labels:
+        {{- include "asgard.selectorLabels" . | nindent 8 }}
+        app.kubernetes.io/component: jobs
+    spec:
+      containers:
+        - name: jobs
+          image: "{{ .Values.images.jobs.repository }}:{{ .Values.images.jobs.tag }}"
+          imagePullPolicy: {{ .Values.images.jobs.pullPolicy }}
+          envFrom:
+            - configMapRef:
+                name: {{ include "asgard.fullname" . }}-env
+            - secretRef:
+                name: {{ include "asgard.fullname" . }}-secret-env
+          env:
+{{- range $name, $value := .Values.jobs.extraEnv }}
+            - name: {{ $name }}
+              value: {{ tpl (printf "%v" $value) $ | quote }}
+{{- end }}
+          volumeMounts:
+            - name: jobs-data
+              mountPath: /app/data
+      volumes:
+        - name: jobs-data
+          emptyDir: {}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "asgard.fullname" . }}-admin
+  labels:
+    app.kubernetes.io/component: admin
+    {{- include "asgard.labels" . | nindent 4 }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      {{- include "asgard.selectorLabels" . | nindent 6 }}
+      app.kubernetes.io/component: admin
+  template:
+    metadata:
+      labels:
+        {{- include "asgard.selectorLabels" . | nindent 8 }}
+        app.kubernetes.io/component: admin
+    spec:
+      containers:
+        - name: admin
+          image: "{{ .Values.images.admin.repository }}:{{ .Values.images.admin.tag }}"
+          imagePullPolicy: {{ .Values.images.admin.pullPolicy }}
+          ports:
+            - containerPort: {{ .Values.admin.containerPort }}
+              name: http
+          envFrom:
+            - configMapRef:
+                name: {{ include "asgard.fullname" . }}-env
+            - secretRef:
+                name: {{ include "asgard.fullname" . }}-secret-env
+          env:
+{{- range $name, $value := .Values.admin.extraEnv }}
+            - name: {{ $name }}
+              value: {{ tpl (printf "%v" $value) $ | quote }}
+{{- end }}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "asgard.fullname" . }}-db
+  labels:
+    app.kubernetes.io/component: db
+    {{- include "asgard.labels" . | nindent 4 }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      {{- include "asgard.selectorLabels" . | nindent 6 }}
+      app.kubernetes.io/component: db
+  template:
+    metadata:
+      labels:
+        {{- include "asgard.selectorLabels" . | nindent 8 }}
+        app.kubernetes.io/component: db
+    spec:
+      containers:
+        - name: db
+          image: "{{ .Values.images.db.repository }}:{{ .Values.images.db.tag }}"
+          imagePullPolicy: {{ .Values.images.db.pullPolicy }}
+          args:
+            - --default-authentication-plugin=mysql_native_password
+            - --character-set-server=utf8
+            - --collation-server=utf8_general_ci
+          ports:
+            - containerPort: {{ .Values.db.service.port }}
+              name: mysql
+          env:
+            - name: MYSQL_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "asgard.fullname" . }}-secret-env
+                  key: DB_PASSWORD
+            - name: MYSQL_DATABASE
+              value: {{ tpl (printf "%v" .Values.env.DB_DATABASE) $ | quote }}
+            - name: MYSQL_USER
+              value: {{ tpl (printf "%v" .Values.env.DB_USERNAME) $ | quote }}
+            - name: MYSQL_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "asgard.fullname" . }}-secret-env
+                  key: DB_PASSWORD
+          volumeMounts:
+            - name: mysql-data
+              mountPath: /var/lib/mysql
+      volumes:
+        - name: mysql-data
+          persistentVolumeClaim:
+            claimName: {{ include "asgard.fullname" . }}-mysql-data
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "asgard.fullname" . }}-mqtt
+  labels:
+    app.kubernetes.io/component: mqtt
+    {{- include "asgard.labels" . | nindent 4 }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      {{- include "asgard.selectorLabels" . | nindent 6 }}
+      app.kubernetes.io/component: mqtt
+  template:
+    metadata:
+      labels:
+        {{- include "asgard.selectorLabels" . | nindent 8 }}
+        app.kubernetes.io/component: mqtt
+    spec:
+      containers:
+        - name: mqtt
+          image: "{{ .Values.images.mqtt.repository }}:{{ .Values.images.mqtt.tag }}"
+          imagePullPolicy: {{ .Values.images.mqtt.pullPolicy }}
+          ports:
+            - containerPort: {{ .Values.mqtt.service.port }}
+              name: mqtt
+            - containerPort: {{ .Values.mqtt.websocketPort }}
+              name: websockets
+          volumeMounts:
+            - name: mosquitto-config
+              mountPath: /mosquitto/config/mosquitto.conf
+              subPath: mosquitto.conf
+            - name: mqtt-data
+              mountPath: /mosquitto/data
+            - name: mqtt-log
+              mountPath: /mosquitto/log
+      volumes:
+        - name: mosquitto-config
+          configMap:
+            name: {{ include "asgard.fullname" . }}-mosquitto-config
+        - name: mqtt-data
+          emptyDir: {}
+        - name: mqtt-log
+          emptyDir: {}

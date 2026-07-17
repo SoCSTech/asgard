@@ -15,6 +15,14 @@ If you are developing, you should use a Code Editor such as [Visual Studio Code]
 
 Or if you are wanting to deploy for production, you should use the [docker-compose.yml](docker-compose.yml) file, which holds the configuration file to bring up the system with all the different components.
 
+If you prefer a Kubernetes deployment, the repository also includes a Helm chart at [helm/asgard](helm/asgard). You can install it with the example values file at [helm/asgard/values.example.yaml](helm/asgard/values.example.yaml):
+
+```bash
+helm install asgard ./helm/asgard -f ./helm/asgard/values.example.yaml
+```
+
+The chart mirrors the Compose services and exposes the same environment variables through values so it is straightforward to import into a cluster.
+
 Once you have brought up your environment, you will need to run some migrations against the database. To do this you will need to connect into the running `api` container. You can do that by running:
 ```bash
 docker exec -it asgard-api bash
