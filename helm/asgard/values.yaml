@@ -1,0 +1,102 @@
+nameOverride: ""
+fullnameOverride: ""
+
+images:
+  api:
+    repository: ghcr.io/socstech/asgard-api
+    tag: latest
+    pullPolicy: IfNotPresent
+  jobs:
+    repository: ghcr.io/socstech/asgard-jobs
+    tag: latest
+    pullPolicy: IfNotPresent
+  admin:
+    repository: ghcr.io/socstech/asgard-admin
+    tag: latest
+    pullPolicy: IfNotPresent
+  db:
+    repository: mysql
+    tag: "8.0"
+    pullPolicy: IfNotPresent
+  mqtt:
+    repository: eclipse-mosquitto
+    tag: "2"
+    pullPolicy: IfNotPresent
+
+api:
+  containerPort: 3000
+  service:
+    type: ClusterIP
+    port: 3000
+  extraEnv: {}
+
+jobs:
+  extraEnv: {}
+
+admin:
+  containerPort: 80
+  service:
+    type: ClusterIP
+    port: 80
+  extraEnv: {}
+
+db:
+  service:
+    type: ClusterIP
+    port: 3306
+  extraEnv: {}
+
+mqtt:
+  service:
+    type: ClusterIP
+    port: 1883
+  websocketPort: 9001
+
+env:
+  DB_HOSTNAME: '{{ printf "%s-db" (include "asgard.fullname" .) }}'
+  DB_DATABASE: asgard
+  DB_USERNAME: asgard
+  BOT_USER: jobs_bot
+  WEB_BASEURL: http://asgard.network.uni
+  API_URL: http://asgard.network.uni
+  Y2_URL: http://yggdrasil.network.uni
+  ACADEMIC_YEAR_START_DATE: "2023/09/18"
+  MAIL_FROM: asgard@email
+  MAIL_USERNAME: asgard@email
+  MAIL_SERVER: mail.email
+  MAIL_PORT: "465"
+  MAIL_USE_SSL: "true"
+  MAIL_REPLY: technician@lincoln.ac.uk
+  FTP_USERNAME: user@example.com
+  FTP_UPLOAD_BASEURL: https://example.com/asgard-media
+  FTP_SERVER: ftp.example.com
+  FTP_PORT: "21"
+  MQTT_BROKER: '{{ printf "%s-mqtt" (include "asgard.fullname" .) }}'
+
+secretEnv:
+  AUTH_SECRET: BIG_LONG_SECRET_THAT_IS_USED_FOR_VERIFYING_EVERYONES_AUTH
+  DB_PASSWORD: computing
+  BOT_PASS: computing
+  MAIL_PASSWORD: password
+  FTP_PASSWORD: password
+
+mosquittoConfig: |
+  persistence true
+  persistence_location /mosquitto/data
+  log_type subscribe
+  log_type unsubscribe
+  log_type websockets
+  log_type error
+  log_type warning
+  log_type notice
+  log_type information
+  log_dest file /mosquitto/log/mosquitto.log
+  log_dest stdout
+
+  allow_anonymous true
+
+  listener 1883 0.0.0.0
+  protocol mqtt
+
+  listener 9001 0.0.0.0
+  protocol websockets
